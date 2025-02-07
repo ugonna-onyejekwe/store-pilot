@@ -1,0 +1,58 @@
+@use '../../lib/variables';
+
+.product_details_modal {
+  h2 {
+    font-size: 25px;
+    color: variables.$dark_text_color;
+    margin-top: 10px;
+  }
+  .txt_con {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+
+    .txt {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 16px;
+    }
+  }
+
+  .available_designs_con,
+  .available_color_con {
+    margin-top: 20px;
+
+    h3 {
+      font-size: 17px;
+      color: variables.$dark_text_color;
+    }
+
+    .con {
+      background: variables.$bg_alt_color;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      margin-top: 5px;
+
+      span {
+        color: variables.$light_text_color2;
+        font-size: 13px;
+
+        b {
+          color: variables.$light_text_color;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .btns {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+}

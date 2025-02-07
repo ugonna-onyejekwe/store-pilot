@@ -1,0 +1,50 @@
+@use '../../../lib/variables';
+
+.sidesheet_container {
+  max-width: 400px;
+  width: 95%;
+  background: variables.$bg_color;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 230;
+  overflow-y: scroll;
+  box-shadow: 0 0 10px black;
+  transform: translateX(110%);
+  transition: 0.5s ease;
+
+  &.active {
+    transform: translateX(0);
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .close_btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    background-color: variables.$bg_alt_color;
+    height: 35px;
+    width: 35px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      .close_icon {
+        fill: variables.$dark_text_color;
+      }
+    }
+
+    .close_icon {
+      fill: variables.$light_text_color;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

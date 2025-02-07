@@ -1,0 +1,65 @@
+@use '../../lib/variables';
+
+.input_con {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  label {
+    font-size: 15px;
+    color: variables.$dark_text_color;
+    font-weight: 500;
+  }
+
+  .error_msg {
+    font-size: 13px;
+    color: red;
+  }
+}
+
+// Normal input styles
+.text_input {
+  display: flex;
+  flex-direction: column;
+
+  input {
+    padding: 20px;
+    border: 1px solid rgb(191, 191, 191);
+    border-radius: 10px;
+    overflow: hidden;
+
+    &:focus {
+      outline: 1px solid variables.$primary_color;
+    }
+  }
+
+  .error_msg {
+    font-size: 13px;
+    color: red;
+    padding-top: 3px;
+  }
+}
+
+// Boolean input styles
+.boolean_input_con {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  .option_con {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+
+    .error_msg {
+      padding-top: 3px;
+    }
+  }
+}

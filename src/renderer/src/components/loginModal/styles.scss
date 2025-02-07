@@ -1,0 +1,44 @@
+@use '../../lib/variables';
+
+.loginModal_con {
+  width: 100%;
+  height: fit-content;
+
+  h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  p {
+    text-align: center;
+    padding-top: 2px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+
+    input {
+      text-align: center;
+    }
+  }
+}
+
+.successful_con {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-bottom: 10px;
+
+  .check_icon {
+    color: rgb(10, 162, 10);
+  }
+
+  h3 {
+    font-size: 20px;
+    padding-top: 10px;
+  }
+}

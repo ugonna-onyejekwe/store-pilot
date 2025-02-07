@@ -1,0 +1,33 @@
+@use '../../../lib/variables';
+
+button {
+  outline: none;
+  border: none;
+  border-radius: 10px;
+}
+
+.button {
+  background: linear-gradient(to right, variables.$primary-color, variables.$secondary_color);
+  color: white;
+  padding: 20px 25px;
+  font-size: 14px;
+  width: 100%;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+  border: 2px solid transparent;
+
+  &:hover {
+    background: linear-gradient(to left, variables.$primary-color, variables.$primary-color);
+  }
+
+  &.outline {
+    border-color: variables.$dark_text_color;
+    background: transparent;
+    color: variables.$dark_text_color;
+
+    &:hover {
+      border-color: variables.$secondary_color;
+      color: variables.$secondary_color;
+    }
+  }
+}

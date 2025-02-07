@@ -1,0 +1,126 @@
+@import '../../lib/variables';
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  backdrop-filter: blur(2px);
+  background: $bg_color;
+  box-shadow: 0 0 5px rgb(210, 210, 210);
+
+  .container {
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+    gap: 20px;
+
+    .page_name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .menu_icon {
+        color: $primary-color;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+      }
+
+      h1 {
+        line-height: 0;
+        font-size: 21px;
+        text-transform: capitalize;
+      }
+    }
+    .sec2 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+
+      .search_con {
+        border: 1px solid rgb(216, 216, 216);
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        padding-left: 20px;
+        padding-right: 20px;
+        gap: 10px;
+        max-width: 350px;
+        width: 100%;
+        min-width: 350px;
+
+        @media (max-width: 768px) {
+          min-width: 0;
+        }
+
+        @media (max-width: 500px) {
+          display: none;
+        }
+
+        .search_icon {
+          color: $primary-color;
+        }
+
+        input {
+          background: transparent;
+          padding: 15px 0;
+          caret-color: $primary-color;
+          border: none;
+          outline: none;
+          flex: 1;
+
+          &::placeholder {
+            color: rgb(158, 157, 157);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+      }
+
+      .shopping_cart {
+        background: $bg_alt_color;
+        height: 50px;
+        width: 50px;
+        min-height: 50px;
+        min-width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        position: relative;
+        cursor: pointer;
+        transition: 0.5s ease;
+
+        &:hover {
+          .shopping_cart_icon {
+            color: $dark_text_color;
+          }
+        }
+
+        .shopping_cart_icon {
+          color: $light_text_color;
+        }
+
+        span {
+          position: absolute;
+          top: 0;
+          right: 0;
+          height: 23px;
+          width: 23px;
+          background: red;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 100%;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

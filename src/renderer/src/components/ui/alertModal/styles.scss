@@ -1,0 +1,48 @@
+@use '../../../lib/variables';
+
+.AlertModal_container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: variables.$bg_color;
+  z-index: 230;
+  border-radius: 10px;
+  box-shadow: 0 0 10px black;
+  padding: 20px;
+  width: 95%;
+  max-width: 600px;
+  opacity: 0;
+  transition: 0.4s ease;
+
+  &.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .close_btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background-color: variables.$bg_alt_color;
+    height: 35px;
+    width: 35px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      .close_icon {
+        fill: variables.$dark_text_color;
+      }
+    }
+
+    .close_icon {
+      fill: variables.$light_text_color;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

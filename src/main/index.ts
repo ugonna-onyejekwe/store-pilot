@@ -1,10 +1,14 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import cors from 'cors'
+import * as dotenv from 'dotenv'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import express from 'express'
 import Datastore from 'nedb'
-import { join } from 'path'
+import path, { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import categoryRoutes from './routes/categoryRoutes'
+
+dotenv.config({ path: path.join(__dirname, '.env') })
 
 // Path to database file
 
@@ -63,6 +67,9 @@ function startExpressServer() {
   expressApp.use(express.json())
   expressApp.use(express.urlencoded({ extended: true }))
   expressApp.use(cors())
+
+  // Routes
+  expressApp.use('/api/category', categoryRoutes)
 
   const server = expressApp.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`)

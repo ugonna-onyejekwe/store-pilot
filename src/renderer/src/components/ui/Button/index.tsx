@@ -5,11 +5,18 @@ type ButtonProps = {
   varient?: 'outline' | 'secondary' | 'default'
   onClick?: () => void
   type?: 'submit' | 'button'
+  className?: string
 }
 
-const Button = ({ text, varient = 'default', onClick, type = 'button' }: ButtonProps) => {
+const Button = ({
+  className,
+  text,
+  varient = 'default',
+  onClick,
+  type = 'button'
+}: ButtonProps) => {
   return (
-    <button className={`button ${varient} `} onClick={onClick} type={type}>
+    <button className={`button ${varient} ${className} `} onClick={onClick} type={type}>
       {text}
     </button>
   )

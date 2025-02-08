@@ -1,4 +1,6 @@
-import { Link, useLocation } from 'react-router-dom'
+import { useReturnAllCategories } from '@renderer/apis/getCategories'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Icons } from '../ui/icons'
 import { Overlay } from '../ui/modal.tsx'
 import { navLinks } from './links'
@@ -11,7 +13,15 @@ type SidebarProps = {
 }
 
 const Sidebar = ({ setOpenSidebar, openSidebar, setCurrentPage }: SidebarProps) => {
+  const { data: AllCategories, mutate } = useReturnAllCategories()
+  const [openSubCate, setOpenSubCat] = useState(false)
   const { pathname } = useLocation()
+  const naviagte = useNavigate()
+
+  useEffect(() => {
+    mutate()
+    console.log(AllCategories, 'data')
+  }, [])
 
   return (
     <>
@@ -40,33 +50,37 @@ const Sidebar = ({ setOpenSidebar, openSidebar, setCurrentPage }: SidebarProps) 
               <div key={key}>
                 <div
                   onClick={() => {
+                    if (i.isProducts) {
+                      setOpenSubCat(!openSubCate)
+
+                      return
+                    }
                     setCurrentPage(i.name)
                     setOpenSidebar(false)
+                    naviagte(`${i.path}`)
                   }}
                   className={isActive ? 'link1 active' : 'link1'}
                 >
-                  <Link to={i.path}>
-                    <p className="name_sec">
-                      <span>
-                        <Icons.BulletPoint className="bulletList_icon" />
-                      </span>
-
-                      {i.name}
-                    </p>
-
-                    <span className="arrow">
-                      {i.subLinks && <Icons.ChevronRignht className="arrow_icon" />}
+                  <p className="name_sec">
+                    <span>
+                      <Icons.BulletPoint className="bulletList_icon" />
                     </span>
-                  </Link>
+
+                    {i.name}
+                  </p>
+
+                  <span className="arrow">
+                    {i.isProducts && <Icons.ChevronRignht className="arrow_icon" />}
+                  </span>
                 </div>
 
-                {i.subLinks && (
-                  <div className="subLinks">
-                    {i.subLinks.map((i, key) => {
-                      const sub_isActive = pathname.includes(i.path)
+                {i.isProducts && (
+                  <div className={openSubCate ? 'subLinks active' : 'subLinks'}>
+                    {AllCategories?.map((i, key) => {
+                      const sub_isActive = pathname.includes(i.id)
                       return (
                         <Link
-                          to={i.path}
+                          to={`${i.name}/${i.id}`}
                           key={key}
                           className={sub_isActive ? 'link2 active' : 'link2'}
                         >

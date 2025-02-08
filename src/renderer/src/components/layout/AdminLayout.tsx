@@ -20,7 +20,9 @@ const AdminLayout = () => {
       />
 
       <div className="admin_layout_container">
-        <Navbar setOpenSidebar={setOpenSidebar} currentPage={currentPage} />
+        {pathname === '/admin' && (
+          <Navbar setOpenSidebar={setOpenSidebar} currentPage={currentPage} />
+        )}
         <AuthProvider>
           <Outlet />
         </AuthProvider>

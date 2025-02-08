@@ -5,21 +5,8 @@ export const navLinks = [
   },
   {
     name: 'Products',
-    path: '/products'
-    // subLinks: [
-    //   {
-    //     name: 'Table',
-    //     path: '/products/123'
-    //   },
-    //   {
-    //     name: 'decor',
-    //     path: '/products/12'
-    //   },
-    //   {
-    //     name: 'chair',
-    //     path: '/products/1'
-    //   }
-    // ]
+    path: '/products',
+    isProducts: true
   },
   {
     name: 'History',

@@ -86,6 +86,7 @@
       padding: 20px 10px;
       transition: 0.5s ease;
       text-transform: capitalize;
+      cursor: pointer;
 
       &.active {
         background: $primary-color;
@@ -135,10 +136,18 @@
 
     .subLinks {
       background: $bg_alt_color;
-      padding: 10px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      height: 0;
+      overflow: hidden;
+      padding: 0;
+      transition: 0.4s ease;
+
+      &.active {
+        height: fit-content;
+        padding: 10px;
+      }
 
       .link2 {
         color: $light_text_color;
@@ -150,6 +159,7 @@
         transition: 0.5s ease;
         gap: 10px;
         text-transform: capitalize;
+        cursor: pointer;
 
         &:hover {
           margin-left: 10px;

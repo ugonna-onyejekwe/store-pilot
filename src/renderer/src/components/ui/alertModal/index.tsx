@@ -8,10 +8,16 @@ type AlertModalProps = {
   onOpenChange: (value: boolean) => void
   children: ReactNode
   className?: string
-  isCloseable: boolean
+  isCloseable?: boolean
 }
 
-const AlertModal = ({ open, onOpenChange, children, className, isCloseable }: AlertModalProps) => {
+const AlertModal = ({
+  open,
+  onOpenChange,
+  children,
+  className,
+  isCloseable = true
+}: AlertModalProps) => {
   return (
     <>
       <div

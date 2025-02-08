@@ -1,9 +1,12 @@
 import Bot from '@renderer/components/bot'
 import { Icons } from '@renderer/components/ui/icons'
+import { toastUI } from '@renderer/components/ui/toast'
 import { Link } from 'react-router-dom'
 import './styles.scss'
 
 const Admin = () => {
+  toastUI.success('Here is your toast.')
+
   return (
     <div className="admin_wrapper container">
       <div className="admin_container">
@@ -17,14 +20,14 @@ const Admin = () => {
 
         <div className="box_con">
           {/* add category */}
-          <Link to={'/add-category'}>
+          <Link to={'/create-category'}>
             <div className="box">
               <div className="icon_con">
                 <Icons.AddCategory className="add_category_icon" />
               </div>
 
-              <h4>Add category</h4>
-              <p className="txt">Do you want to add new category to the store?</p>
+              <h4>Create category</h4>
+              <p className="txt">Do you want to create new category to the store?</p>
             </div>
           </Link>
 

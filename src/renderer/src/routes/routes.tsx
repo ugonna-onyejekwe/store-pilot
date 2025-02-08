@@ -1,12 +1,12 @@
 import Layout from '@renderer/components/layout'
 import AdminLayout from '@renderer/components/layout/AdminLayout'
-import AddCategory from '@renderer/pages/addCategory'
 import AddProduct from '@renderer/pages/addProduct'
 import Admin from '@renderer/pages/admin'
+import AddCategory from '@renderer/pages/createCategory'
 import Dashboard from '@renderer/pages/dashboard'
 import History from '@renderer/pages/history'
 import Products from '@renderer/pages/products'
-import SubProducts from '@renderer/pages/products/subproducts'
+
 import { createBrowserRouter } from 'react-router-dom'
 
 export const router = createBrowserRouter([
@@ -18,13 +18,10 @@ export const router = createBrowserRouter([
         element: <Dashboard />
       },
       {
-        path: '/products/:subcatId',
+        path: '/:productname/:subcatId',
         element: <Products />
       },
-      {
-        path: '/products/:subcatId/:id',
-        element: <SubProducts />
-      },
+
       {
         path: '/history',
         element: <History />
@@ -47,7 +44,7 @@ export const router = createBrowserRouter([
         element: <Admin />
       },
       {
-        path: '/add-category',
+        path: '/create-category',
         element: <AddCategory />
       },
       {

@@ -15,6 +15,7 @@ button {
   transition: 0.3s ease-in-out;
   cursor: pointer;
   border: 2px solid transparent;
+  min-width: 150px;
 
   &:hover {
     background: linear-gradient(to left, variables.$primary-color, variables.$primary-color);
@@ -29,5 +30,11 @@ button {
       border-color: variables.$secondary_color;
       color: variables.$secondary_color;
     }
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    background: variables.$primary-color;
+    pointer-events: none;
   }
 }

@@ -13,7 +13,7 @@ export const LoginSchema = yup.object().shape({
 })
 
 export const AddCategoryFormSchema = yup.object().shape({
-  name: yup.string().required('Category is required'),
+  name: yup.string().required('Category name is required'),
   hasSize: yup.boolean(),
   hasColor: yup.boolean(),
   hasDesign: yup.boolean(),
@@ -56,4 +56,74 @@ export const AddCategoryFormSchema = yup.object().shape({
       const { hasDesign } = this.parent
       return !hasDesign || (hasDesign && value)
     })
+})
+
+// CreateCategory sub-form scehmas start =====
+export const EnterNameSchema = yup.object().shape({
+  name: yup.string().required('Category is required')
+})
+
+export const EnterSizesSchema = yup.object().shape({
+  hasSize: yup.boolean(),
+  sizes: yup
+    .string()
+    .test('is-required-if-has-size', 'List of sizes is required', function (value) {
+      const { hasSize } = this.parent // Access other field's value
+      return !hasSize || (hasSize && value) // Validation logic
+    })
+})
+
+export const EnterVariationSchema = yup.object().shape({
+  hasVariations: yup.boolean(),
+  variations: yup
+    .string()
+    .test('is-required-if-has-variations', 'List of variations is required', function (value) {
+      const { hasVariations } = this.parent
+      return !hasVariations || (hasVariations && value)
+    }),
+  variablesSubproducts: yup
+    .string()
+    .test('is-required-if-has-variations', 'List of variations is required', function (value) {
+      const { hasVariations } = this.parent
+      return !hasVariations || (hasVariations && value)
+    })
+})
+
+export const EnterSubProductSchema = yup.object().shape({
+  hasSubProducts: yup.boolean(),
+
+  subProducts: yup
+    .string()
+    .test('is-required-if-has-sub-products', 'List of sub-products is required', function (value) {
+      const { hasSubProducts } = this.parent
+      return !hasSubProducts || (hasSubProducts && value)
+    })
+})
+
+export const EnterColorsSchema = yup.object().shape({
+  hasColor: yup.boolean(),
+
+  colors: yup
+    .string()
+    .test('is-required-if-has-colors', 'List of colours is required', function (value) {
+      const { hasColor } = this.parent
+      return !hasColor || (hasColor && value)
+    })
+})
+
+export const EnterDesignSchema = yup.object().shape({
+  hasDesign: yup.boolean(),
+
+  designs: yup
+    .string()
+    .test('is-required-if-has-colors', 'List of designs is required', function (value) {
+      const { hasDesign } = this.parent
+      return !hasDesign || (hasDesign && value)
+    })
+})
+// CreateCategory sub-form scehmas ends =====
+
+export const WhatToEditSchema = yup.object().shape({
+  whatToEdit: yup.string(),
+  categoryId: yup.string()
 })

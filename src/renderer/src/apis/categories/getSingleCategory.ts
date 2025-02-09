@@ -3,8 +3,13 @@ import { ApiEndPoints } from '@renderer/lib/apiEndpoints'
 import { getRequest } from '@renderer/lib/helpers'
 import { getError } from '@renderer/lib/utils'
 import { useMutation } from '@tanstack/react-query'
+import { useEffect } from 'react'
 
-type Response = {
+type payload = {
+  id: string
+}
+
+export type SingleCategoryResponse = {
   formatedListOfColors: { name: string; id: string }[]
   formatedListOfDesigns: { name: string; id: string }[]
   formatedListOfSizes: { name: string; id: string }[]
@@ -18,17 +23,30 @@ type Response = {
   hasVariations: boolean
   name: string
   id: string
-}[]
-
-const getCategories = () => {
-  return getRequest<Response>({ url: ApiEndPoints.getCategory })
 }
 
-export const useReturnAllCategories = () => {
+const getCategory = (payload: payload) => {
+  return getRequest<SingleCategoryResponse>({
+    url: `${ApiEndPoints.getSingleCategory}/${payload.id}`
+  })
+}
+
+export const useReturnCategory = () => {
   return useMutation({
-    mutationFn: getCategories,
+    mutationFn: getCategory,
     onError: (error) => {
       toastUI.error(getError(error))
     }
   })
+}
+
+export const useGetSingleCategory = (id: string) => {
+  const { mutateAsync, data, isPending } = useReturnCategory()
+  useEffect(() => {
+    mutateAsync({
+      id
+    })
+  }, [])
+
+  return { data, isPending }
 }

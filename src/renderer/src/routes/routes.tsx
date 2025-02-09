@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
         element: <Admin />
       },
       {
-        path: '/create-category',
+        path: '/create-category/:actionType?/:id?',
         element: <AddCategory />
       },
       {

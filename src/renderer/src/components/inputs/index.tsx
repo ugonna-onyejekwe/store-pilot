@@ -50,12 +50,14 @@ export const SelecInput = ({
 
   return (
     <div className="select_input input_con">
-      <label>{label}</label>
+      {label && <label>{label}</label>}
       <Select
         id={id}
         options={options}
         isLoading={isLoading}
-        onChange={(e) => onChange(name, e?.value)}
+        onChange={(e) => {
+          onChange(name, e?.value)
+        }}
         placeholder={placeholder}
         className="input"
         styles={colourStyles}

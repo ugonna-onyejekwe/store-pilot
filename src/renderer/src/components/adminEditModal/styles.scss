@@ -1,0 +1,15 @@
+@use '../../lib/variables';
+
+.admin_edit_modal {
+  h3 {
+    font-size: 20px;
+    color: variables.$dark_text_color;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 15px;
+  }
+}

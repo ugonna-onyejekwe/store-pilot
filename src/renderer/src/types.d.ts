@@ -15,7 +15,7 @@ type SelecInputProps = {
     label: string | number
   }[]
   isLoading?: boolean
-  label: string
+  label?: string
   onChange: (name: string, value: string | number) => void
   errorMsg?: string
   touched?: boolean
@@ -33,4 +33,19 @@ type BooleanInputProps = {
   value: boolean
   touched?: boolean
   err_msg?: string
+}
+
+type CreateCategoryFormInitialvalues = {
+  name: string
+  hasSize: boolean
+  hasColor: boolean
+  hasDesign: boolean
+  hasSubProducts: boolean
+  hasVariations: boolean
+  sizes: string
+  subProducts: string
+  variations: string
+  variablesSubproducts: string
+  colors: string
+  designs: string
 }

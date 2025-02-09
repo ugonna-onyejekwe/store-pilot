@@ -1,4 +1,4 @@
-import { useReturnAllCategories } from '@renderer/apis/getCategories'
+import { useReturnAllCategories } from '@renderer/apis/categories/getCategories'
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Icons } from '../ui/icons'
@@ -79,17 +79,24 @@ const Sidebar = ({ setOpenSidebar, openSidebar, setCurrentPage }: SidebarProps) 
                     {AllCategories?.map((i, key) => {
                       const sub_isActive = pathname.includes(i.id)
                       return (
-                        <Link
-                          to={`${i.name}/${i.id}`}
+                        <div
+                          onClick={() => {
+                            setCurrentPage(i.name)
+                            setOpenSidebar(false)
+                          }}
                           key={key}
-                          className={sub_isActive ? 'link2 active' : 'link2'}
                         >
-                          <span>
-                            <Icons.BulletPoint className="bulletList_icon" />
-                          </span>
+                          <Link
+                            to={`${i.name}/${i.id}`}
+                            className={sub_isActive ? 'link2 active' : 'link2'}
+                          >
+                            <span>
+                              <Icons.BulletPoint className="bulletList_icon" />
+                            </span>
 
-                          {i.name}
-                        </Link>
+                            {i.name}
+                          </Link>
+                        </div>
                       )
                     })}
                   </div>

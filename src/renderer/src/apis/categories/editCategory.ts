@@ -11,13 +11,11 @@ type payload = {
   hasColor: boolean
   hasDesign: boolean
   hasSubProducts: boolean
-  hasVariations: boolean
   sizes: string
-  subProducts: string
-  variations: string
-  variablesSubproducts: string
+  subProducts: { name: string; defaultQuantity: number; id: string }[]
   colors: string
   designs: string
+  hasModel: boolean
 }
 
 const editCategory = (payload: payload) => {

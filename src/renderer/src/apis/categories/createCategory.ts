@@ -10,13 +10,11 @@ type payload = {
   hasColor: boolean
   hasDesign: boolean
   hasSubProducts: boolean
-  hasVariations: boolean
   sizes: string
-  subProducts: string
-  variations: string
-  variablesSubproducts: string
+  subProducts: { name: string; defaultQuantity: number }[]
   colors: string
   designs: string
+  hasModel: boolean
 }
 
 const createCategory = (payload: payload) => {

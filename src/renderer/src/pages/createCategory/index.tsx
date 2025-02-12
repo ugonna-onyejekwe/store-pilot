@@ -1,23 +1,31 @@
-import { useGetSingleCategory } from '@renderer/apis/categories/getSingleCategory'
+import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import Bot from '@renderer/components/bot'
 import { CreateCategoryForm } from '@renderer/components/forms/createCategoryForm'
 import { Icons } from '@renderer/components/ui/icons'
+import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import './styles.scss'
 
 const AddCategory = () => {
   const { actionType, id } = useParams()
-  const { data: categoryData, isPending } = useGetSingleCategory(id!)
+  const { data: categoryData, isPending, mutate: getCategoryData } = useReturnSingleCategory()
   const editing = actionType && actionType === 'edit' ? true : false
+
+  if (editing) {
+    useEffect(() => {
+      getCategoryData({ id: id! })
+    }, [])
+  }
 
   return (
     <>
+      {/* back to admin arrow */}
       <div className="container">
         <Link to="/admin" className="back_arrow ">
           <span>
             <Icons.BackArrow className="backarrow_icon" />
           </span>{' '}
-          Back
+          Admin
         </Link>
       </div>
 

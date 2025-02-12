@@ -3,37 +3,32 @@ import Button from '@renderer/components/ui/Button'
 import { createCategoryformVariants } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { EnterDesignSchema } from '../schemas'
+import { EnterSizesSchema } from '../schemas'
 
-type EnterVariationFormTypes = {
+type EnterSizesFormType = {
   defaultValues: CreateCategoryFormInitialvalues
   handleChange: (values: CreateCategoryFormInitialvalues) => void
   setFormSteps: (value: number) => void
-  onClick: () => void
-  isLoading: boolean
-  buttonText: string
 }
 
-export const EnterDesignForm = ({
+export const EnterSizesForm = ({
   defaultValues,
   handleChange: setValues,
-  setFormSteps,
-  onClick,
-  isLoading,
-  buttonText
-}: EnterVariationFormTypes) => {
+  setFormSteps
+}: EnterSizesFormType) => {
   const initialValues = {
-    hasDesign: defaultValues.hasDesign,
-    designs: defaultValues.designs
+    sizes: defaultValues.sizes,
+    hasSize: defaultValues.hasSize
   }
 
   const onSubmit = (values) => {
     setValues(values)
+    setFormSteps(3)
   }
 
   const { values, touched, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues,
-    validationSchema: EnterDesignSchema,
+    validationSchema: EnterSizesSchema,
     onSubmit
   })
 
@@ -44,31 +39,31 @@ export const EnterDesignForm = ({
       animate="animate"
       exit="exit"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <BooleanInput
-            label="Does this category have designs?"
-            value={values.hasDesign}
+            label="Does this category have sizes?"
+            value={values.hasSize}
             onChange={setFieldValue}
-            name="hasDesign"
+            name="hasSize"
           />
 
-          {values.hasDesign && (
+          {values.hasSize && (
             <Input
-              label="Enter category designs separating each with a comma(',')."
-              placeholder="Design 1, Design 2, Design 3,...."
-              value={values.designs}
-              onChange={handleChange('designs')}
-              touched={touched.designs}
-              errorMsg={errors.designs}
+              label="Enter category sizes separating each with a comma(',')."
+              placeholder="Size 1, Size 2, Size 3,...."
+              value={values.sizes}
+              onChange={handleChange('sizes')}
+              touched={touched.sizes}
+              errorMsg={errors.sizes}
             />
           )}
         </div>
 
         <div className="btn btn_multi">
-          <Button text="Back" onClick={() => setFormSteps(5)} varient="outline" />
+          <Button text="Back" onClick={() => setFormSteps(1)} varient="outline" />
 
-          <Button text={buttonText} isLoading={isLoading} type="submit" onClick={onClick} />
+          <Button text={values.hasSize === false ? 'Skip' : 'Proceed'} type="submit" />
         </div>
       </form>
     </motion.div>

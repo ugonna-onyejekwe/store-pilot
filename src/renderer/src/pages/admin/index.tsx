@@ -33,7 +33,7 @@ const Admin = () => {
             </Link>
 
             {/* add product */}
-            <Link to={''}>
+            <Link to={'/add-product'}>
               <div className="box">
                 <div className="icon_con">
                   <Icons.AddProductIcon className="add_product_icon" />

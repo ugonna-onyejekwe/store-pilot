@@ -25,14 +25,6 @@ export const router = createBrowserRouter([
       {
         path: '/history',
         element: <History />
-      },
-      {
-        path: '/add-category',
-        element: <AddCategory />
-      },
-      {
-        path: '/add-product',
-        element: <AddProduct />
       }
     ]
   },
@@ -48,7 +40,7 @@ export const router = createBrowserRouter([
         element: <AddCategory />
       },
       {
-        path: '/add-product',
+        path: '/add-product/:actionType?/:id?',
         element: <AddProduct />
       }
     ]

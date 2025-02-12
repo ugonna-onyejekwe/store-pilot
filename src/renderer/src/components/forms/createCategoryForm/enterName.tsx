@@ -1,5 +1,5 @@
 import { useVerifyCategoryName } from '@renderer/apis/categories/verifyname'
-import { Input } from '@renderer/components/inputs'
+import { BooleanInput, Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
 import { toastUI } from '@renderer/components/ui/toast'
 import { createCategoryformVariants, getError } from '@renderer/lib/utils'
@@ -23,7 +23,8 @@ export const EnterCategorynameForm = ({
   const { actionType } = useParams()
   const editing = actionType === 'edit' ? true : false
   const initialValues = {
-    name: defaultValues.name
+    name: defaultValues.name,
+    hasModel: defaultValues.hasModel
   }
 
   const onSubmit = (values) => {
@@ -45,7 +46,7 @@ export const EnterCategorynameForm = ({
     }
   }
 
-  const { values, touched, errors, handleChange, handleSubmit } = useFormik({
+  const { values, touched, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues,
     validationSchema: EnterNameSchema,
     onSubmit
@@ -58,7 +59,7 @@ export const EnterCategorynameForm = ({
       animate="animate"
       exit="exit"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <Input
             label="Enter category name"
@@ -67,6 +68,13 @@ export const EnterCategorynameForm = ({
             onChange={handleChange('name')}
             touched={touched.name}
             errorMsg={errors.name}
+          />
+
+          <BooleanInput
+            label="Does this category have model?"
+            value={values.hasModel}
+            onChange={setFieldValue}
+            name="hasModel"
           />
         </div>
 

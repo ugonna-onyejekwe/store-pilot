@@ -23,7 +23,7 @@ export const EnterColourForm = ({
 
   const onSubmit = (values) => {
     setValues(values)
-    setFormSteps(6)
+    setFormSteps(5)
   }
   const { values, touched, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues,
@@ -38,7 +38,7 @@ export const EnterColourForm = ({
       animate="animate"
       exit="exit"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <BooleanInput
             label="Does this category have colours?"
@@ -60,7 +60,7 @@ export const EnterColourForm = ({
         </div>
 
         <div className="btn btn_multi">
-          <Button text="Back" onClick={() => setFormSteps(4)} varient="outline" />
+          <Button text="Back" onClick={() => setFormSteps(3)} varient="outline" />
 
           <Button text={values.hasColor === false ? 'Skip' : 'Proceed'} type="submit" />
         </div>

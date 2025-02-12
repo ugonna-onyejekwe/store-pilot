@@ -41,11 +41,20 @@ type CreateCategoryFormInitialvalues = {
   hasColor: boolean
   hasDesign: boolean
   hasSubProducts: boolean
-  hasVariations: boolean
   sizes: string
-  subProducts: string
-  variations: string
-  variablesSubproducts: string
+  subProducts: {
+    name: string
+    defaultQuantity: number
+    id?: string
+  }[]
   colors: string
   designs: string
+  hasModel: boolean
+}
+
+type AddProductDefaultValueTypes = {
+  category: string
+  modal: string
+  sizes: { name: string; quantity: 0 }[]
+  subProducts: { name: string; quantity: 0 }[]
 }

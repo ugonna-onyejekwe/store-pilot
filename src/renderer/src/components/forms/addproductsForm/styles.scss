@@ -1,0 +1,241 @@
+@use '../../../lib/variables';
+
+.form,
+.summary_con {
+  width: 100%;
+
+  .form_container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .btn {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+
+    button {
+      width: fit-content;
+    }
+  }
+
+  .btn_single {
+    display: flex;
+    justify-content: right;
+    width: 100%;
+  }
+
+  .btn_multi {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  // SIZE FORM STYLE
+  .size_form {
+    h3 {
+      font-size: 17px;
+      color: variables.$dark_text_color;
+    }
+
+    .box_con {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .box {
+        display: flex;
+        gap: 5px;
+        flex-direction: column;
+
+        h5 {
+          font-size: 15px;
+        }
+
+        input {
+          width: fit-content;
+        }
+      }
+    }
+  }
+
+  // SUB PRODUCT FORM STYLE
+  .subproduct_form {
+    h3 {
+      font-size: 17px;
+      color: variables.$dark_text_color;
+    }
+
+    .box_con {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .box {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 16px;
+      }
+    }
+  }
+
+  // COLOR QUANTITY  FORM
+
+  .color_form {
+    h3 {
+      font-size: 17px;
+      color: variables.$dark_text_color;
+    }
+
+    .box_con {
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+      gap: 10px;
+
+      .box_wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .close_btn {
+          height: 40px;
+          width: 40px;
+          background: rgba(255, 0, 0, 0.059);
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 20px;
+          cursor: pointer;
+        }
+
+        .box {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+      }
+    }
+
+    .add_field {
+      width: fit-content;
+      padding: 10px 20px;
+      background: black;
+      color: white;
+      cursor: pointer;
+    }
+  }
+}
+
+// Enter new color modal
+.enter_new_color_modal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+// Summary con syle
+.summary_con {
+  background: variables.$bg_color;
+  border-radius: 10px;
+  padding: 20px;
+
+  .summary_header {
+    h3 {
+      text-align: center;
+    }
+
+    p {
+      text-align: center;
+      font-size: 15px;
+      color: variables.$light_text_color;
+    }
+  }
+  .info_con {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .general_info_con {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      p {
+        font-weight: 600;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: variables.$light_text_color;
+
+        span {
+          font-weight: 400;
+          color: variables.$dark_text_color;
+        }
+      }
+    }
+
+    .sizes_con {
+      h3 {
+        font-size: 16px;
+        padding-bottom: 10px;
+      }
+
+      .con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 15px;
+
+        p {
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: variables.$light_text_color;
+
+          span {
+            color: variables.$secondary_color;
+          }
+        }
+      }
+    }
+
+    .subproduct_con {
+      h3 {
+        font-size: 16px;
+        padding-bottom: 10px;
+      }
+
+      .con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 15px;
+
+        p {
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: variables.$light_text_color;
+
+          span {
+            color: variables.$secondary_color;
+            line-height: 0;
+            .check_icon {
+              width: 15px;
+              height: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

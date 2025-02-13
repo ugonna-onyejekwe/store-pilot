@@ -62,7 +62,7 @@ export const EnterColourForm = ({
         <div className="btn btn_multi">
           <Button text="Back" onClick={() => setFormSteps(3)} varient="outline" />
 
-          <Button text={values.hasColor === false ? 'Skip' : 'Proceed'} type="submit" />
+          <Button text={'Proceed'} type="submit" />
         </div>
       </form>
     </motion.div>

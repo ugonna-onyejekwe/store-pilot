@@ -35,7 +35,8 @@ export const SelecInput = ({
   onChange,
   placeholder,
   name,
-  id
+  id,
+  defaultValue
 }: SelecInputProps) => {
   const colourStyles = {
     control: (styles, { isFocused }) => ({
@@ -58,6 +59,7 @@ export const SelecInput = ({
         onChange={(e) => {
           onChange(name, e?.value)
         }}
+        defaultValue={defaultValue}
         placeholder={placeholder}
         className="input"
         styles={colourStyles}

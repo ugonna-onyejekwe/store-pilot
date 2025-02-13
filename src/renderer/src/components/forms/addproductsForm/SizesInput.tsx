@@ -1,39 +1,23 @@
 import { Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
 import { createCategoryformVariants } from '@renderer/lib/utils'
-import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { EnterColorsSchema } from '../schemas'
 
 type SizeInputTypes = {
   defaultValues: AddProductDefaultValueTypes
-  handleProceed: (values: AddProductDefaultValueTypes) => void
-  setFormSteps: (value: number) => void
+  handleProceed: () => void
+  backFn: () => void
   setDefaultValues: (values: AddProductDefaultValueTypes) => void
 }
 
-const SubProductForm = ({
-  handleProceed,
-  setFormSteps,
-  setDefaultValues,
-  defaultValues
-}: SizeInputTypes) => {
-  const initialValues = {
-    sizes: defaultValues.sizes
+const SizeInput = ({ handleProceed, backFn, setDefaultValues, defaultValues }: SizeInputTypes) => {
+  const onSubmit = (e) => {
+    e.preventDefault()
+    handleProceed()
   }
-
-  const onSubmit = (values) => {
-    handleProceed(values)
-  }
-
-  const { values, touched, errors, handleSubmit, handleChange } = useFormik({
-    initialValues,
-    validationSchema: EnterColorsSchema,
-    onSubmit
-  })
 
   const onValueChange = (value, index) => {
-    defaultValues.subProducts[index].quantity = value
+    defaultValues.sizes[index].quantity = value
 
     setDefaultValues({
       ...defaultValues
@@ -47,18 +31,18 @@ const SubProductForm = ({
       animate="animate"
       exit="exit"
     >
-      <form onSubmit={handleSubmit} className="sizes_form">
-        <div className="form_container">
-          <h3>Enter quantity for each sub product</h3>
+      <form onSubmit={onSubmit} className="form">
+        <div className="form_container size_form">
+          <h3>Enter quantity of avaliable product for each size</h3>
 
           <div className="box_con">
-            {defaultValues.subProducts.map((i, key) => {
+            {defaultValues.sizes.map((i, key) => {
               return (
                 <div key={key} className="box">
                   <h5>{i.name}:</h5>{' '}
                   <Input
                     onChange={(e) => onValueChange(e.target.value, key)}
-                    value={defaultValues.subProducts[key].quantity}
+                    value={defaultValues.sizes[key].quantity}
                     type="number"
                     placeholder="Enter quantity"
                   />
@@ -69,7 +53,7 @@ const SubProductForm = ({
         </div>
 
         <div className="btn btn_multi">
-          <Button text={'Back'} varient="outline" onClick={() => setFormSteps(3)} />
+          <Button text={'Back'} varient="outline" onClick={backFn} />
           <Button text={'Proceed'} type="submit" />
         </div>
       </form>
@@ -77,4 +61,4 @@ const SubProductForm = ({
   )
 }
 
-export default SubProductForm
+export default SizeInput

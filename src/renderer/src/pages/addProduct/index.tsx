@@ -1,5 +1,5 @@
 import Bot from '@renderer/components/bot'
-import AddProductForm from '@renderer/components/forms/addProductsForm'
+import AddProductForm from '@renderer/components/forms/addproductsForm'
 import { Icons } from '@renderer/components/ui/icons'
 import { Link, useParams } from 'react-router-dom'
 import './styles.scss'

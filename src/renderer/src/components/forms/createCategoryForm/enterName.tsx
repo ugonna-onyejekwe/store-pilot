@@ -29,7 +29,7 @@ export const EnterCategorynameForm = ({
 
   const onSubmit = (values) => {
     try {
-      if (editing) {
+      if (editing && values.name === defaultValues.name) {
         setFormSteps(2)
         setValues(values)
 

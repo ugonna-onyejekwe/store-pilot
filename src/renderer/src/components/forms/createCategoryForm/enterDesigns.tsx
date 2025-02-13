@@ -9,7 +9,6 @@ type EnterVariationFormTypes = {
   defaultValues: CreateCategoryFormInitialvalues
   handleChange: (values: CreateCategoryFormInitialvalues) => void
   setFormSteps: (value: number) => void
-  onClick: () => void
   isLoading: boolean
   buttonText: string
 }
@@ -18,7 +17,6 @@ export const EnterDesignForm = ({
   defaultValues,
   handleChange: setValues,
   setFormSteps,
-  onClick,
   isLoading,
   buttonText
 }: EnterVariationFormTypes) => {
@@ -27,7 +25,7 @@ export const EnterDesignForm = ({
     designs: defaultValues.designs
   }
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     setValues(values)
   }
 
@@ -68,7 +66,7 @@ export const EnterDesignForm = ({
         <div className="btn btn_multi">
           <Button text="Back" onClick={() => setFormSteps(4)} varient="outline" />
 
-          <Button text={buttonText} isLoading={isLoading} type="submit" onClick={onClick} />
+          <Button text={buttonText} isLoading={isLoading} type="submit" />
         </div>
       </form>
     </motion.div>

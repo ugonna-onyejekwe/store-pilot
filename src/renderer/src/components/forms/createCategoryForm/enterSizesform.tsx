@@ -63,7 +63,7 @@ export const EnterSizesForm = ({
         <div className="btn btn_multi">
           <Button text="Back" onClick={() => setFormSteps(1)} varient="outline" />
 
-          <Button text={values.hasSize === false ? 'Skip' : 'Proceed'} type="submit" />
+          <Button text={'Proceed'} type="submit" />
         </div>
       </form>
     </motion.div>

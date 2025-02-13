@@ -22,6 +22,7 @@ type SelecInputProps = {
   placeholder: string
   name: string
   id: string
+  defaultValue?: string
 }
 
 type NavbarProps = { setOpenSidebar: (value: boolean) => void; currentPage: string }
@@ -54,7 +55,17 @@ type CreateCategoryFormInitialvalues = {
 
 type AddProductDefaultValueTypes = {
   category: string
-  modal: string
-  sizes: { name: string; quantity: 0 }[]
-  subProducts: { name: string; quantity: 0 }[]
+  model: string
+  cartoonQuantity: number
+  sizes: { name: string; quantity: number }[]
+  subProducts: {
+    name: string
+    quantity: number
+    available: boolean
+  }[]
+  colors: { name: string; quantity: number }[]
+  designs: { name: string; quantity: number }[]
+  colorCustomInputsIndex: number[]
+  designCustomInputsIndex: number[]
+  totalQuantity: number
 }

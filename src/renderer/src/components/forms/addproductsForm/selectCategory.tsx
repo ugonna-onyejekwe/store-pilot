@@ -1,18 +1,25 @@
 import { useGetCategories } from '@renderer/apis/categories/getCategories'
+import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
 import { SelecInput } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
 import { createCategoryformVariants } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { EnterColorsSchema } from '../schemas'
+import { addPro_selectCategorySchema } from '../schemas'
 
 type SelectCategoryType = {
   defaultValues: AddProductDefaultValueTypes
   handleProceed: (values: AddProductDefaultValueTypes) => void
   isLoading: boolean
+  data: SingleCategoryResponse
 }
 
-export const SelectCategory = ({ handleProceed, defaultValues, isLoading }: SelectCategoryType) => {
+export const SelectCategory = ({
+  handleProceed,
+  data,
+  defaultValues,
+  isLoading
+}: SelectCategoryType) => {
   const { CategoriesData, isPending: getCategories } = useGetCategories()
 
   const initialValues = {
@@ -23,9 +30,9 @@ export const SelectCategory = ({ handleProceed, defaultValues, isLoading }: Sele
     handleProceed(values)
   }
 
-  const { touched, errors, handleSubmit, setFieldValue } = useFormik({
+  const { values, touched, errors, handleSubmit, setFieldValue } = useFormik({
     initialValues,
-    validationSchema: EnterColorsSchema,
+    validationSchema: addPro_selectCategorySchema,
     onSubmit
   })
 
@@ -36,10 +43,11 @@ export const SelectCategory = ({ handleProceed, defaultValues, isLoading }: Sele
       animate="animate"
       exit="exit"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <SelecInput
             placeholder="Select category"
+            defaultValue={defaultValues.category}
             onChange={setFieldValue}
             options={CategoriesData!}
             isLoading={getCategories}
@@ -52,7 +60,11 @@ export const SelectCategory = ({ handleProceed, defaultValues, isLoading }: Sele
         </div>
 
         <div className="btn btn_single">
-          <Button text={'Proceed'} type="submit" isLoading={isLoading} />
+          <Button
+            text={!data ? 'process category' : 'Proceed'}
+            type="submit"
+            isLoading={isLoading}
+          />
         </div>
       </form>
     </motion.div>

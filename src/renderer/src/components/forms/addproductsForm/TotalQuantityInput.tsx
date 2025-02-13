@@ -3,17 +3,17 @@ import Button from '@renderer/components/ui/Button'
 import { createCategoryformVariants } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { EnterColorsSchema } from '../schemas'
+import { addPro_totalQuantitySchema } from '../schemas'
 
-type SelectCategoryType = {
+type TotalQuantityTypes = {
   defaultValues: AddProductDefaultValueTypes
   handleProceed: (values: AddProductDefaultValueTypes) => void
-  setFormSteps: (value: number) => void
+  backFn: () => void
 }
 
-export const EnterModal = ({ handleProceed, defaultValues, setFormSteps }: SelectCategoryType) => {
+export const TotalQuantity = ({ handleProceed, defaultValues, backFn }: TotalQuantityTypes) => {
   const initialValues = {
-    modal: defaultValues.modal
+    totalQuantity: defaultValues.totalQuantity
   }
 
   const onSubmit = (values) => {
@@ -22,7 +22,7 @@ export const EnterModal = ({ handleProceed, defaultValues, setFormSteps }: Selec
 
   const { values, touched, errors, handleSubmit, handleChange } = useFormik({
     initialValues,
-    validationSchema: EnterColorsSchema,
+    validationSchema: addPro_totalQuantitySchema,
     onSubmit
   })
 
@@ -33,20 +33,21 @@ export const EnterModal = ({ handleProceed, defaultValues, setFormSteps }: Selec
       animate="animate"
       exit="exit"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <Input
-            placeholder="Enter modal ..."
-            onChange={handleChange('modal')}
-            label="Enter product modal"
-            touched={touched.modal}
-            errorMsg={errors.modal}
-            value={values.modal}
+            placeholder="Enter total number of product"
+            onChange={handleChange('totalQuantity')}
+            label="Total number of  product available"
+            touched={touched.totalQuantity}
+            errorMsg={errors.totalQuantity}
+            value={values.totalQuantity}
+            type="number"
           />
         </div>
 
         <div className="btn btn_multi">
-          <Button text={'Back'} varient="outline" onClick={() => setFormSteps(1)} />
+          <Button text={'Back'} varient="outline" onClick={backFn} />
           <Button text={'Proceed'} type="submit" />
         </div>
       </form>

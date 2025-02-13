@@ -1,5 +1,6 @@
 import * as yup from 'yup'
 
+// SELL PRODUCT SCHEMA
 export const sellProductSchema = yup.object().shape({
   category: yup.string().required('Category is required'),
   modal: yup.string().required('Modal is required'),
@@ -8,10 +9,12 @@ export const sellProductSchema = yup.object().shape({
   quantity: yup.number().required('Quantity is required')
 })
 
+// LOGIN SCHEMA
 export const LoginSchema = yup.object().shape({
   password: yup.string().required('Enter password')
 })
 
+// ADD CATEGORY SCHEMA
 export const AddCategoryFormSchema = yup.object().shape({
   name: yup.string().required('Category name is required'),
   hasSize: yup.boolean(),
@@ -41,7 +44,7 @@ export const AddCategoryFormSchema = yup.object().shape({
     })
 })
 
-// CreateCategory sub-form scehmas start =====
+// CREATE CATEGORY SUB-FORMS SCHEMA STARTS =====
 export const EnterNameSchema = yup.object().shape({
   name: yup.string().required('Category is required'),
   hasModel: yup.boolean()
@@ -83,9 +86,36 @@ export const EnterDesignSchema = yup.object().shape({
       return !hasDesign || (hasDesign && value)
     })
 })
-// CreateCategory sub-form scehmas ends =====
+// CREATE CATEGORY SUB-FORMS SCHEMA ENDS =====
 
+// WHAT DO YOU WANT TO EDIT SCHEMA
 export const WhatToEditSchema = yup.object().shape({
   whatToEdit: yup.string(),
   categoryId: yup.string()
 })
+
+// ADD PRODUCT SUB-FORMS SCHEMA STARTS =======
+
+export const addPro_selectCategorySchema = yup.object().shape({
+  category: yup.string().required('Category is required')
+})
+
+export const addPro_enterModelSchema = yup.object().shape({
+  hasModel: yup.boolean(),
+  model: yup.string().test('is-required-if-has-modal', 'Modal is required', function (value) {
+    const { hasModel } = this.parent // Access other field's value
+    return !hasModel || (hasModel && value) // Validation logic
+  }),
+  cartoonQuantity: yup
+    .number()
+    .test('is-required-if-has-modal', 'cartoon quantity is required', function (value) {
+      const { hasModel } = this.parent // Access other field's value
+      return !hasModel || (hasModel && value)
+    })
+})
+
+export const addPro_totalQuantitySchema = yup.object().shape({
+  totalQuantity: yup.number().required('Quantity is required')
+})
+
+// ADD PRODUCT SUB-FORMS SCHEMA ENDS =======

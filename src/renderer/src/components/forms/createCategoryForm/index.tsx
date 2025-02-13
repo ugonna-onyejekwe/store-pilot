@@ -48,33 +48,32 @@ export const CreateCategoryForm = ({
 
   const onSubmit = async (values) => {
     try {
-      // if (editing) {
-      //   EditCategory({ ...values, id: categoryId })
-      //     .then(() => refetchCategories)
+      if (editing) {
+        EditCategory({ ...values, id: categoryId })
+          .then(() => refetchCategories)
 
-      //     .then(() => {
-      //       resetForm()
-      //       toastUI.success('Category edited successfully')
-      //       setFormSteps(1)
-      //       values = initialvalues
-      //     })
-      //     .then(() => navigate('/create-category'))
-      //     .then(() => {
-      //       window.location.reload()
-      //     })
-      //   return
-      // }
+          .then(() => {
+            resetForm()
+            toastUI.success('Category edited successfully')
+            setFormSteps(1)
+            values = initialvalues
+          })
+          .then(() => navigate('/create-category'))
+          .then(() => {
+            window.location.reload()
+          })
+        return
+      }
 
-      // createCategory(values)
-      //   .then(() => refetchCategories)
-      //   .then(() => {
-      //     resetForm()
-      //     setFormSteps(1)
-      //     toastUI.success('Category created successfully')
+      createCategory(values)
+        .then(() => refetchCategories)
+        .then(() => {
+          resetForm()
+          setFormSteps(1)
+          toastUI.success('Category created successfully')
 
-      //     return
-      //   })
-      console.log(values)
+          return
+        })
     } catch (error) {
       toastUI.error(getError(error))
     }
@@ -145,12 +144,9 @@ export const CreateCategoryForm = ({
           // @ts-expect-error: expect undefined value
           defaultValues={values}
           setFormSteps={setFormSteps}
-          handleChange={(formData) => {
-            setFieldValue('hasDesign', formData.hasDesign)
-            setFieldValue('designs', formData.designs)
-          }}
-          isLoading={editing ? editingCategory : creatingCategory}
-          onClick={() => {
+          handleChange={async (formData) => {
+            await setFieldValue('hasDesign', formData.hasDesign)
+            await setFieldValue('designs', formData.designs)
             handleSubmit()
             if (touched && errors) {
               for (const field in errors) {
@@ -158,6 +154,7 @@ export const CreateCategoryForm = ({
               }
             }
           }}
+          isLoading={editing ? editingCategory : creatingCategory}
           buttonText={editing ? 'Edit category' : 'Create category'}
         />
       )}

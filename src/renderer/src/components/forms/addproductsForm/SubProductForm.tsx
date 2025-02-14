@@ -15,8 +15,6 @@ const SubProductForm = ({
   setDefaultValues,
   defaultValues
 }: SizeInputTypes) => {
-  console.log(defaultValues.subProducts, 'sub')
-
   const onSubmit = (e) => {
     e.preventDefault()
     handleProceed()
@@ -43,7 +41,6 @@ const SubProductForm = ({
 
           <div className="box_con">
             {defaultValues.subProducts.map((i, key) => {
-              console.log(i)
               return (
                 <div key={key} className="box">
                   <input

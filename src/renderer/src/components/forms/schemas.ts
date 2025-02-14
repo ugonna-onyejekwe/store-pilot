@@ -111,7 +111,8 @@ export const addPro_enterModelSchema = yup.object().shape({
     .test('is-required-if-has-modal', 'cartoon quantity is required', function (value) {
       const { hasModel } = this.parent // Access other field's value
       return !hasModel || (hasModel && value)
-    })
+    }),
+  totalQuantity: yup.number().min(1, "Total quantity can't be less than 1")
 })
 
 export const addPro_totalQuantitySchema = yup.object().shape({

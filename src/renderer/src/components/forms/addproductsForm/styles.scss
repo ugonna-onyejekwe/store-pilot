@@ -32,34 +32,6 @@
     width: 100%;
   }
 
-  // SIZE FORM STYLE
-  .size_form {
-    h3 {
-      font-size: 17px;
-      color: variables.$dark_text_color;
-    }
-
-    .box_con {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-
-      .box {
-        display: flex;
-        gap: 5px;
-        flex-direction: column;
-
-        h5 {
-          font-size: 15px;
-        }
-
-        input {
-          width: fit-content;
-        }
-      }
-    }
-  }
-
   // SUB PRODUCT FORM STYLE
   .subproduct_form {
     h3 {
@@ -82,8 +54,8 @@
   }
 
   // COLOR QUANTITY  FORM
-
-  .color_form {
+  .color_form,
+  .size_form {
     h3 {
       font-size: 17px;
       color: variables.$dark_text_color;
@@ -172,11 +144,11 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        color: variables.$light_text_color;
+        color: variables.$light_text_color2;
 
         span {
-          font-weight: 400;
-          color: variables.$dark_text_color;
+          font-weight: 600;
+          color: variables.$secondary_color;
         }
       }
     }
@@ -185,6 +157,12 @@
       h3 {
         font-size: 16px;
         padding-bottom: 10px;
+      }
+
+      .err_msg {
+        margin-top: 10px;
+        font-size: 14px;
+        color: rgb(224, 59, 59);
       }
 
       .con {
@@ -198,7 +176,7 @@
           display: flex;
           align-items: center;
           gap: 10px;
-          color: variables.$light_text_color;
+          color: variables.$light_text_color2;
 
           span {
             color: variables.$secondary_color;
@@ -211,6 +189,12 @@
       h3 {
         font-size: 16px;
         padding-bottom: 10px;
+      }
+
+      .err_msg {
+        margin-top: 10px;
+        font-size: 14px;
+        color: rgb(224, 59, 59);
       }
 
       .con {

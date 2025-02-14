@@ -7,6 +7,7 @@ import Datastore from 'nedb'
 import path, { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import categoryRoutes from './routes/categoryRoutes'
+import productsRoutes from './routes/productsRoutes'
 
 dotenv.config({ path: path.join(__dirname, '.env') })
 
@@ -70,6 +71,7 @@ function startExpressServer() {
 
   // Routes
   expressApp.use('/api/category', categoryRoutes)
+  expressApp.use('/api/products', productsRoutes)
 
   const server = expressApp.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`)

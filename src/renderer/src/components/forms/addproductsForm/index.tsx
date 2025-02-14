@@ -1,16 +1,21 @@
 import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
+import { useCreateProduct } from '@renderer/apis/products/createProduct'
+import { toastUI } from '@renderer/components/ui/toast'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ColorInput } from './ColorInput'
 import { DesignInput } from './designInput'
 import { EnterModal } from './EnterModal'
 import { SelectCategory } from './selectCategory'
-import SizeInput from './SizesInput'
+import { SizeInput } from './SizesInput'
 import './styles.scss'
 import SubProductForm from './SubProductForm'
 import { Summary } from './summary'
 
 const AddProductForm = () => {
   const [formSteps, setFormSteps] = useState(1)
+  const { isPending: creatingProduct, mutateAsync: createProduct } = useCreateProduct()
+  const navigate = useNavigate()
 
   const [defaultValues, setDefaultValues] = useState<AddProductDefaultValueTypes>({
     category: '',
@@ -22,6 +27,7 @@ const AddProductForm = () => {
     designs: [],
     colorCustomInputsIndex: [],
     designCustomInputsIndex: [],
+    sizesCustomInputsIndex: [],
     totalQuantity: 0
   })
 
@@ -31,18 +37,17 @@ const AddProductForm = () => {
     isPending: isLoadingCategoryData
   } = useReturnSingleCategory()
 
-  useEffect(() => {
-    console.log(defaultValues, 'recent change')
-  }, [defaultValues])
-
   // initial default values
   useEffect(() => {
     // setting Default values start======================
     // SIZES
-    const formatedSizes = categoryData?.formatedListOfSizes.split(',').map((i) => ({
-      name: i,
-      quantity: 0
-    }))
+    const formatedSizes = categoryData?.formatedListOfSizes
+      .split(',')
+      .filter(Boolean)
+      .map((i) => ({
+        name: i,
+        quantity: 0
+      }))
 
     // SUBPRODUCTS
     const formatedSubProducts = categoryData?.formatedListOfSubproducts.map((i) => ({
@@ -51,16 +56,22 @@ const AddProductForm = () => {
     }))
 
     // COLORS
-    const formatedColors = categoryData?.formatedListOfColors.split(',').map((i) => ({
-      name: i,
-      quantity: 0
-    }))
+    const formatedColors = categoryData?.formatedListOfColors
+      .split(',')
+      .filter(Boolean)
+      .map((i) => ({
+        name: i,
+        quantity: 0
+      }))
 
     // DESIGNS
-    const formatedDesigns = categoryData?.formatedListOfDesigns.split(',').map((i) => ({
-      name: i,
-      quantity: 0
-    }))
+    const formatedDesigns = categoryData?.formatedListOfDesigns
+      .split(',')
+      .filter(Boolean)
+      .map((i) => ({
+        name: i,
+        quantity: 0
+      }))
 
     setDefaultValues({
       ...defaultValues,
@@ -122,7 +133,7 @@ const AddProductForm = () => {
 
   //fn: Go back to previous form
   const goToPrevForm = () => {
-    const { hasModel, hasSize, hasSubProducts, hasColor, hasDesign } = categoryData!
+    const { hasSize, hasSubProducts, hasColor, hasDesign } = categoryData!
 
     if (formSteps === 2) return setFormSteps(1)
 
@@ -157,7 +168,28 @@ const AddProductForm = () => {
     }
   }
 
-  const onSubmit = () => {}
+  const onSubmit = async () => {
+    const { category, model, sizes, subProducts, cartoonQuantity, colors, designs, totalQuantity } =
+      defaultValues
+
+    try {
+      await createProduct({
+        categoryId: category,
+        model,
+        totalQuantity,
+        cartoonsPerProduct: cartoonQuantity,
+        sizes,
+        subProducts,
+        colors,
+        designs
+      }).then(() => {
+        toastUI.success('Product add successfully')
+        navigate('/add-product')
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div>
@@ -241,10 +273,12 @@ const AddProductForm = () => {
         <Summary
           defaultValues={defaultValues}
           handleProceed={() => {
-            fnSetFormStep()
+            onSubmit()
           }}
           backFn={goToPrevForm}
           categoryData={categoryData!}
+          isLoading={creatingProduct}
+          setDefaultValues={setDefaultValues}
         />
       )}
     </div>

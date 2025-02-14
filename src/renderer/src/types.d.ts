@@ -60,12 +60,13 @@ type AddProductDefaultValueTypes = {
   sizes: { name: string; quantity: number }[]
   subProducts: {
     name: string
-    quantity: number
+    defaultQuantity: number
     available: boolean
   }[]
   colors: { name: string; quantity: number }[]
   designs: { name: string; quantity: number }[]
   colorCustomInputsIndex: number[]
   designCustomInputsIndex: number[]
+  sizesCustomInputsIndex: number[]
   totalQuantity: number
 }

@@ -1,6 +1,7 @@
 import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
 import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
+import { toastUI } from '@renderer/components/ui/toast'
 import { createCategoryformVariants } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 
@@ -9,9 +10,18 @@ type SummaryTypes = {
   handleProceed: () => void
   backFn: () => void
   categoryData: SingleCategoryResponse
+  isLoading: boolean
+  setDefaultValues: (values: AddProductDefaultValueTypes) => void
 }
 
-export const Summary = ({ handleProceed, defaultValues, categoryData, backFn }: SummaryTypes) => {
+export const Summary = ({
+  isLoading,
+  handleProceed,
+  defaultValues,
+  categoryData,
+  backFn,
+  setDefaultValues
+}: SummaryTypes) => {
   const {
     name: categoryName,
     hasModel,
@@ -20,6 +30,59 @@ export const Summary = ({ handleProceed, defaultValues, categoryData, backFn }: 
     hasDesign,
     hasSubProducts
   } = categoryData
+
+  const availableSizes = hasSize ? defaultValues.sizes.filter((i) => i.quantity > 0) : []
+  const availableColors = hasSize ? defaultValues.colors.filter((i) => i.quantity > 0) : []
+  const availableSubproducts = hasSize
+    ? defaultValues.subProducts.filter((i) => i.available === true)
+    : []
+  const availableDesigns = hasDesign ? defaultValues.designs.filter((i) => i.quantity > 0) : []
+
+  const cumulatedSizeQuantity = availableSizes.reduce(
+    (sum, size) => Number(sum) + Number(size.quantity),
+    0
+  )
+  const cumulatedColorQuantity = availableColors.reduce(
+    (sum, size) => Number(sum) + Number(size.quantity),
+    0
+  )
+  const cumulatedDesignQuantity = availableDesigns.reduce(
+    (sum, size) => Number(sum) + Number(size.quantity),
+    0
+  )
+
+  const submit = () => {
+    if (
+      hasSize &&
+      (cumulatedSizeQuantity > defaultValues.totalQuantity ||
+        cumulatedSizeQuantity < defaultValues.totalQuantity)
+    )
+      return toastUI.error('Pls, fix quanity issues')
+
+    if (
+      hasColor &&
+      (cumulatedColorQuantity > defaultValues.totalQuantity ||
+        cumulatedColorQuantity < defaultValues.totalQuantity)
+    )
+      return toastUI.error('Pls, fix quanity issues')
+
+    if (
+      hasDesign &&
+      (cumulatedDesignQuantity > defaultValues.totalQuantity ||
+        cumulatedDesignQuantity < defaultValues.totalQuantity)
+    )
+      return toastUI.error('Pls, fix quanity issues')
+
+    setDefaultValues({
+      ...defaultValues,
+      sizes: availableSizes,
+      colors: availableColors,
+      subProducts: availableSubproducts,
+      designs: availableDesigns
+    })
+
+    handleProceed()
+  }
 
   return (
     <motion.div
@@ -59,12 +122,26 @@ export const Summary = ({ handleProceed, defaultValues, categoryData, backFn }: 
               <h3>Available sizes & their quantity</h3>
 
               <div className="con">
-                {defaultValues.sizes.map((i, key) => (
-                  <p key={key}>
-                    {i.name}: <span>{i.quantity}</span>
-                  </p>
-                ))}
+                {availableSizes.length === 0 ? (
+                  <p style={{ color: '#e86310' }}>No size is avaliable</p>
+                ) : (
+                  availableSizes.map(
+                    (i, key) =>
+                      i.quantity !== 0 && (
+                        <p key={key}>
+                          {i.name}: <span>{i.quantity}</span>
+                        </p>
+                      )
+                  )
+                )}
               </div>
+
+              {(cumulatedSizeQuantity > defaultValues.totalQuantity ||
+                cumulatedSizeQuantity < defaultValues.totalQuantity) && (
+                <p className="err_msg">
+                  {`Total available product which ${defaultValues.totalQuantity} does not tally with total available sizes  which is ${cumulatedSizeQuantity}`}{' '}
+                </p>
+              )}
             </div>
           )}
 
@@ -73,16 +150,17 @@ export const Summary = ({ handleProceed, defaultValues, categoryData, backFn }: 
               <h3>Available subproducts for their modal</h3>
 
               <div className="con">
-                {defaultValues.subProducts.map(
-                  (i, key) =>
-                    i.available && (
-                      <p key={key}>
-                        <span>
-                          <Icons.CheckIcon className="check_icon" />
-                        </span>{' '}
-                        {i.name}
-                      </p>
-                    )
+                {availableSubproducts.length === 0 ? (
+                  <p style={{ color: '#e86310' }}>No subproduct is avaliable</p>
+                ) : (
+                  availableSubproducts.map((i, key) => (
+                    <p key={key}>
+                      <span>
+                        <Icons.CheckIcon className="check_icon" />
+                      </span>{' '}
+                      {i.name}
+                    </p>
+                  ))
                 )}
               </div>
             </div>
@@ -90,15 +168,29 @@ export const Summary = ({ handleProceed, defaultValues, categoryData, backFn }: 
 
           {hasColor && (
             <div className="subproduct_con">
-              <h3>Available colors & their quantity</h3>
+              <h3>Available colours & their quantity</h3>
 
               <div className="con">
-                {defaultValues.colors.map((i, key) => (
-                  <p key={key}>
-                    {i.name}:<span>{i.quantity}</span>{' '}
-                  </p>
-                ))}
+                {availableColors.length === 0 ? (
+                  <p style={{ color: '#e86310' }}>No color is avaliable</p>
+                ) : (
+                  availableColors.map(
+                    (i, key) =>
+                      i.quantity !== 0 && (
+                        <p key={key}>
+                          {i.name}:<span>{i.quantity}</span>{' '}
+                        </p>
+                      )
+                  )
+                )}
               </div>
+
+              {(cumulatedColorQuantity > defaultValues.totalQuantity ||
+                cumulatedColorQuantity < defaultValues.totalQuantity) && (
+                <p className="err_msg">
+                  {`Total available product which ${defaultValues.totalQuantity} does not tally with total available colours  which is ${cumulatedColorQuantity}`}{' '}
+                </p>
+              )}
             </div>
           )}
 
@@ -107,19 +199,33 @@ export const Summary = ({ handleProceed, defaultValues, categoryData, backFn }: 
               <h3>Available designs & their quantity</h3>
 
               <div className="con">
-                {defaultValues.designs.map((i, key) => (
-                  <p key={key}>
-                    {i.name}:<span>{i.quantity}</span>
-                  </p>
-                ))}
+                {availableDesigns.length === 0 ? (
+                  <p style={{ color: '#e86310' }}>No Design is avaliable</p>
+                ) : (
+                  availableDesigns.map(
+                    (i, key) =>
+                      i.quantity !== 0 && (
+                        <p key={key}>
+                          {i.name}:<span>{i.quantity}</span>
+                        </p>
+                      )
+                  )
+                )}
               </div>
+
+              {(cumulatedDesignQuantity > defaultValues.totalQuantity ||
+                cumulatedDesignQuantity < defaultValues.totalQuantity) && (
+                <p className="err_msg">
+                  {`Total available product which ${defaultValues.totalQuantity} does not tally with total available designs  which is ${cumulatedDesignQuantity}`}{' '}
+                </p>
+              )}
             </div>
           )}
         </div>
 
         <div className="btn btn_multi">
           <Button text={'Edit'} varient="outline" onClick={backFn} />
-          <Button text={'Add product'} type="submit" />
+          <Button text={'Add product'} type="submit" isLoading={isLoading} onClick={submit} />
         </div>
       </div>
     </motion.div>

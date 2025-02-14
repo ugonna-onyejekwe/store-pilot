@@ -123,6 +123,12 @@ const AddFieldModal = ({ open, setOpen, defaultValues, setDefaultValues }: addFi
   const addField = () => {
     if (value === '') return toastUI.error('Enter a value')
 
+    const alredyExist = defaultValues.designs.filter(
+      (i) => i.name.trim().toLowerCase() === value.trim().toLowerCase()
+    )
+
+    if (alredyExist.length > 0) return toastUI.error('Field already exist ')
+
     defaultValues.designCustomInputsIndex = [
       ...defaultValues.designCustomInputsIndex,
       defaultValues.designs.length

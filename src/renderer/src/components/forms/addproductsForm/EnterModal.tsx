@@ -4,6 +4,7 @@ import Button from '@renderer/components/ui/Button'
 import { createCategoryformVariants } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
+import { useParams } from 'react-router-dom'
 import { addPro_enterModelSchema } from '../schemas'
 
 type EnterModalTypes = {
@@ -20,6 +21,8 @@ export const EnterModal = ({
   categoryData
 }: EnterModalTypes) => {
   const { hasModel } = categoryData!
+  const { actionType } = useParams()
+  const editing = actionType && actionType === 'edit' ? true : false
 
   const initialValues = {
     model: defaultValues.model,
@@ -80,8 +83,9 @@ export const EnterModal = ({
           )}
         </div>
 
-        <div className="btn btn_multi">
-          <Button text={'Back'} varient="outline" onClick={backFn} />
+        <div className={editing ? 'btn btn_single' : `btn btn_multi`}>
+          {editing || <Button text={'Back'} varient="outline" onClick={backFn} />}
+
           <Button text={'Proceed'} type="submit" />
         </div>
       </form>

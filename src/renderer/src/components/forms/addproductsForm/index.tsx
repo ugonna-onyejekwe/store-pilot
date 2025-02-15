@@ -1,8 +1,10 @@
 import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import { useCreateProduct } from '@renderer/apis/products/createProduct'
+import { useEditProduct } from '@renderer/apis/products/editProduct'
+import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
 import { toastUI } from '@renderer/components/ui/toast'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ColorInput } from './ColorInput'
 import { DesignInput } from './designInput'
 import { EnterModal } from './EnterModal'
@@ -12,80 +14,102 @@ import './styles.scss'
 import SubProductForm from './SubProductForm'
 import { Summary } from './summary'
 
-const AddProductForm = () => {
+type AddProductFormProps = {
+  gettingSingleProduct: boolean
+  productData: ProductResponse
+}
+
+const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormProps) => {
+  const { actionType, productId, categoryId } = useParams()
+  const editing = actionType && actionType === 'edit' ? true : false
   const [formSteps, setFormSteps] = useState(1)
   const { isPending: creatingProduct, mutateAsync: createProduct } = useCreateProduct()
-  const navigate = useNavigate()
-
-  const [defaultValues, setDefaultValues] = useState<AddProductDefaultValueTypes>({
-    category: '',
-    model: '',
-    sizes: [],
-    subProducts: [],
-    cartoonQuantity: 1,
-    colors: [],
-    designs: [],
-    colorCustomInputsIndex: [],
-    designCustomInputsIndex: [],
-    sizesCustomInputsIndex: [],
-    totalQuantity: 0
-  })
-
   const {
     mutateAsync: getCategoryData,
     data: categoryData,
     isPending: isLoadingCategoryData
   } = useReturnSingleCategory()
+  const { isPending: editingProduct, mutateAsync: editProduct } = useEditProduct()
+
+  const navigate = useNavigate()
+
+  const initialValues = {
+    category: editing && productData ? productData?.category?.id : '',
+    model: editing && productData ? productData.model : '',
+    sizes: editing && productData ? productData.sizes : [],
+    subProducts: editing && productData ? productData.subProducts : [],
+    cartoonQuantity: editing && productData ? productData.cartoonsPerProduct : 1,
+    colors: editing && productData ? productData.colors : [],
+    designs: editing && productData ? productData.designs : [],
+    colorCustomInputsIndex: [],
+    designCustomInputsIndex: [],
+    sizesCustomInputsIndex: [],
+    totalQuantity: editing && productData ? productData.totalQuantity : 0
+  }
+
+  const [defaultValues, setDefaultValues] = useState<AddProductDefaultValueTypes>({
+    ...initialValues
+  })
+
+  useEffect(() => {
+    if (editing) {
+      getCategoryData({ id: categoryId! }).then(() => {
+        fnSetFormStep()
+      })
+    }
+  }, [editing, productId, categoryId])
 
   // initial default values
   useEffect(() => {
-    // setting Default values start======================
-    // SIZES
-    const formatedSizes = categoryData?.formatedListOfSizes
-      .split(',')
-      .filter(Boolean)
-      .map((i) => ({
-        name: i,
-        quantity: 0
+    if (!editing) {
+      // setting Default values start======================
+      // SIZES
+      const formatedSizes = categoryData?.formatedListOfSizes
+        .split(',')
+        .filter(Boolean)
+        .map((i) => ({
+          name: i,
+          quantity: 0
+        }))
+
+      // SUBPRODUCTS
+      const formatedSubProducts = categoryData?.formatedListOfSubproducts.map((i) => ({
+        ...i,
+        available: true
       }))
 
-    // SUBPRODUCTS
-    const formatedSubProducts = categoryData?.formatedListOfSubproducts.map((i) => ({
-      ...i,
-      available: true
-    }))
+      // COLORS
+      const formatedColors = categoryData?.formatedListOfColors
+        .split(',')
+        .filter(Boolean)
+        .map((i) => ({
+          name: i,
+          quantity: 0
+        }))
 
-    // COLORS
-    const formatedColors = categoryData?.formatedListOfColors
-      .split(',')
-      .filter(Boolean)
-      .map((i) => ({
-        name: i,
-        quantity: 0
-      }))
+      // DESIGNS
+      const formatedDesigns = categoryData?.formatedListOfDesigns
+        .split(',')
+        .filter(Boolean)
+        .map((i) => ({
+          name: i,
+          quantity: 0
+        }))
 
-    // DESIGNS
-    const formatedDesigns = categoryData?.formatedListOfDesigns
-      .split(',')
-      .filter(Boolean)
-      .map((i) => ({
-        name: i,
-        quantity: 0
-      }))
+      setDefaultValues({
+        ...defaultValues,
+        // @ts-expect-error: expect undefined value
+        sizes: formatedSizes,
+        // @ts-expect-error: expect undefined value
+        subProducts: formatedSubProducts,
+        // @ts-expect-error: expect undefined value
+        colors: formatedColors,
+        // @ts-expect-error: expect undefined value
+        designs: formatedDesigns
+      })
 
-    setDefaultValues({
-      ...defaultValues,
-      // @ts-expect-error: expect undefined value
-      sizes: formatedSizes,
-      // @ts-expect-error: expect undefined value
-      subProducts: formatedSubProducts,
-      // @ts-expect-error: expect undefined value
-      colors: formatedColors,
-      // @ts-expect-error: expect undefined value
-      designs: formatedDesigns
-    })
-
-    // setting Default values ends======================
+      // setting Default values ends======================
+    }
   }, [categoryData])
 
   // fn:Go to next form
@@ -172,9 +196,10 @@ const AddProductForm = () => {
     const { category, model, sizes, subProducts, cartoonQuantity, colors, designs, totalQuantity } =
       defaultValues
 
-    try {
-      await createProduct({
-        categoryId: category,
+    // if editing product
+    if (editing) {
+      editProduct({
+        productId: productData.productId,
         model,
         totalQuantity,
         cartoonsPerProduct: cartoonQuantity,
@@ -182,106 +207,144 @@ const AddProductForm = () => {
         subProducts,
         colors,
         designs
-      }).then(() => {
+      })
+        .then(() => {
+          toastUI.success('Product updated successfully')
+          navigate('/add-product')
+          setFormSteps(1)
+          setDefaultValues({ ...initialValues })
+        })
+        .catch((error) => console.log(error))
+
+      return
+    }
+
+    // if creating new product
+    createProduct({
+      categoryId: category,
+      model,
+      totalQuantity,
+      cartoonsPerProduct: cartoonQuantity,
+      sizes,
+      subProducts,
+      colors,
+      designs
+    })
+      .then(() => {
         toastUI.success('Product add successfully')
         navigate('/add-product')
+        setFormSteps(1)
+        setDefaultValues({ ...initialValues })
       })
-    } catch (error) {
-      console.log(error)
-    }
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   return (
-    <div>
-      {formSteps === 1 && (
-        <SelectCategory
-          defaultValues={defaultValues}
-          isLoading={isLoadingCategoryData}
-          data={categoryData!}
-          handleProceed={(formData) => {
-            setDefaultValues({ ...defaultValues, category: formData.category })
-            getCategoryData({ id: formData.category }).then(async () => {
-              fnSetFormStep()
-            })
-          }}
-        />
-      )}
+    <>
+      {editing && isLoadingCategoryData ? (
+        <h1>Loading ...</h1>
+      ) : (
+        <div>
+          {formSteps === 1 && (
+            <SelectCategory
+              defaultValues={defaultValues}
+              isLoading={isLoadingCategoryData}
+              data={categoryData!}
+              handleProceed={(formData) => {
+                setDefaultValues({ ...defaultValues, category: formData.category })
+                getCategoryData({ id: formData.category })
+                  .then(async () => {
+                    fnSetFormStep()
+                  })
+                  .catch(() => {
+                    toastUI.error('Product category not found')
+                    setFormSteps(1)
 
-      {formSteps === 2 && (
-        <EnterModal
-          defaultValues={defaultValues}
-          backFn={goToPrevForm}
-          categoryData={categoryData!}
-          handleProceed={async (formData) => {
-            setDefaultValues({
-              ...defaultValues,
-              cartoonQuantity: formData.cartoonQuantity,
-              model: formData.model,
-              totalQuantity: formData.totalQuantity
-            })
+                    if (editing) navigate('/admin')
+                  })
+              }}
+            />
+          )}
 
-            fnSetFormStep()
-          }}
-        />
-      )}
+          {formSteps === 2 && (
+            <EnterModal
+              defaultValues={defaultValues}
+              backFn={goToPrevForm}
+              categoryData={categoryData!}
+              handleProceed={async (formData) => {
+                setDefaultValues({
+                  ...defaultValues,
+                  cartoonQuantity: formData.cartoonQuantity,
+                  model: formData.model,
+                  totalQuantity: formData.totalQuantity
+                })
 
-      {formSteps === 3 && (
-        <SizeInput
-          defaultValues={defaultValues}
-          handleProceed={() => {
-            fnSetFormStep()
-          }}
-          backFn={goToPrevForm}
-          setDefaultValues={setDefaultValues}
-        />
-      )}
+                fnSetFormStep()
+              }}
+            />
+          )}
 
-      {formSteps === 4 && (
-        <SubProductForm
-          defaultValues={defaultValues}
-          backFn={goToPrevForm}
-          setDefaultValues={setDefaultValues}
-          handleProceed={() => {
-            fnSetFormStep()
-          }}
-        />
-      )}
+          {formSteps === 3 && (
+            <SizeInput
+              defaultValues={defaultValues}
+              handleProceed={() => {
+                fnSetFormStep()
+              }}
+              backFn={goToPrevForm}
+              setDefaultValues={setDefaultValues}
+            />
+          )}
 
-      {formSteps === 5 && (
-        <ColorInput
-          defaultValues={defaultValues}
-          handleProceed={() => {
-            fnSetFormStep()
-          }}
-          backFn={goToPrevForm}
-          setDefaultValues={setDefaultValues}
-        />
-      )}
+          {formSteps === 4 && (
+            <SubProductForm
+              defaultValues={defaultValues}
+              backFn={goToPrevForm}
+              setDefaultValues={setDefaultValues}
+              handleProceed={() => {
+                fnSetFormStep()
+              }}
+            />
+          )}
 
-      {formSteps === 6 && (
-        <DesignInput
-          defaultValues={defaultValues}
-          handleProceed={() => {
-            fnSetFormStep()
-          }}
-          backFn={goToPrevForm}
-          setDefaultValues={setDefaultValues}
-        />
-      )}
+          {formSteps === 5 && (
+            <ColorInput
+              defaultValues={defaultValues}
+              handleProceed={() => {
+                fnSetFormStep()
+              }}
+              backFn={goToPrevForm}
+              setDefaultValues={setDefaultValues}
+            />
+          )}
 
-      {formSteps === 7 && (
-        <Summary
-          defaultValues={defaultValues}
-          handleProceed={() => {
-            onSubmit()
-          }}
-          backFn={goToPrevForm}
-          categoryData={categoryData!}
-          isLoading={creatingProduct}
-          setDefaultValues={setDefaultValues}
-        />
+          {formSteps === 6 && (
+            <DesignInput
+              defaultValues={defaultValues}
+              handleProceed={() => {
+                fnSetFormStep()
+              }}
+              backFn={goToPrevForm}
+              setDefaultValues={setDefaultValues}
+            />
+          )}
+
+          {formSteps === 7 && (
+            <Summary
+              defaultValues={defaultValues}
+              handleProceed={() => {
+                onSubmit()
+              }}
+              backFn={goToPrevForm}
+              categoryData={categoryData!}
+              isLoading={editing ? editingProduct : creatingProduct}
+              setDefaultValues={setDefaultValues}
+            />
+          )}
+        </div>
       )}
-    </div>
+    </>
   )
 }
 

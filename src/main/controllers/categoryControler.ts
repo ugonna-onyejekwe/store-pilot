@@ -193,7 +193,9 @@ export const verifyCategoryName = async (req: Request, res: Response) => {
     const allCategories = req.doc.category
     const { categoryName } = req.body
 
-    const categoryAlreadyExist = allCategories?.filter((i) => i.name === categoryName)
+    const categoryAlreadyExist = allCategories?.filter(
+      (i) => i.name.toLowerCase() === categoryName.toLowerCase()
+    )
 
     if (categoryAlreadyExist.length > 0)
       return res

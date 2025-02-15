@@ -23,7 +23,7 @@ export type SingleCategoryResponse = {
 }
 
 const getCategory = (payload: payload) => {
-  return getRequest<SingleCategoryResponse>({
+  return getRequest<null, SingleCategoryResponse>({
     url: `${ApiEndPoints.getSingleCategory}/${payload.id}`
   })
 }

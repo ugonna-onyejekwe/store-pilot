@@ -90,10 +90,11 @@ export const EnterDesignSchema = yup.object().shape({
 
 // WHAT DO YOU WANT TO EDIT SCHEMA
 export const WhatToEditSchema = yup.object().shape({
-  whatToEdit: yup.string(),
-  categoryId: yup.string()
+  whatToEdit: yup.string().required('Select an option'),
+  categoryId: yup.string(),
+  product: yup.string(),
+  productCategory: yup.string()
 })
-
 // ADD PRODUCT SUB-FORMS SCHEMA STARTS =======
 
 export const addPro_selectCategorySchema = yup.object().shape({

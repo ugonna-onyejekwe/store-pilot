@@ -1,13 +1,41 @@
+import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
 import Bot from '@renderer/components/bot'
 import AddProductForm from '@renderer/components/forms/addproductsForm'
 import { Icons } from '@renderer/components/ui/icons'
-import { Link, useParams } from 'react-router-dom'
+import { toastUI } from '@renderer/components/ui/toast'
+import { useEffect } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import './styles.scss'
 
 const AddProduct = () => {
-  const { actionType, id } = useParams()
-
+  const { actionType, productId, categoryId } = useParams()
   const editing = actionType && actionType === 'edit' ? true : false
+
+  const {
+    mutateAsync: getSingleProduct,
+    data: productData,
+    isPending: gettingSingleProduct
+  } = useReturnSingleProduct()
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const initData = async () => {
+      try {
+        await getSingleProduct({
+          productId: productId!,
+          categoryId: categoryId!
+        })
+      } catch (error) {
+        toastUI.error('Product not found')
+        navigate('/admin')
+      }
+    }
+
+    if (editing) initData()
+  }, [editing, productId, categoryId])
+
+  console.log(productData, 'here')
 
   return (
     <>
@@ -31,7 +59,14 @@ const AddProduct = () => {
               </p>
             </div>
 
-            <AddProductForm />
+            {editing && gettingSingleProduct ? (
+              <h1>loaidng</h1>
+            ) : (
+              <AddProductForm
+                gettingSingleProduct={gettingSingleProduct}
+                productData={productData!}
+              />
+            )}
           </div>
         </div>
       </div>

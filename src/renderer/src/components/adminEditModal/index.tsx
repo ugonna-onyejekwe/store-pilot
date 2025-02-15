@@ -1,5 +1,7 @@
 import { useGetCategories } from '@renderer/apis/categories/getCategories'
+import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
 import { useFormik } from 'formik'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { WhatToEditSchema } from '../forms/schemas'
 import { SelecInput } from '../inputs'
@@ -16,26 +18,16 @@ export const EditModal = ({
   onOpenChange: (value: boolean) => void
 }) => {
   const navigate = useNavigate()
-  const initialValues = { whatToEdit: '', categoryId: '' }
+
   const { CategoriesData, isPending: categriesListLoading } = useGetCategories()
+  const {
+    mutateAsync: getProductData,
+    data: productData,
+    isPending: isGettingProduct
+  } = useReturnAllProducts()
 
-  const onSubmit = async (values) => {
-    const { whatToEdit, categoryId } = values
-
-    if (!whatToEdit) return toastUI.error('Pls select an option')
-
-    if (whatToEdit.toLowerCase() === 'category' && !categoryId)
-      return toastUI.error('Pls select a category')
-
-    if (categoryId && whatToEdit.toLowerCase() === 'category')
-      return navigate(`/create-category/edit/${categoryId}`)
-  }
-
-  const { errors, touched, handleSubmit, setFieldValue, values } = useFormik({
-    initialValues,
-    validationSchema: WhatToEditSchema,
-    onSubmit
-  })
+  // Initial values
+  const initialValues = { whatToEdit: '', categoryId: '', productCategory: '', product: '' }
 
   const SelectWhatToEditOptions = [
     {
@@ -47,6 +39,49 @@ export const EditModal = ({
       value: 'Product'
     }
   ]
+
+  // Onsubmit fn
+  const onSubmit = async (values) => {
+    const { whatToEdit, categoryId, productCategory, product } = values
+
+    // Validate if category to edit details is complete
+    if (whatToEdit.toLowerCase() === 'category' && !categoryId)
+      return toastUI.error('Category ID is required')
+
+    if (whatToEdit.toLowerCase() === 'category' && categoryId)
+      return navigate(`/create-category/edit/${categoryId}`)
+
+    // Validate if product to edit details is complete
+    if (whatToEdit.toLowerCase() === 'product' && (!productCategory || !product))
+      return toastUI.error('Pls fill in all inputs')
+
+    if (whatToEdit.toLowerCase() === 'product' && (productCategory || product)) {
+      navigate(`/add-product/edit/${productCategory}/${product}`)
+      return resetForm()
+    }
+  }
+
+  const { errors, touched, handleSubmit, setFieldValue, values, resetForm } = useFormik({
+    initialValues,
+    validationSchema: WhatToEditSchema,
+    onSubmit
+  })
+
+  useEffect(() => {
+    const fetchData = () => {
+      // setProductSelectOption([])
+
+      getProductData({ categoryId: values.productCategory })
+        .then(() => {
+          if (productData?.length === 0) toastUI.error('There is no product under this category')
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+
+    if (values.productCategory) fetchData()
+  }, [values.productCategory])
 
   return (
     <AlertModal open={open} onOpenChange={onOpenChange} isCloseable className="admin_edit_modal">
@@ -74,6 +109,34 @@ export const EditModal = ({
             errorMsg={errors.categoryId}
             touched={touched.categoryId}
             isLoading={categriesListLoading}
+            placeholder="Select an option"
+          />
+        )}
+
+        {values.whatToEdit.toLowerCase() === 'product' && (
+          <SelecInput
+            label="Select product category you want to edit"
+            options={CategoriesData!}
+            name="productCategory"
+            id="productCategory"
+            onChange={setFieldValue}
+            errorMsg={errors.productCategory}
+            touched={touched.productCategory}
+            isLoading={categriesListLoading}
+            placeholder="Select an option"
+          />
+        )}
+
+        {values.whatToEdit.toLowerCase() === 'product' && (
+          <SelecInput
+            label="Select product  you want to edit"
+            options={productData?.map((i) => ({ label: i.model, value: i.productId })) ?? []}
+            name="product"
+            id="product"
+            onChange={setFieldValue}
+            errorMsg={errors.product}
+            touched={touched.product}
+            isLoading={isGettingProduct}
             placeholder="Select an option"
           />
         )}

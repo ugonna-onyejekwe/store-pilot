@@ -4,6 +4,7 @@ import { Icons } from '@renderer/components/ui/icons'
 import { toastUI } from '@renderer/components/ui/toast'
 import { createCategoryformVariants } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
+import { useParams } from 'react-router-dom'
 
 type SummaryTypes = {
   defaultValues: AddProductDefaultValueTypes
@@ -31,9 +32,12 @@ export const Summary = ({
     hasSubProducts
   } = categoryData
 
+  const { actionType } = useParams()
+  const editing = actionType && actionType === 'edit' ? true : false
+
   const availableSizes = hasSize ? defaultValues.sizes.filter((i) => i.quantity > 0) : []
-  const availableColors = hasSize ? defaultValues.colors.filter((i) => i.quantity > 0) : []
-  const availableSubproducts = hasSize
+  const availableColors = hasColor ? defaultValues.colors.filter((i) => i.quantity > 0) : []
+  const availableSubproducts = hasSubProducts
     ? defaultValues.subProducts.filter((i) => i.available === true)
     : []
   const availableDesigns = hasDesign ? defaultValues.designs.filter((i) => i.quantity > 0) : []
@@ -72,14 +76,6 @@ export const Summary = ({
         cumulatedDesignQuantity < defaultValues.totalQuantity)
     )
       return toastUI.error('Pls, fix quanity issues')
-
-    setDefaultValues({
-      ...defaultValues,
-      sizes: availableSizes,
-      colors: availableColors,
-      subProducts: availableSubproducts,
-      designs: availableDesigns
-    })
 
     handleProceed()
   }
@@ -225,7 +221,12 @@ export const Summary = ({
 
         <div className="btn btn_multi">
           <Button text={'Edit'} varient="outline" onClick={backFn} />
-          <Button text={'Add product'} type="submit" isLoading={isLoading} onClick={submit} />
+          <Button
+            text={editing ? 'Update product' : 'Add product'}
+            type="submit"
+            isLoading={isLoading}
+            onClick={submit}
+          />
         </div>
       </div>
     </motion.div>

@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
         element: <AddCategory />
       },
       {
-        path: '/add-product/:actionType?/:id?',
+        path: '/add-product/:actionType?/:categoryId?/:productId?',
         element: <AddProduct />
       }
     ]

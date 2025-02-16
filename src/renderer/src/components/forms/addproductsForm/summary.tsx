@@ -143,7 +143,7 @@ export const Summary = ({
 
           {hasSubProducts && (
             <div className="subproduct_con">
-              <h3>Available subproducts for their modal</h3>
+              <h3>Available subproducts for this modal</h3>
 
               <div className="con">
                 {availableSubproducts.length === 0 ? (

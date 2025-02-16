@@ -1,0 +1,117 @@
+@use '../../lib/variables';
+
+.delete_category_page {
+  max-width: 800px;
+  margin-top: 40px;
+  background: variables.$bg_color;
+  border-radius: 10px;
+  padding: 30px;
+
+  @media (max-width: 500px) {
+    padding: 20px;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 23px;
+  }
+
+  .sub_header {
+    text-align: center;
+    font-size: 15px;
+    color: variables.$light_text_color2;
+  }
+
+  .info_con {
+    margin-top: 20px;
+
+    .general_info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      p {
+        font-weight: 600;
+        color: variables.$light_text_color2;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        span {
+          color: variables.$primary_color;
+        }
+      }
+    }
+
+    .box_con {
+      margin-top: 20px;
+
+      h3 {
+        font-size: 16px;
+        padding-bottom: 15px;
+      }
+
+      .con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        color: variables.$light_text_color;
+
+        p {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-weight: 500;
+
+          span {
+            line-height: 0;
+            color: variables.$primary_color;
+          }
+        }
+      }
+    }
+  }
+
+  .btn {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+
+    button.delete_btn {
+      width: fit-content;
+      background: rgb(244, 73, 73);
+    }
+  }
+}
+
+.deleteCategoryModel {
+  max-width: 500px;
+
+  h3 {
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  p {
+    font-size: 15px;
+    text-align: center;
+    color: variables.$light_text_color2;
+    margin-top: 5px;
+  }
+
+  .btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    button {
+      width: fit-content;
+
+      &.delete_btn {
+        background: rgb(244, 73, 73);
+      }
+    }
+  }
+}

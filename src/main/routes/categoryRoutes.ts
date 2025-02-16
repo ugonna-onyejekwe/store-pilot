@@ -1,6 +1,7 @@
 import express, { RequestHandler, Router } from 'express'
 import {
   createCategory,
+  deleteCategory,
   editCategory,
   formateCategory,
   getAllCategories,
@@ -16,5 +17,6 @@ router.get('/single/:id', getDocs, getSingleCategory as RequestHandler)
 router.post('/create', getDocs, formateCategory as RequestHandler, createCategory as RequestHandler)
 router.patch('/edit/:id', getDocs, formateCategory as RequestHandler, editCategory)
 router.post('/verifiy-name', getDocs, verifyCategoryName as RequestHandler)
+router.delete('/delete/:categoryId', getDocs, deleteCategory as RequestHandler)
 
 export default router

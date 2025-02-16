@@ -12,10 +12,12 @@ import './styles.scss'
 
 export const EditModal = ({
   open,
-  onOpenChange
+  onOpenChange,
+  actionType
 }: {
   open: boolean
   onOpenChange: (value: boolean) => void
+  actionType: 'edit' | 'delete'
 }) => {
   const navigate = useNavigate()
 
@@ -48,15 +50,21 @@ export const EditModal = ({
     if (whatToEdit.toLowerCase() === 'category' && !categoryId)
       return toastUI.error('Category ID is required')
 
-    if (whatToEdit.toLowerCase() === 'category' && categoryId)
-      return navigate(`/create-category/edit/${categoryId}`)
+    if (whatToEdit.toLowerCase() === 'category' && categoryId) {
+      actionType === 'edit'
+        ? navigate(`/create-category/edit/${categoryId}`)
+        : navigate(`/delete-category/${categoryId}`)
+      return resetForm()
+    }
 
     // Validate if product to edit details is complete
     if (whatToEdit.toLowerCase() === 'product' && (!productCategory || !product))
       return toastUI.error('Pls fill in all inputs')
 
     if (whatToEdit.toLowerCase() === 'product' && (productCategory || product)) {
-      navigate(`/add-product/edit/${productCategory}/${product}`)
+      actionType === 'edit'
+        ? navigate(`/add-product/edit/${productCategory}/${product}`)
+        : navigate(`/delete-product/${productCategory}/${product}`)
       return resetForm()
     }
   }
@@ -69,8 +77,6 @@ export const EditModal = ({
 
   useEffect(() => {
     const fetchData = () => {
-      // setProductSelectOption([])
-
       getProductData({ categoryId: values.productCategory })
         .then(() => {
           if (productData?.length === 0) toastUI.error('There is no product under this category')
@@ -89,7 +95,7 @@ export const EditModal = ({
 
       <form onSubmit={handleSubmit}>
         <SelecInput
-          label="What would you like to edit?"
+          label={`What would you like to ${actionType}?`}
           options={SelectWhatToEditOptions}
           name="whatToEdit"
           id="whatToEdit"
@@ -101,7 +107,7 @@ export const EditModal = ({
 
         {values.whatToEdit.toLowerCase() === 'category' && (
           <SelecInput
-            label="Select category you want to edit"
+            label={`Select category you want to ${actionType}`}
             options={CategoriesData!}
             name="categoryId"
             id="categoryId"
@@ -115,7 +121,7 @@ export const EditModal = ({
 
         {values.whatToEdit.toLowerCase() === 'product' && (
           <SelecInput
-            label="Select product category you want to edit"
+            label={`Select  category of this product you want to ${actionType}`}
             options={CategoriesData!}
             name="productCategory"
             id="productCategory"
@@ -129,7 +135,7 @@ export const EditModal = ({
 
         {values.whatToEdit.toLowerCase() === 'product' && (
           <SelecInput
-            label="Select product  you want to edit"
+            label={`Select product  you want to ${actionType}`}
             options={productData?.map((i) => ({ label: i.model, value: i.productId })) ?? []}
             name="product"
             id="product"

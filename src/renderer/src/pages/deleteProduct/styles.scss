@@ -1,0 +1,155 @@
+@use '../../lib/variables';
+
+.delete_product_page {
+  max-width: 800px;
+  margin-top: 40px;
+  background: variables.$bg_color;
+  border-radius: 10px;
+  padding: 30px;
+
+  @media (max-width: 500px) {
+    padding: 20px;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 23px;
+  }
+
+  .sub_header {
+    text-align: center;
+    font-size: 15px;
+    color: variables.$light_text_color2;
+  }
+
+  .info_con {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .general_info_con {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      p {
+        font-weight: 600;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: variables.$light_text_color2;
+
+        span {
+          font-weight: 600;
+          color: variables.$secondary_color;
+        }
+      }
+    }
+
+    .sizes_con {
+      h3 {
+        font-size: 16px;
+        padding-bottom: 10px;
+      }
+
+      .err_msg {
+        margin-top: 10px;
+        font-size: 14px;
+        color: rgb(224, 59, 59);
+      }
+
+      .con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 15px;
+
+        p {
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: variables.$light_text_color2;
+
+          span {
+            color: variables.$secondary_color;
+          }
+        }
+      }
+    }
+
+    .subproduct_con {
+      h3 {
+        font-size: 16px;
+        padding-bottom: 10px;
+      }
+
+      .err_msg {
+        margin-top: 10px;
+        font-size: 14px;
+        color: rgb(224, 59, 59);
+      }
+
+      .con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 15px;
+
+        p {
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: variables.$light_text_color;
+
+          span {
+            color: variables.$secondary_color;
+            line-height: 0;
+            .check_icon {
+              width: 15px;
+              height: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .btn {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+
+    button.delete_btn {
+      width: fit-content;
+      background: rgb(244, 73, 73);
+    }
+  }
+}
+
+.deleteProductModel {
+  max-width: 500px;
+
+  h3 {
+    font-size: 16px;
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  .btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    button {
+      width: fit-content;
+
+      &.delete_btn {
+        background: rgb(244, 73, 73);
+      }
+    }
+  }
+}

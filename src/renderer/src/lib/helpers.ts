@@ -24,8 +24,8 @@ export const patchRequest = async <T, P>(params: { url: string; payload: P }) =>
   return data
 }
 
-export const deleteRequest = async <T>(params: { url: string }) => {
-  const { data } = await api.delete<T>(params.url)
+export const deleteRequest = async <T, P>(params: { url: string; payload?: P }) => {
+  const { data } = await api.delete<T>(params.url, { params: params.payload })
 
   await new Promise((resolve) => setTimeout(resolve, 500))
 

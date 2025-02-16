@@ -2,6 +2,7 @@ import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct
 import Bot from '@renderer/components/bot'
 import AddProductForm from '@renderer/components/forms/addproductsForm'
 import { Icons } from '@renderer/components/ui/icons'
+import { FormLoader } from '@renderer/components/ui/loader'
 import { toastUI } from '@renderer/components/ui/toast'
 import { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -60,7 +61,7 @@ const AddProduct = () => {
             </div>
 
             {editing && gettingSingleProduct ? (
-              <h1>loaidng</h1>
+              <FormLoader />
             ) : (
               <AddProductForm
                 gettingSingleProduct={gettingSingleProduct}

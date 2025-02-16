@@ -7,6 +7,7 @@ import './styles.scss'
 
 const Admin = () => {
   const [openEditModal, setOpenEditModal] = useState(false)
+  const [actionType, setActionType] = useState<'edit' | 'delete'>('edit')
   return (
     <>
       <div className="admin_wrapper container">
@@ -24,7 +25,7 @@ const Admin = () => {
             <Link to={'/create-category'}>
               <div className="box">
                 <div className="icon_con">
-                  <Icons.AddCategory className="add_category_icon" />
+                  <Icons.AddCategory className="icon" />
                 </div>
 
                 <h4>Create category</h4>
@@ -36,7 +37,7 @@ const Admin = () => {
             <Link to={'/add-product'}>
               <div className="box">
                 <div className="icon_con">
-                  <Icons.AddProductIcon className="add_product_icon" />
+                  <Icons.AddProductIcon className="icon" />
                 </div>
 
                 <h4>Stock product</h4>
@@ -45,10 +46,15 @@ const Admin = () => {
             </Link>
 
             {/* edit category */}
-            <div onClick={() => setOpenEditModal(true)}>
+            <div
+              onClick={() => {
+                setOpenEditModal(true)
+                setActionType('edit')
+              }}
+            >
               <div className="box">
                 <div className="icon_con">
-                  <Icons.EditGoods className="edit_good_icon" />
+                  <Icons.EditGoods className="icon" />
                 </div>
 
                 <h4>Edit product/category</h4>
@@ -60,18 +66,35 @@ const Admin = () => {
             <Link to={''}>
               <div className="box">
                 <div className="icon_con">
-                  <Icons.ReturnedGoods className="returned_goods_icon" />
+                  <Icons.ReturnedGoods className="icon" />
                 </div>
 
                 <h4>Returned product</h4>
                 <p className="txt">Do you want to restock returned product?</p>
               </div>
             </Link>
+
+            {/* Delete product/category */}
+            <div
+              onClick={() => {
+                setOpenEditModal(true)
+                setActionType('delete')
+              }}
+            >
+              <div className="box danger_zone">
+                <div className="icon_con">
+                  <Icons.DeleteIcon className="icon" />
+                </div>
+
+                <h4>Delete product/category</h4>
+                <p className="txt">Do you want to delete a category or product?</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <EditModal open={openEditModal} onOpenChange={setOpenEditModal} />
+      <EditModal open={openEditModal} onOpenChange={setOpenEditModal} actionType={actionType} />
     </>
   )
 }

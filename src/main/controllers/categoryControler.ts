@@ -207,3 +207,31 @@ export const verifyCategoryName = async (req: Request, res: Response) => {
     res.status(500).json(error)
   }
 }
+
+// DELETE CATEGORY
+export const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    const { categoryId } = req.params
+    const allCategory = req.doc.category
+    const productList = req.doc.products
+
+    const productStillExist = productList.find((i) => i.category.id === categoryId)
+
+    if (productStillExist)
+      return res
+        .status(400)
+        .json({ message: "Can't delete this category. Product still exist under this category" })
+
+    const updatedCategories = allCategory.filter((i) => i.id !== categoryId)
+
+    db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to delete category' })
+      }
+
+      res.status(200).json({ message: 'Category deleted' })
+    })
+  } catch (error) {
+    res.status(500).send(error)
+  }
+}

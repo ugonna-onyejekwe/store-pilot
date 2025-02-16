@@ -2,6 +2,7 @@ import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCate
 import { useCreateProduct } from '@renderer/apis/products/createProduct'
 import { useEditProduct } from '@renderer/apis/products/editProduct'
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
+import { FormLoader } from '@renderer/components/ui/loader'
 import { toastUI } from '@renderer/components/ui/toast'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -53,9 +54,14 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
 
   useEffect(() => {
     if (editing) {
-      getCategoryData({ id: categoryId! }).then(() => {
-        fnSetFormStep()
-      })
+      getCategoryData({ id: categoryId! })
+        .then(() => {
+          fnSetFormStep()
+        })
+        .catch((error) => {
+          toastUI.error('Category not found')
+          navigate('/admin')
+        })
     }
   }, [editing, productId, categoryId])
 
@@ -244,7 +250,7 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
   return (
     <>
       {editing && isLoadingCategoryData ? (
-        <h1>Loading ...</h1>
+        <FormLoader />
       ) : (
         <div>
           {formSteps === 1 && (

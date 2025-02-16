@@ -182,3 +182,26 @@ export const editProduct = async (req: Request, res: Response) => {
     res.status(500).json(error)
   }
 }
+
+// DELETE PRODUCT
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params
+
+    const productList = req.doc.products
+
+    const upDatedProductList = productList.filter((i) => i.productId !== productId)
+
+    await db.update({}, { $set: { products: upDatedProductList } }, {}, (updateErr, _) => {
+      if (updateErr) {
+        console.error('Error deleting product', updateErr)
+        res.status(500).json({ error: 'Failed to delete product' })
+        return
+      }
+
+      res.status(200).json({ message: 'Product deleted successfly' })
+    })
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}

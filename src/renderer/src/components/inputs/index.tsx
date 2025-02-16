@@ -42,9 +42,10 @@ export const SelecInput = ({
     control: (styles, { isFocused }) => ({
       ...styles,
       backgroundColor: 'white',
-      padding: '9px',
+      padding: '10px',
       borderRadius: '10px',
       border: '1px',
+      fontSize: '15px',
       outline: isFocused ? '1px solid #0466cf' : '1px solid rgb(191, 191, 191)'
     })
   }

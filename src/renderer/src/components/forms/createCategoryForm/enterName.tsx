@@ -2,7 +2,7 @@ import { useVerifyCategoryName } from '@renderer/apis/categories/verifyname'
 import { BooleanInput, Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
 import { toastUI } from '@renderer/components/ui/toast'
-import { createCategoryformVariants, getError } from '@renderer/lib/utils'
+import { animateY, getError } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import { useParams } from 'react-router-dom'
@@ -53,12 +53,7 @@ export const EnterCategorynameForm = ({
   })
 
   return (
-    <motion.div
-      variants={createCategoryformVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-    >
+    <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
       <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <Input

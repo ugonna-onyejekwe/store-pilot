@@ -2,7 +2,7 @@ import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCateg
 import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
 import { toastUI } from '@renderer/components/ui/toast'
-import { createCategoryformVariants } from '@renderer/lib/utils'
+import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 import { useParams } from 'react-router-dom'
 
@@ -81,12 +81,7 @@ export const Summary = ({
   }
 
   return (
-    <motion.div
-      variants={createCategoryformVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-    >
+    <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
       <div className="summary_con">
         <div className="summary_header">
           <h3>Product summary</h3>

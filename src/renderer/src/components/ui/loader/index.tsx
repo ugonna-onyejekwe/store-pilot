@@ -1,3 +1,4 @@
+import { ScaleLoader } from 'react-spinners'
 import './styles.scss'
 
 export const FormLoader = () => {
@@ -35,6 +36,29 @@ export const SummaryLoader = () => {
           ))}
         </div>
       ))}
+    </div>
+  )
+}
+
+export const ProductBoxLoader = ({
+  height,
+  width,
+  color,
+  minHeight
+}: {
+  height?: number
+  width?: number
+  color?: string
+  minHeight: number
+}) => {
+  return (
+    <div
+      className="scaleLoader"
+      style={{
+        minHeight: minHeight
+      }}
+    >
+      <ScaleLoader height={height ?? 35} width={width ?? 4} color={color ?? '#a8a8a8'} />
     </div>
   )
 }

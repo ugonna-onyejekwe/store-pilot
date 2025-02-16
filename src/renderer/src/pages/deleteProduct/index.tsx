@@ -42,8 +42,6 @@ const DeleteProduct = () => {
     })
   }, [productId, categoryId])
 
-  console.log(categoryData, productData)
-
   const availableSizes = categoryData?.hasSize
     ? productData?.sizes.filter((i) => i.quantity > 0)
     : []

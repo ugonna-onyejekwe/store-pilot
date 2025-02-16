@@ -28,6 +28,12 @@
       font-size: 17px;
       color: variables.$dark_text_color;
     }
+    h5 {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgb(249, 71, 71);
+      margin-top: 5px;
+    }
 
     .con {
       background: variables.$bg_alt_color;
@@ -44,6 +50,10 @@
         b {
           color: variables.$light_text_color;
           font-size: 16px;
+
+          &:nth-child(2) {
+            margin-left: 10px;
+          }
         }
       }
     }
@@ -54,5 +64,10 @@
     display: flex;
     align-items: center;
     gap: 20px;
+    justify-content: space-between;
+
+    button {
+      width: fit-content;
+    }
   }
 }

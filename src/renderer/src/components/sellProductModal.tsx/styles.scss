@@ -13,6 +13,37 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
+
+    .subproductQuantity {
+      h3 {
+        font-size: 15px;
+        color: variables.$light_text_color2;
+        margin-top: -10px;
+        margin-bottom: 15px;
+      }
+
+      .box_con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .box {
+          width: fit-content;
+          position: relative;
+
+          .default_quantity {
+            position: absolute;
+            top: 41px;
+            right: 20px;
+            z-index: 100;
+            background: rgb(227, 234, 243);
+            padding: 3px 15px;
+            border-radius: 20px;
+            color: variables.$secondary_color;
+          }
+        }
+      }
+    }
   }
 
   .btn {

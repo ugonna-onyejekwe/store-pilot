@@ -27,6 +27,7 @@
     border: 1px solid rgb(191, 191, 191);
     border-radius: 10px;
     overflow: hidden;
+    font-size: 15px;
 
     &:focus {
       outline: 1px solid variables.$primary_color;

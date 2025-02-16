@@ -1,6 +1,6 @@
 import { Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
-import { createCategoryformVariants } from '@renderer/lib/utils'
+import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import { addPro_totalQuantitySchema } from '../schemas'
@@ -27,12 +27,7 @@ export const TotalQuantity = ({ handleProceed, defaultValues, backFn }: TotalQua
   })
 
   return (
-    <motion.div
-      variants={createCategoryformVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-    >
+    <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
       <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <Input

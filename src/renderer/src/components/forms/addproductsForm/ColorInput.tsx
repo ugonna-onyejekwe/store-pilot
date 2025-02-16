@@ -3,7 +3,7 @@ import AlertModal from '@renderer/components/ui/alertModal'
 import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
 import { toastUI } from '@renderer/components/ui/toast'
-import { createCategoryformVariants } from '@renderer/lib/utils'
+import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 
@@ -54,12 +54,7 @@ export const ColorInput = ({
 
   return (
     <>
-      <motion.div
-        variants={createCategoryformVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-      >
+      <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
         <form onSubmit={onSubmit} className="form">
           <div className="form_container color_form">
             <h3>Enter quantity of avaliable product for each colour</h3>

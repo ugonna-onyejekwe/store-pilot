@@ -1,3 +1,6 @@
+import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory.js'
+import { ProductResponse } from '@renderer/apis/products/getSingleProduct.js'
+import { Link } from 'react-router-dom'
 import Button from '../ui/Button/index.js'
 import { Modal } from '../ui/modal.tsx'
 import './styles.scss'
@@ -5,96 +8,25 @@ import './styles.scss'
 type ProductDetailsModal = {
   open: boolean
   onOpenChange: (value: boolean) => void
+  categoryData: SingleCategoryResponse
+  productData: ProductResponse
 }
 
-const ProductDetailsModal = ({ open, onOpenChange }: ProductDetailsModal) => {
-  const product = {
-    modelId: '27',
-    subcatId: '822',
-    subCategory: 'by 4',
-    model: '2444',
-    quantity: '300',
-    colors: [
-      {
-        name: 'red',
-        id: '7272',
-        quantity: 600
-      },
-      {
-        name: 'red',
-        id: '7272',
-        quantity: 600
-      },
-      {
-        name: 'red',
-        id: '7272',
-        quantity: 600
-      },
-      {
-        name: 'red',
-        id: '7272',
-        quantity: 600
-      },
-      {
-        name: 'red',
-        id: '7272',
-        quantity: 600
-      },
-      {
-        name: 'red',
-        id: '7272',
-        quantity: 600
-      },
-      {
-        name: 'red',
-        id: '7272',
-        quantity: 600
-      }
-    ],
-    designs: [
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      },
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      },
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      },
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      },
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      },
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      },
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      },
-      {
-        desdingId: '1233',
-        name: 'S7',
-        quantity: '300'
-      }
-    ],
-    cartoons: 10
-  }
+const ProductDetailsModal = ({
+  open,
+  onOpenChange,
+  categoryData,
+  productData
+}: ProductDetailsModal) => {
+  const availableSizes = categoryData?.hasSize
+    ? productData.sizes.filter((i) => i.quantity > 0)
+    : []
+  const availableColor = categoryData?.hasColor
+    ? productData.colors.filter((i) => i.quantity > 0)
+    : []
+  const availableDesigns = categoryData?.hasDesign
+    ? productData.designs.filter((i) => i.quantity > 0)
+    : []
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -102,57 +34,93 @@ const ProductDetailsModal = ({ open, onOpenChange }: ProductDetailsModal) => {
         <h2>Product details</h2>
         <div className="txt_con">
           <p className="txt">
-            Category: <b>{product.subCategory}</b>
+            Category: <b>{productData?.category.name}</b>
           </p>
 
-          <p className="txt">
-            Model: <b>{product.model}</b>
-          </p>
+          {categoryData?.hasModel && (
+            <p className="txt">
+              Model: <b>{productData.model}</b>
+            </p>
+          )}
 
           <p className="txt">
-            Quantity left: <b>{product.quantity}</b>
+            Quantity left: <b>{productData.totalQuantity}</b>
           </p>
 
-          <p className="txt">
-            Cartoons per product: <b>{product.cartoons}</b>
-          </p>
+          {categoryData?.hasModel && (
+            <p className="txt">
+              Cartoons per product: <b>{productData.cartoonsPerProduct}</b>
+            </p>
+          )}
         </div>
 
+        {/* Available sizes */}
+        {categoryData?.hasSize && (
+          <div className="available_color_con">
+            <h3>Avaliable sizes:</h3>
+
+            {availableColor.length === 0 ? (
+              <h5>No size left</h5>
+            ) : (
+              <div className="con">
+                {availableSizes?.map((size, key) => {
+                  return (
+                    <span key={key}>
+                      <b>• {size.name}:</b> <b>{size.quantity} </b>
+                      in stock
+                    </span>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Available colors */}
-        {product.colors?.length > 0 && (
+        {categoryData?.hasColor && (
           <div className="available_color_con">
             <h3>Avaliable colors:</h3>
 
-            <div className="con">
-              {product.colors?.map((color, key) => {
-                return (
-                  <span key={key}>
-                    <b>• {color.name}:</b> <b>{color.quantity} </b>
-                    in stock
-                  </span>
-                )
-              })}
-            </div>
+            {availableColor.length === 0 ? (
+              <h5>No colour left</h5>
+            ) : (
+              <div className="con">
+                {availableColor?.map((color, key) => {
+                  return (
+                    <span key={key}>
+                      <b>• {color.name}:</b> <b>{color.quantity} </b>
+                      in stock
+                    </span>
+                  )
+                })}
+              </div>
+            )}
           </div>
         )}
 
         {/* Available designs */}
-        {product.designs?.length > 0 && (
+        {categoryData?.hasDesign && (
           <div className="available_designs_con">
             <h3>Avaliable designs/materials:</h3>
 
-            <div className="con">
-              {product.designs?.map((design, key) => (
-                <span key={key}>
-                  <b>• {design.name}:</b> <b>{design.quantity} </b>in stock
-                </span>
-              ))}
-            </div>
+            {availableDesigns.length === 0 ? (
+              <h5>No design left</h5>
+            ) : (
+              <div className="con">
+                {availableDesigns?.map((design, key) => (
+                  <span key={key}>
+                    <b>• {design.name}:</b> <b>{design.quantity} </b>in stock
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         <div className="btns">
-          <Button text="Edit product" varient="outline" />
+          <Link to={`/add-product/edit/${productData.category.id}/${productData.productId}`}>
+            <Button text="Edit product" varient="outline" />
+          </Link>
 
           <Button text="Sell product" />
         </div>

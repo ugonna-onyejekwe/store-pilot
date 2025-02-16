@@ -1,5 +1,5 @@
 import Button from '@renderer/components/ui/Button'
-import { createCategoryformVariants } from '@renderer/lib/utils'
+import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 
 type SizeInputTypes = {
@@ -29,12 +29,7 @@ const SubProductForm = ({
   }
 
   return (
-    <motion.div
-      variants={createCategoryformVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-    >
+    <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
       <form onSubmit={onSubmit} className="form">
         <div className="form_container subproduct_form">
           <h3>Check availability of all sub products</h3>

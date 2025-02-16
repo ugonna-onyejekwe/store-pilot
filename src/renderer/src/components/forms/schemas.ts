@@ -6,7 +6,8 @@ export const sellProductSchema = yup.object().shape({
   modal: yup.string().required('Modal is required'),
   color: yup.string(),
   design: yup.string(),
-  quantity: yup.number().required('Quantity is required')
+  quantity: yup.number().required('Quantity is required'),
+  typeOfSale: yup.string()
 })
 
 // LOGIN SCHEMA

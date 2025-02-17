@@ -8,6 +8,7 @@ type ButtonProps = {
   type?: 'submit' | 'button'
   className?: string
   isLoading?: boolean
+  disable?: boolean
 }
 
 const Button = ({
@@ -16,14 +17,15 @@ const Button = ({
   varient = 'default',
   onClick,
   type = 'button',
-  isLoading = false
+  isLoading = false,
+  disable
 }: ButtonProps) => {
   return (
     <button
       className={`button ${varient} ${className} `}
       onClick={onClick}
       type={type}
-      disabled={isLoading}
+      disabled={isLoading || disable}
     >
       {isLoading ? <PulseLoader size={6} color="#ece8e8" /> : text}
     </button>

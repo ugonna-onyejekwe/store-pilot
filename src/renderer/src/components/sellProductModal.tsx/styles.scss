@@ -14,6 +14,23 @@
     flex-direction: column;
     gap: 30px;
 
+    .disabledInput {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .box_con {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      .info_msg {
+        font-size: 14px;
+        color: variables.$secondary_color;
+        font-weight: 500;
+      }
+    }
+
     .subproductQuantity {
       h3 {
         font-size: 15px;

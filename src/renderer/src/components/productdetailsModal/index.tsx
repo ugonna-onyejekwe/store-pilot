@@ -122,7 +122,10 @@ const ProductDetailsModal = ({
             <Button text="Edit product" varient="outline" />
           </Link>
 
-          <Button text="Sell product" />
+          <Button
+            disable={productData.totalQuantity < 1}
+            text={productData.totalQuantity < 1 ? 'Out of Stock' : 'Sell product'}
+          />
         </div>
       </div>
     </Modal>

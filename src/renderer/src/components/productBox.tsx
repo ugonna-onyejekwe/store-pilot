@@ -7,7 +7,7 @@ import ProductDetailsModal from './productdetailsModal'
 import SellProductModal from './sellProductModal.tsx'
 import Button from './ui/Button'
 import { Icons } from './ui/icons'
-import { ProductBoxLoader } from './ui/loader'
+import { ScaleLoaderUI } from './ui/loader'
 
 type ProductBoxProps = {
   data: ProductResponse
@@ -37,7 +37,7 @@ const ProductBox = ({ data }: ProductBoxProps) => {
         className="detail_box"
       >
         {isPending ? (
-          <ProductBoxLoader minHeight={250} />
+          <ScaleLoaderUI minHeight={250} />
         ) : (
           <>
             <div className="txt_con">
@@ -142,7 +142,11 @@ const ProductBox = ({ data }: ProductBoxProps) => {
                 <Icons.EyeIcon className="eye_icon" />
               </button>
 
-              <Button text="Sell product" onClick={() => setIsSellingProduct(true)} />
+              <Button
+                disable={data.totalQuantity < 1}
+                text={data.totalQuantity < 1 ? 'Out of Stock' : 'Sell product'}
+                onClick={() => setIsSellingProduct(true)}
+              />
             </div>
           </>
         )}
@@ -159,7 +163,7 @@ const ProductBox = ({ data }: ProductBoxProps) => {
       )}
 
       {/* Sellproduct modal */}
-      <SellProductModal onOpen={isSellingProduct} onOpenChange={setIsSellingProduct} />
+      <SellProductModal onOpen={isSellingProduct} onOpenChange={setIsSellingProduct} data={data} />
     </>
   )
 }

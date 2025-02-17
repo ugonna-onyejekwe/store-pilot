@@ -40,7 +40,7 @@ export const SummaryLoader = () => {
   )
 }
 
-export const ProductBoxLoader = ({
+export const ScaleLoaderUI = ({
   height,
   width,
   color,

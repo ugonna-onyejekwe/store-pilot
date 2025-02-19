@@ -12,7 +12,7 @@ export interface cartItem {
   size: string
   design: string
   quantity: number
-  typeOfSale: string
+  typeOfSale: 'sale part' | 'sale all' | 'sale leftOver'
   subproduct: {
     name: string
     id: string
@@ -35,10 +35,10 @@ export const cart = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addTocart: (state, action: PayloadAction<item>) => {
+    addTocart: (state, action: PayloadAction<cartItem>) => {
       state.cartItems.push(action.payload)
     },
-    romoveFromCart: (state, action: PayloadAction<number>) => {
+    removeFromCart: (state, action: PayloadAction<number>) => {
       const newList = state.cartItems.filter((_, key) => key !== action.payload)
 
       state.cartItems = newList
@@ -47,6 +47,6 @@ export const cart = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addTocart, romoveFromCart } = cart.actions
+export const { addTocart, removeFromCart } = cart.actions
 
 export default cart.reducer

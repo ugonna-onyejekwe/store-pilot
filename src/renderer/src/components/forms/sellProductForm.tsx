@@ -1,9 +1,10 @@
 import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
+import { RootState } from '@renderer/store'
 import { addTocart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Input, SelecInput } from '../inputs'
 import Button from '../ui/Button'
 import { toastUI } from '../ui/toast'
@@ -17,6 +18,18 @@ type SellProductFormProps = {
 
 const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProductFormProps) => {
   const dispatch = useDispatch()
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+  const [quantityInCart, setQuantityInCart] = useState(0)
+
+  useEffect(() => {
+    let quantity = 0
+    cartItems.map((i) => {
+      if (i.productId === productData.productId) {
+        quantity += i.quantity
+      }
+    })
+    setQuantityInCart(quantity)
+  }, [cartItems])
 
   const [subproductsValues, setSubProductsValues] = useState<
     {
@@ -47,7 +60,8 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
     size: '',
     quantity: 1,
     typeOfSale: '',
-    subproducts: []
+    subproducts: [],
+    cartoonQuantity: productData.cartoonsPerProduct - 1
   }
 
   // Filter out avalibale quantities
@@ -61,6 +75,9 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
   const formatedDesignOptions = availableDesigns.map((i) => ({ value: i.id, label: i.name }))
 
   const onSubmit = async (values) => {
+    if (productData.totalQuantity - quantityInCart < values.quantity)
+      return toastUI.error(`Avaliable quantity is ${productData.totalQuantity - quantityInCart}`)
+
     dispatch(
       addTocart({
         category: productData.category,
@@ -114,6 +131,7 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
       }))
 
       setSubProductsValues(formatedSubproduct)
+      setFieldValue('quantity', 1)
     }
   }, [values.typeOfSale])
 
@@ -211,15 +229,15 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
               errorMsg={errors.typeOfSale}
               touched={touched.typeOfSale}
               options={[
-                { value: 'Sell All', label: 'Sell All' },
-                { value: 'Sell Part ', label: 'Sell Part' }
+                { value: 'sell all', label: 'Sell All' },
+                { value: 'sell part', label: 'Sell Part' }
               ]}
               id="typeOfSale"
               name="typeOfSale"
             />
           )}
 
-          {values.typeOfSale.trim() !== 'Sell Part' && (
+          {values.typeOfSale.trim() !== 'sell part' && (
             <div className="box_con">
               <Input
                 label="Enter quantity"
@@ -235,12 +253,16 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
                 }}
                 type="number"
               />
+
+              <p className="info_msg">
+                {values.quantity * productData.cartoonsPerProduct} cartoon(s) to be supplied
+              </p>
             </div>
           )}
 
-          {categoryData?.hasSubProducts && values.typeOfSale.trim() === 'Sell Part' && (
+          {categoryData?.hasSubProducts && values.typeOfSale.trim() === 'sell part' && (
             <div className="subproductQuantity_input_con">
-              <h3>Enter qunaity of each sub product</h3>
+              <h3>Enter quanity of each sub product</h3>
               <div className="box_con">
                 {subproductsValues.map((i, key) => {
                   return (
@@ -278,13 +300,39 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
                 })}
               </div>
 
-              {/* <div className="cartonQunatity"></div> */}
+              <div className="cartonQunatity">
+                <Input
+                  label="How many cartoons do u think will be supplied for this product?"
+                  placeholder="Cartoon quantity"
+                  value={values.cartoonQuantity}
+                  onChange={handleChange('cartoonQuantity')}
+                  errorMsg={errors.cartoonQuantity}
+                  touched={touched.cartoonQuantity}
+                  onBlur={(e) => {
+                    if (e.target.value < 1) {
+                      setFieldValue('cartoonQuantity', 1)
+                    }
+                  }}
+                  type="number"
+                />
+              </div>
             </div>
           )}
         </div>
 
         <div className="btn">
-          <Button text="Add to cart" type="submit" />
+          <Button
+            text="Add to cart"
+            type="submit"
+            disable={productData.totalQuantity - quantityInCart === 0}
+          />
+
+          {quantityInCart > 0 && (
+            <p className="info">
+              There is only {productData.totalQuantity - quantityInCart} of this product left.{' '}
+              {quantityInCart} are already in cart
+            </p>
+          )}
         </div>
       </form>
     </>

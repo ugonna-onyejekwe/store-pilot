@@ -74,6 +74,23 @@ const Admin = () => {
               </div>
             </Link>
 
+            {/*  store location */}
+            <div
+              onClick={() => {
+                setOpenEditModal(true)
+                setActionType('delete')
+              }}
+            >
+              <div className="box ">
+                <div className="icon_con">
+                  <Icons.LocationIcon className="icon" />
+                </div>
+
+                <h4>Configure store location</h4>
+                <p className="txt">Do add or delete store location?</p>
+              </div>
+            </div>
+
             {/* Delete product/category */}
             <div
               onClick={() => {

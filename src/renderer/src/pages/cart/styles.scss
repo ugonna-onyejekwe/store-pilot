@@ -15,6 +15,28 @@
       font-size: 20px;
     }
 
+    .empty_cart {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      flex-direction: column;
+      gap: 30px;
+      height: 70vh;
+
+      img {
+        width: 150px;
+        height: 150px;
+        filter: grayscale(100);
+        opacity: 0.8;
+      }
+
+      h2 {
+        font-size: 20px;
+        color: rgb(197, 192, 192);
+      }
+    }
+
     .cart_items {
       margin-top: 20px;
       display: flex;
@@ -117,6 +139,9 @@
     background: variables.$bg_color;
     border-radius: 5px;
     padding: 30px;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
 
     @media (max-width: 700px) {
       padding: 20px;

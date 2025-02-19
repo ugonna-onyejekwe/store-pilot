@@ -2,6 +2,7 @@ import CartItem from '@renderer/components/CartItem'
 import CheckOutForm from '@renderer/components/CheckOutForm'
 import { RootState } from '@renderer/store'
 import { useSelector } from 'react-redux'
+import emptycart from '../../assets/images/cart.webp'
 import './styles.scss'
 
 const Cart = () => {
@@ -10,19 +11,29 @@ const Cart = () => {
   return (
     <div className="cart_page container">
       <div className="cart_container">
-        <h2>Cart </h2>
-        <div className="cart_items">
-          {cartItems.map((i, key) => (
-            <CartItem key={key} {...i} />
-          ))}
-        </div>
-      </div>
-      <div className="checkout_container">
-        <h2>Checkout form</h2>
-        <p className="subheader">Enter details to checkout</p>
+        {cartItems.length !== 0 && <h2>Cart </h2>}
+        {cartItems.length === 0 ? (
+          <div className="empty_cart">
+            <img src={emptycart} alt="Empty cart" />
 
-        <CheckOutForm />
+            <h2>Your cart is empty.</h2>
+          </div>
+        ) : (
+          <div className="cart_items">
+            {cartItems.map((i, key) => (
+              <CartItem key={key} {...i} index={key} />
+            ))}
+          </div>
+        )}
       </div>
+      {cartItems.length !== 0 && (
+        <div className="checkout_container">
+          <h2>Checkout form</h2>
+          <p className="subheader">Enter details to checkout</p>
+
+          <CheckOutForm />
+        </div>
+      )}
     </div>
   )
 }

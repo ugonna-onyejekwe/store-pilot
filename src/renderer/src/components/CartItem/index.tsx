@@ -1,6 +1,7 @@
 import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
-import { cartItem } from '@renderer/store/cartSlice'
+import { cartItem, removeFromCart } from '@renderer/store/cartSlice'
 import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { Icons } from '../ui/icons'
 import { ScaleLoaderUI } from '../ui/loader'
 
@@ -13,9 +14,11 @@ const CartItem = ({
   typeOfSale,
   subproduct,
   quantity,
-  productId
-}: cartItem) => {
+  productId,
+  index
+}: cartItem & { index: number }) => {
   const { mutate, isPending, data } = useReturnSingleProduct()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     mutate({ productId })
@@ -37,16 +40,16 @@ const CartItem = ({
                 Category: <span>{category.name}</span>
               </p>
 
-              {typeOfSale.trim() !== 'Sell Part' && (
-                <p>
-                  Quantity:
-                  <span>{quantity}</span>
-                </p>
-              )}
-
               {model && (
                 <p>
                   Model:<span>{model}</span>
+                </p>
+              )}
+
+              {typeOfSale.trim() !== 'sell part' && (
+                <p>
+                  Quantity:
+                  <span>{quantity}</span>
                 </p>
               )}
 
@@ -69,7 +72,7 @@ const CartItem = ({
               )}
             </div>
 
-            {typeOfSale.trim() === 'Sell Part' && (
+            {typeOfSale.trim() === 'sell part' && (
               <div className="Subproduct_con">
                 <h4>Subproducts</h4>
 
@@ -87,11 +90,7 @@ const CartItem = ({
           </div>
 
           <div className="action_btns">
-            {/* <span>
-              <Icons.EyeIcon className="eye_icon" />
-            </span> */}
-
-            <span>
+            <span onClick={() => dispatch(removeFromCart(index))}>
               <Icons.DeleteIcon className="delete_icon" />
             </span>
           </div>

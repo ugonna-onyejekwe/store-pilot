@@ -65,10 +65,21 @@
           }
         }
       }
+
+      .cartonQunatity {
+        margin-top: 20px;
+      }
     }
   }
 
   .btn {
     margin-top: 20px;
+
+    .info {
+      text-align: center;
+      font-size: 15px;
+      color: variables.$secondary_color;
+      padding-top: 10px;
+    }
   }
 }

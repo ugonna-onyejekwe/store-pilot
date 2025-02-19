@@ -1,4 +1,5 @@
 import { useFormik } from 'formik'
+import { checkoutFormSchma } from '../forms/schemas'
 import { Input, SelecInput } from '../inputs'
 import Button from '../ui/Button'
 import './styles.scss'
@@ -10,14 +11,17 @@ const CheckOutForm = () => {
     amountPaid: '',
     supplyStatus: '',
     customerName: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    sellLocation: ''
   }
 
-  const onSubmit = () => {}
+  const onSubmit = (values) => {
+    console.log(values)
+  }
 
   const { values, errors, touched, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues,
-    // validationSchema:scham
+    validationSchema: checkoutFormSchma,
     onSubmit
   })
 
@@ -58,23 +62,36 @@ const CheckOutForm = () => {
           placeholder="Select"
         />
 
-        <Input
-          label="Enter amount paid"
-          onChange={handleChange('amountPaid')}
-          value={values.amountPaid}
-          errorMsg={errors.amountPaid}
-          touched={touched.amountPaid}
-          placeholder="Enter selling price..."
-          type="number"
-        />
+        {values.paymentType.trim() === 'Half payment' && (
+          <Input
+            label="Enter amount paid"
+            onChange={handleChange('amountPaid')}
+            value={values.amountPaid}
+            errorMsg={errors.amountPaid}
+            touched={touched.amountPaid}
+            placeholder="Enter selling price..."
+            type="number"
+          />
+        )}
 
         <SelecInput
-          label="Select supplied status"
+          label="Select supply status"
           onChange={setFieldValue}
           errorMsg={errors.supplyStatus}
           touched={touched.supplyStatus}
           name="supplyStatus"
           id="supplyStatus"
+          options={supplyStatus}
+          placeholder="Select"
+        />
+
+        <SelecInput
+          label="Where was this product sold?"
+          onChange={setFieldValue}
+          errorMsg={errors.sellLocation}
+          touched={touched.sellLocation}
+          name="sellLocation"
+          id="sellLocation"
           options={supplyStatus}
           placeholder="Select"
         />
@@ -99,7 +116,7 @@ const CheckOutForm = () => {
         />
 
         <div className="btn">
-          <Button text="Checkout" />
+          <Button text="Checkout" type="submit" />
         </div>
       </form>
     </div>

@@ -28,8 +28,8 @@ const SellProductModal = ({
           <ScaleLoaderUI minHeight={700} />
         ) : (
           <>
-            <h2>Sell product</h2>
-            <p className="subheader_text txt">Enter product details to sell product</p>
+            <h2>Add to cart</h2>
+            <p className="subheader_text txt">Enter product details to add product to cart</p>
 
             {/* form */}
             <SellProductForm

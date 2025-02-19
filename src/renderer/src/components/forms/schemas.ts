@@ -26,6 +26,11 @@ export const sellProductSchema = yup.object().shape({
     return !hasSubProducts || (hasSubProducts && value)
   }),
 
+  cartoonQuantity: yup.string().test('', 'This field is required', function (value) {
+    const { typeOfSale } = this.parent
+    return typeOfSale !== 'sell part' || (typeOfSale === 'sell part' && value)
+  }),
+
   subproducts: yup.array()
 })
 
@@ -141,3 +146,19 @@ export const addPro_totalQuantitySchema = yup.object().shape({
 })
 
 // ADD PRODUCT SUB-FORMS SCHEMA ENDS =======
+
+// CHECKOUT FORM SCHEMA
+export const checkoutFormSchma = yup.object().shape({
+  amountPaid: yup.number().test('', 'Amount paid is required', function (value) {
+    const { paymentType } = this.parent // Access other field's value
+    return paymentType !== 'half payment' || (paymentType === 'half payment' && value)
+  }),
+  paymentType: yup.string(),
+  sellingPrice: yup.number().required('How much is customer expected to pay?'),
+
+  totalQuantity: yup.number().min(1, "Total quantity can't be less than 1"),
+  supplyStatus: yup.string().required('Supply status is required'),
+  customerName: yup.string().required('Customer name is required'),
+  phoneNumber: yup.string(),
+  sellLocation: yup.string().required()
+})

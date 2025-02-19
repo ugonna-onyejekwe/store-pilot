@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-export interface item {
+export interface cartItem {
   category: {
     name: string
     id: string
@@ -24,7 +24,7 @@ export interface item {
 }
 
 export interface cartSlice {
-  cartItems: item[]
+  cartItems: cartItem[]
 }
 
 const initialState: cartSlice = {

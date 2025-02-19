@@ -1,9 +1,11 @@
+import { RootState } from '@renderer/store'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Icons } from '../ui/icons'
 import './styles.scss'
 
 const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
-  console.log(currentPage)
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
   return (
     <div className="navbar">
       <div className="container">
@@ -25,7 +27,7 @@ const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
           <Link to="/cart" className="shopping_cart">
             <Icons.ShoopingCart className="shopping_cart_icon" />
 
-            <span>0</span>
+            <span>{cartItems.length}</span>
           </Link>
         </div>
       </div>

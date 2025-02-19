@@ -1,10 +1,9 @@
 import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
-import { RootState } from '@renderer/store'
 import { addTocart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Input, SelecInput } from '../inputs'
 import Button from '../ui/Button'
 import { toastUI } from '../ui/toast'
@@ -18,9 +17,6 @@ type SellProductFormProps = {
 
 const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProductFormProps) => {
   const dispatch = useDispatch()
-  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
-
-  console.log(cartItems)
 
   const [subproductsValues, setSubProductsValues] = useState<
     {

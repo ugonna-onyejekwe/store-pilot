@@ -26,3 +26,22 @@ export function formatNumber(input: number) {
 
   return result
 }
+
+// Formate numbers to have commas
+export const formateAmount = (amount: number) => {
+  const formatterNG = new Intl.NumberFormat('en-NG')
+
+  const formattedNumberNG = formatterNG.format(Number(amount))
+
+  return formattedNumberNG
+}
+
+// Formate numbers to have currency sign
+export const convertAmount = (amount: number) => {
+  const formattedPriceNG = Number(amount).toLocaleString('en-NG', {
+    style: 'currency',
+    currency: 'NGN'
+  })
+
+  return formattedPriceNG
+}

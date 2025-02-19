@@ -3,16 +3,112 @@
 .cart_page {
   display: flex;
   gap: 30px;
+  position: relative;
 
   @media (max-width: 900px) {
     flex-direction: column;
   }
 
   .cart_container {
-    flex: 1;
-
+    flex: 1.2;
     h2 {
       font-size: 20px;
+    }
+
+    .cart_items {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .cart_item {
+        background: variables.$bg_color;
+        border-radius: 5px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+
+        .general_con {
+          display: flex;
+          flex-direction: column;
+          gap: 13px;
+
+          p {
+            font-size: 15px;
+            font-weight: 500;
+            color: variables.$light_text_color2;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            span {
+              color: variables.$secondary_color;
+              // color: variables.$dark_text_color;
+            }
+          }
+        }
+
+        .Subproduct_con {
+          margin-top: 15px;
+
+          h4 {
+            font-size: 16px;
+            color: variables.$light_text_color2;
+            margin-bottom: 7px;
+          }
+
+          .subproduct_box {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+
+            p {
+              display: flex;
+              align-items: center;
+              gap: 7px;
+              font-weight: 500;
+              color: variables.$light_text_color;
+
+              span {
+                color: variables.$secondary_color;
+              }
+            }
+          }
+        }
+
+        .action_btns {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          span {
+            height: 45px;
+            width: 45px;
+            border-radius: 4px;
+            font-size: 14px;
+            background: variables.$bg_alt_color;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: variables.$light_text_color2;
+
+            &:hover {
+              color: variables.$dark_text_color;
+            }
+
+            .delete_icon {
+              width: 18px;
+              height: 18px;
+            }
+
+            .eye_icon {
+              width: 17px;
+              height: 17px;
+            }
+          }
+        }
+      }
     }
   }
 

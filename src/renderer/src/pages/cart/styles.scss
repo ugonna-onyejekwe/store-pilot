@@ -1,0 +1,38 @@
+@use '../../lib/variables';
+
+.cart_page {
+  display: flex;
+  gap: 30px;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
+
+  .cart_container {
+    flex: 1;
+
+    h2 {
+      font-size: 20px;
+    }
+  }
+
+  .checkout_container {
+    flex: 1;
+    background: variables.$bg_color;
+    border-radius: 5px;
+    padding: 30px;
+
+    @media (max-width: 700px) {
+      padding: 20px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    .subheader {
+      color: variables.$light_text_color2;
+      font-size: 15px;
+    }
+  }
+}

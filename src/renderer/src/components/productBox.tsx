@@ -163,7 +163,13 @@ const ProductBox = ({ data }: ProductBoxProps) => {
       )}
 
       {/* Sellproduct modal */}
-      <SellProductModal onOpen={isSellingProduct} onOpenChange={setIsSellingProduct} data={data} />
+      {isSellingProduct && (
+        <SellProductModal
+          onOpen={isSellingProduct}
+          onOpenChange={setIsSellingProduct}
+          data={data}
+        />
+      )}
     </>
   )
 }

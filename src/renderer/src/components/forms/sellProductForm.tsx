@@ -13,11 +13,14 @@ import { sellProductSchema } from './schemas'
 type SellProductFormProps = {
   categoryData: SingleCategoryResponse
   productData: ProductResponse
+  setOpenModel: (value: boolean) => void
 }
 
-const SellProductForm = ({ categoryData, productData }: SellProductFormProps) => {
+const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProductFormProps) => {
   const dispatch = useDispatch()
   const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+
+  console.log(cartItems)
 
   const [subproductsValues, setSubProductsValues] = useState<
     {
@@ -62,7 +65,6 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
   const formatedDesignOptions = availableDesigns.map((i) => ({ value: i.id, label: i.name }))
 
   const onSubmit = async (values) => {
-    console.log(values)
     dispatch(
       addTocart({
         category: productData.category,
@@ -76,14 +78,18 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
         color: values.color
       })
     )
+    toastUI.success('Product added to cart')
+    resetForm()
+    setOpenModel(false)
   }
 
   //Initailize formik
-  const { values, touched, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
-    initialValues: initialvalues,
-    validationSchema: sellProductSchema,
-    onSubmit
-  })
+  const { values, touched, errors, handleChange, handleSubmit, setFieldValue, resetForm } =
+    useFormik({
+      initialValues: initialvalues,
+      validationSchema: sellProductSchema,
+      onSubmit
+    })
 
   // UseEffect to display qunatity left for a product
   useEffect(() => {
@@ -275,6 +281,8 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
                   )
                 })}
               </div>
+
+              {/* <div className="cartonQunatity"></div> */}
             </div>
           )}
         </div>

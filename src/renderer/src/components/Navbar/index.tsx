@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Icons } from '../ui/icons'
 import './styles.scss'
 
@@ -21,11 +22,11 @@ const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
           </div>
 
           {/* Shopping cart */}
-          <div className="shopping_cart">
+          <Link to="/cart" className="shopping_cart">
             <Icons.ShoopingCart className="shopping_cart_icon" />
 
             <span>0</span>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

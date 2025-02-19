@@ -32,7 +32,11 @@ const SellProductModal = ({
             <p className="subheader_text txt">Enter product details to sell product</p>
 
             {/* form */}
-            <SellProductForm categoryData={categoryData!} productData={data} />
+            <SellProductForm
+              categoryData={categoryData!}
+              productData={data}
+              setOpenModel={onOpenChange}
+            />
           </>
         )}
       </SideSheet>

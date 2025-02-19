@@ -3,8 +3,9 @@ import { AnimatePresence } from 'framer-motion'
 import { Toaster } from 'react-hot-toast'
 import { Provider } from 'react-redux'
 import { RouterProvider } from 'react-router-dom'
+import { PersistGate } from 'redux-persist/integration/react'
 import { router } from './routes/routes'
-import { store } from './store'
+import { persistor, store } from './store'
 
 function App() {
   const queryClient = new QueryClient({
@@ -16,8 +17,10 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AnimatePresence>
           <Provider store={store}>
-            <RouterProvider router={router} />
-            <Toaster position="bottom-right" />
+            <PersistGate loading={null} persistor={persistor}>
+              <RouterProvider router={router} />
+              <Toaster position="bottom-right" />
+            </PersistGate>
           </Provider>
         </AnimatePresence>
       </QueryClientProvider>

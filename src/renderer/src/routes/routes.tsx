@@ -2,6 +2,7 @@ import Layout from '@renderer/components/layout'
 import AdminLayout from '@renderer/components/layout/AdminLayout'
 import AddProduct from '@renderer/pages/addProduct'
 import Admin from '@renderer/pages/admin'
+import Cart from '@renderer/pages/cart'
 import AddCategory from '@renderer/pages/createCategory'
 import Dashboard from '@renderer/pages/dashboard'
 import { DeleteCategory } from '@renderer/pages/deleteCategory'
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: '/:productname/:subcatId',
         element: <Products />
+      },
+      {
+        path: '/cart',
+        element: <Cart />
       },
 
       {

@@ -1,9 +1,13 @@
 import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
+import { RootState } from '@renderer/store'
+import { addTocart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Input, SelecInput } from '../inputs'
 import Button from '../ui/Button'
+import { toastUI } from '../ui/toast'
 import { sellProductSchema } from './schemas'
 
 type SellProductFormProps = {
@@ -12,7 +16,19 @@ type SellProductFormProps = {
 }
 
 const SellProductForm = ({ categoryData, productData }: SellProductFormProps) => {
-  const [openSubProductQuantity, setOpenSubProductQuantity] = useState(false)
+  const dispatch = useDispatch()
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+
+  const [subproductsValues, setSubProductsValues] = useState<
+    {
+      name: string
+      id: string
+      available: boolean
+      defaultQuantity: number
+      left: number
+      sellQuantity: number
+    }[]
+  >([])
 
   const [quantitiesLeft, setQuantitiesLeft] = useState({
     size: 0,
@@ -22,7 +38,11 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
 
   const initialvalues = {
     category: productData ? productData.category.name : '',
-    model: productData ? productData?.model : 'red',
+    model: productData ? productData?.model : '',
+    hasModel: categoryData ? categoryData?.hasModel : false,
+    hasSize: categoryData?.hasSize ?? false,
+    hasDesign: categoryData?.hasDesign ?? false,
+    hasSubProducts: categoryData?.hasSubProducts ?? false,
     color: '',
     design: '',
     size: '',
@@ -31,6 +51,7 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
     subproducts: []
   }
 
+  // Filter out avalibale quantities
   const availableSizes = productData.sizes.filter((i) => i.quantity > 0)
   const formatedSizeOptions = availableSizes.map((i) => ({ value: i.id, label: i.name }))
 
@@ -40,20 +61,31 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
   const availableDesigns = productData.designs.filter((i) => i.quantity > 0)
   const formatedDesignOptions = availableDesigns.map((i) => ({ value: i.id, label: i.name }))
 
-  console.log(formatedDesignOptions)
-
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     console.log(values)
+    dispatch(
+      addTocart({
+        category: productData.category,
+        model: values.model,
+        productId: productData.productId,
+        size: values.size,
+        design: values.design,
+        quantity: values.quantity,
+        typeOfSale: values.typeOfSale,
+        subproduct: values.subproducts,
+        color: values.color
+      })
+    )
   }
 
+  //Initailize formik
   const { values, touched, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues: initialvalues,
     validationSchema: sellProductSchema,
     onSubmit
   })
 
-  const handleBlur = (defaultValue, value) => {}
-
+  // UseEffect to display qunatity left for a product
   useEffect(() => {
     const { color, size, design } = values
 
@@ -69,21 +101,24 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
     })
   }, [values])
 
+  // To display subproduct inputs if the are to be sold
   useEffect(() => {
     if (values.typeOfSale !== '' && values.typeOfSale.toLowerCase().trim() === 'sell part') {
       const availableSubproduct = productData.subProducts.filter((i) => i.available === true)
 
-      const formatedSubproducts = availableSubproduct.map((i) => ({
-        id: i.id,
-        defaultQuantity: i.defaultQuantity,
-        name: i.name
+      const formatedSubproduct = availableSubproduct.map((i) => ({
+        ...i,
+        sellQuantity: i.defaultQuantity
       }))
 
-      console.log(formatedSubproducts, 'yhd')
-
-      setFieldValue('subproducts', formatedSubproducts)
+      setSubProductsValues(formatedSubproduct)
     }
   }, [values.typeOfSale])
+
+  // Fn to update subproducts to sell
+  useEffect(() => {
+    setFieldValue('subproducts', subproductsValues)
+  }, [subproductsValues])
 
   return (
     <>
@@ -104,7 +139,7 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
                 placeholder="Product model"
                 label="Product model"
                 onChange={handleChange('model')}
-                value={values.category}
+                value={values.model}
               />
             </div>
           )}
@@ -171,8 +206,8 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
               label="Do you want to sell all or part of the sub-product(s)?"
               placeholder="Select option"
               onChange={setFieldValue}
-              errorMsg={errors.design}
-              touched={touched.design}
+              errorMsg={errors.typeOfSale}
+              touched={touched.typeOfSale}
               options={[
                 { value: 'Sell All', label: 'Sell All' },
                 { value: 'Sell Part ', label: 'Sell Part' }
@@ -191,35 +226,55 @@ const SellProductForm = ({ categoryData, productData }: SellProductFormProps) =>
                 onChange={handleChange('quantity')}
                 errorMsg={errors.quantity}
                 touched={touched.quantity}
+                onBlur={(e) => {
+                  if (e.target.value < 1) {
+                    setFieldValue('quantity', 1)
+                  }
+                }}
                 type="number"
               />
             </div>
           )}
 
           {categoryData?.hasSubProducts && values.typeOfSale.trim() === 'Sell Part' && (
-            <div className="subproductQuantity">
+            <div className="subproductQuantity_input_con">
               <h3>Enter qunaity of each sub product</h3>
-
-              {values.subproducts.map((i, key) => {
-                return (
-                  <div className="box_con" key={key}>
-                    <div className="box">
+              <div className="box_con">
+                {subproductsValues.map((i, key) => {
+                  return (
+                    <div className="box" key={key}>
                       <Input
                         label={i.name}
                         placeholder="Quantity..."
-                        value={i.quantity}
-                        onChange={handleChange('quantity')}
-                        // errorMsg={errors.quantity}
-                        // touched={touched.quantity}
+                        value={i.sellQuantity!}
+                        onChange={(e) => {
+                          subproductsValues[key].sellQuantity = e.target.value
+                          setSubProductsValues([...subproductsValues])
+                        }}
                         type="number"
-                        // onBlur={handleBlur()}
+                        onBlur={(e) => {
+                          if (e.target.value > i.defaultQuantity) {
+                            subproductsValues[key].sellQuantity = i.defaultQuantity
+                            setSubProductsValues([...subproductsValues])
+                            toastUI.error(
+                              `This product has only ${i.defaultQuantity} ${i.name}(s) by default`
+                            )
+                          } else if (e.target.value < 0) {
+                            subproductsValues[key].sellQuantity = 1
+
+                            setSubProductsValues([...subproductsValues])
+                            toastUI.error(`Value can't be less than 0`)
+                          }
+
+                          return
+                        }}
                       />
 
                       <div className="default_quantity">{i.defaultQuantity}</div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
           )}
         </div>

@@ -1,9 +1,9 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import db from '..'
 
-// CREATE PRODUCTS
-export const createProduct = async (req: Request, res: Response) => {
+// FORMATE PRODUCT iNFO
+export const formateProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
       categoryId,
@@ -20,62 +20,114 @@ export const createProduct = async (req: Request, res: Response) => {
 
     const productCategory = await allCategory.find((i) => i.id === categoryId)
 
-    const { name: categoryName, hasSize, hasColor, hasDesign, hasSubProducts } = productCategory
+    const { hasSize, hasColor, hasDesign, hasSubProducts } = productCategory
 
-    let newProduct = {
-      category: {
-        name: categoryName,
-        id: categoryId
-      },
+    let productInfo = {
       totalQuantity,
       cartoonsPerProduct,
       model,
       sizes,
       subProducts,
       colors,
-      designs,
-      productId: uuidv4()
+      designs
     }
 
     //  Adding ID to each size
     if (hasSize) {
-      const formatedSizes = sizes.map((i) => ({
-        ...i,
-        id: uuidv4()
-      }))
+      const formatedSizes = sizes.map((i) => {
+        if (i.id)
+          return {
+            ...i
+          }
 
-      newProduct = { ...newProduct, sizes: formatedSizes }
+        return {
+          ...i,
+          id: uuidv4()
+        }
+      })
+
+      productInfo = { ...productInfo, sizes: formatedSizes }
     }
 
     //  Adding ID to each color
     if (hasColor) {
-      const formatedColors = colors.map((i) => ({
-        ...i,
-        id: uuidv4()
-      }))
+      const formatedColors = colors.map((i) => {
+        if (i.id)
+          return {
+            ...i
+          }
 
-      newProduct = { ...newProduct, colors: formatedColors }
+        return {
+          ...i,
+          id: uuidv4()
+        }
+      })
+
+      productInfo = { ...productInfo, colors: formatedColors }
     }
 
     //  Adding ID to each designs
     if (hasDesign) {
-      const formatedDesigns = designs.map((i) => ({
-        ...i,
-        id: uuidv4()
-      }))
+      const formatedDesigns = designs.map((i) => {
+        if (i.id)
+          return {
+            ...i
+          }
 
-      newProduct = { ...newProduct, designs: formatedDesigns }
+        return {
+          ...i,
+          id: uuidv4()
+        }
+      })
+
+      productInfo = { ...productInfo, designs: formatedDesigns }
     }
 
     // Adding ID to each designs
     if (hasSubProducts) {
-      const formatedSubProducts = subProducts.map((i) => ({
-        ...i,
-        left: i.defaultQuantity,
-        id: uuidv4()
-      }))
+      const formatedSubProducts = subProducts.map((i) => {
+        if (i.id)
+          return {
+            ...i
+          }
 
-      newProduct = { ...newProduct, subProducts: formatedSubProducts }
+        return {
+          ...i,
+          id: uuidv4()
+        }
+      })
+
+      productInfo = { ...productInfo, subProducts: formatedSubProducts }
+    }
+
+    req.productInfo = productInfo
+
+    next()
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
+  }
+}
+
+// CREATE PRODUCTS
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    const { productInfo } = req
+    const { categoryId } = req.body
+
+    const allCategory = req.doc.category
+
+    const productCategory = await allCategory.find((i) => i.id === categoryId)
+
+    const { name: categoryName } = productCategory
+
+    const newProduct = {
+      category: {
+        name: categoryName,
+        id: categoryId
+      },
+      ...productInfo,
+      productId: uuidv4()
     }
 
     const allProduct = req.doc.products
@@ -136,16 +188,9 @@ export const getSingleProduct = async (req: Request, res: Response) => {
 // EDIT PRODUCT
 export const editProduct = async (req: Request, res: Response) => {
   try {
-    const {
-      model,
-      totalQuantity,
-      cartoonsPerProduct,
-      sizes,
-      subProducts,
-      colors,
-      designs,
-      productId
-    } = req.body
+    const { productId } = req.body
+
+    const { productInfo } = req
 
     const productList = req.doc.products
 
@@ -153,13 +198,7 @@ export const editProduct = async (req: Request, res: Response) => {
 
     product = {
       ...product,
-      totalQuantity,
-      cartoonsPerProduct,
-      model,
-      sizes,
-      subProducts,
-      colors,
-      designs
+      ...productInfo
     }
 
     const updatedProductsList = productList.map((i) => {
@@ -175,7 +214,7 @@ export const editProduct = async (req: Request, res: Response) => {
         return
       }
 
-      res.status(200).json({ message: 'Product updated successfly' })
+      res.status(200).json({ message: 'Product updated successfly', data: product })
     })
   } catch (error) {
     console.log(error)
@@ -204,4 +243,22 @@ export const deleteProduct = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json(error)
   }
+}
+
+// VERIFY PRODUCT MODEL
+export const verifyModel = async (req: Request, res: Response) => {
+  const { model, categoryId } = req.body
+
+  const productList = req.doc.products
+
+  const alreadyExist = await productList.find(
+    (i) => i.model.toLowerCase() === model.toLowerCase() && i.category.id === categoryId
+  )
+
+  if (alreadyExist)
+    return res
+      .status(409)
+      .json({ message: `A product with this Model - ${model} already exist, you can edit it.` })
+
+  res.status(200).json({ message: 'Model is available' })
 }

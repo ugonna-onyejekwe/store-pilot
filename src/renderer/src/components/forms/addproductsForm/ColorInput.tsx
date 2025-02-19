@@ -24,6 +24,14 @@ export const ColorInput = ({
 
   const onSubmit = (e) => {
     e.preventDefault()
+
+    const cumulatedColorQuantity = defaultValues.colors.reduce(
+      (sum, size) => Number(sum) + Number(size.quantity),
+      0
+    )
+
+    if (cumulatedColorQuantity < 1) return toastUI.error('Colour is required')
+
     const emptyInput = defaultValues.colors.filter(
       (i, key) => i.quantity === 0 && defaultValues.colorCustomInputsIndex.includes(key)
     )
@@ -73,11 +81,9 @@ export const ColorInput = ({
                       />
                     </div>
 
-                    {defaultValues.colorCustomInputsIndex.includes(key) && (
-                      <span className="close_btn" onClick={() => removeInput(key)}>
-                        <Icons.CloseIcon className="close_icon" />
-                      </span>
-                    )}
+                    <span className="close_btn" onClick={() => removeInput(key)}>
+                      <Icons.CloseIcon className="close_icon" />
+                    </span>
                   </div>
                 )
               })}

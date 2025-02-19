@@ -58,7 +58,7 @@ export const CreateCategoryForm = ({
             setFormSteps(1)
             values = initialvalues
           })
-          .then(() => navigate('/create-category'))
+          .then(() => navigate('/admin'))
           .then(() => {
             window.location.reload()
           })
@@ -71,9 +71,8 @@ export const CreateCategoryForm = ({
           resetForm()
           setFormSteps(1)
           toastUI.success('Category created successfully')
-
-          return
         })
+        .then(() => navigate('/admin'))
     } catch (error) {
       toastUI.error(getError(error))
     }

@@ -22,19 +22,21 @@ const SellProductModal = ({
   }, [data])
 
   return (
-    <SideSheet onOpen={onOpen} onOpenChange={onOpenChange} className="sellProduct_container">
-      {isPending ? (
-        <ScaleLoaderUI minHeight={700} />
-      ) : (
-        <>
-          <h2>Sell product</h2>
-          <p className="subheader_text txt">Enter product details to sell product</p>
+    <>
+      <SideSheet onOpen={onOpen} onOpenChange={onOpenChange} className="sellProduct_container">
+        {isPending ? (
+          <ScaleLoaderUI minHeight={700} />
+        ) : (
+          <>
+            <h2>Sell product</h2>
+            <p className="subheader_text txt">Enter product details to sell product</p>
 
-          {/* form */}
-          <SellProductForm categoryData={categoryData!} productData={data} />
-        </>
-      )}
-    </SideSheet>
+            {/* form */}
+            <SellProductForm categoryData={categoryData!} productData={data} />
+          </>
+        )}
+      </SideSheet>
+    </>
   )
 }
 

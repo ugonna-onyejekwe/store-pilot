@@ -24,6 +24,13 @@ export const DesignInput = ({
 
   const onSubmit = (e) => {
     e.preventDefault()
+
+    const cumulatedDesignQuantity = defaultValues.designs.reduce(
+      (sum, size) => Number(sum) + Number(size.quantity),
+      0
+    )
+    if (cumulatedDesignQuantity < 1) return toastUI.error('Design is required')
+
     const emptyInput = defaultValues.designs.filter(
       (i, key) => i.quantity === 0 && defaultValues.designCustomInputsIndex.includes(key)
     )
@@ -73,11 +80,9 @@ export const DesignInput = ({
                       />
                     </div>
 
-                    {defaultValues.designCustomInputsIndex.includes(key) && (
-                      <span className="close_btn" onClick={() => removeInput(key)}>
-                        <Icons.CloseIcon className="close_icon" />
-                      </span>
-                    )}
+                    <span className="close_btn" onClick={() => removeInput(key)}>
+                      <Icons.CloseIcon className="close_icon" />
+                    </span>
                   </div>
                 )
               })}

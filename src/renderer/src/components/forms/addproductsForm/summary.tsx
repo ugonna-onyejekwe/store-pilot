@@ -130,7 +130,7 @@ export const Summary = ({
               {(cumulatedSizeQuantity > defaultValues.totalQuantity ||
                 cumulatedSizeQuantity < defaultValues.totalQuantity) && (
                 <p className="err_msg">
-                  {`Total available product which ${defaultValues.totalQuantity} does not tally with total available sizes  which is ${cumulatedSizeQuantity}`}{' '}
+                  {`Total available product which is ${defaultValues.totalQuantity} does not tally with total available sizes  which is ${cumulatedSizeQuantity}`}{' '}
                 </p>
               )}
             </div>
@@ -179,7 +179,7 @@ export const Summary = ({
               {(cumulatedColorQuantity > defaultValues.totalQuantity ||
                 cumulatedColorQuantity < defaultValues.totalQuantity) && (
                 <p className="err_msg">
-                  {`Total available product which ${defaultValues.totalQuantity} does not tally with total available colours  which is ${cumulatedColorQuantity}`}{' '}
+                  {`Total available product which is ${defaultValues.totalQuantity} does not tally with total available colours  which is ${cumulatedColorQuantity}`}{' '}
                 </p>
               )}
             </div>
@@ -207,7 +207,7 @@ export const Summary = ({
               {(cumulatedDesignQuantity > defaultValues.totalQuantity ||
                 cumulatedDesignQuantity < defaultValues.totalQuantity) && (
                 <p className="err_msg">
-                  {`Total available product which ${defaultValues.totalQuantity} does not tally with total available designs  which is ${cumulatedDesignQuantity}`}{' '}
+                  {`Total available product which is ${defaultValues.totalQuantity} does not tally with total available designs  which is ${cumulatedDesignQuantity}`}{' '}
                 </p>
               )}
             </div>

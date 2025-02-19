@@ -31,7 +31,7 @@
       }
     }
 
-    .subproductQuantity {
+    .subproductQuantity_input_con {
       h3 {
         font-size: 15px;
         color: variables.$light_text_color2;
@@ -48,6 +48,10 @@
           width: fit-content;
           position: relative;
 
+          label {
+            color: variables.$light_text_color2 !important;
+          }
+
           .default_quantity {
             position: absolute;
             top: 41px;
@@ -57,6 +61,7 @@
             padding: 3px 15px;
             border-radius: 20px;
             color: variables.$secondary_color;
+            font-size: 13px;
           }
         }
       }

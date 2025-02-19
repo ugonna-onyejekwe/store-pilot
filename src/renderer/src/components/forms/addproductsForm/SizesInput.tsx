@@ -5,7 +5,7 @@ import { Icons } from '@renderer/components/ui/icons'
 import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type SizeInputTypes = {
   defaultValues: AddProductDefaultValueTypes
@@ -25,6 +25,13 @@ export const SizeInput = ({
   const onSubmit = (e) => {
     e.preventDefault()
 
+    const cumulatedSizeQuantity = defaultValues.sizes.reduce(
+      (sum, size) => Number(sum) + Number(size.quantity),
+      0
+    )
+
+    if (cumulatedSizeQuantity < 1) return toastUI.error('Sizes is rquired')
+
     const emptyInput = defaultValues.sizes.filter(
       (i, key) => i.quantity === 0 && defaultValues.sizesCustomInputsIndex.includes(key)
     )
@@ -34,6 +41,10 @@ export const SizeInput = ({
 
     handleProceed()
   }
+
+  useEffect(() => {
+    setDefaultValues({ ...defaultValues, sizes: [...defaultValues.sizes] })
+  }, [])
 
   const onValueChange = (value, index) => {
     defaultValues.sizes[index].quantity = value
@@ -73,11 +84,9 @@ export const SizeInput = ({
                       />
                     </div>
 
-                    {defaultValues.sizesCustomInputsIndex.includes(key) && (
-                      <span className="close_btn" onClick={() => removeInput(key)}>
-                        <Icons.CloseIcon className="close_icon" />
-                      </span>
-                    )}
+                    <span className="close_btn" onClick={() => removeInput(key)}>
+                      <Icons.CloseIcon className="close_icon" />
+                    </span>
                   </div>
                 )
               })}

@@ -2,12 +2,31 @@ import * as yup from 'yup'
 
 // SELL PRODUCT SCHEMA
 export const sellProductSchema = yup.object().shape({
-  category: yup.string().required('Category is required'),
-  modal: yup.string().required('Modal is required'),
-  color: yup.string(),
-  design: yup.string(),
-  quantity: yup.number().required('Quantity is required'),
-  typeOfSale: yup.string()
+  hasModel: yup.boolean(),
+  hasSize: yup.boolean(),
+  hasDesign: yup.boolean(),
+  hasSubProducts: yup.boolean(),
+  category: yup.string(),
+  model: yup.string(),
+  quantity: yup.number(),
+  size: yup.string().test('', 'Size is required', function (value) {
+    const { hasSize } = this.parent
+    return !hasSize || (hasSize && value)
+  }),
+  design: yup.string().test('', 'Design is required', function (value) {
+    const { hasDesign } = this.parent
+    return !hasDesign || (hasDesign && value)
+  }),
+  color: yup.string().test('', 'Colour is required', function (value) {
+    const { hasSize } = this.parent
+    return !hasSize || (hasSize && value)
+  }),
+  typeOfSale: yup.string().test('', 'This field is required', function (value) {
+    const { hasSubProducts } = this.parent
+    return !hasSubProducts || (hasSubProducts && value)
+  }),
+
+  subproducts: yup.array()
 })
 
 // LOGIN SCHEMA

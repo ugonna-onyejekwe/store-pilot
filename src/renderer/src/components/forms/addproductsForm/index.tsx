@@ -212,11 +212,12 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
         sizes,
         subProducts,
         colors,
-        designs
+        designs,
+        categoryId: productData.category.id
       })
         .then(() => {
           toastUI.success('Product updated successfully')
-          navigate('/add-product')
+          navigate('/admin')
           setFormSteps(1)
           setDefaultValues({ ...initialValues })
         })
@@ -238,7 +239,7 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
     })
       .then(() => {
         toastUI.success('Product add successfully')
-        navigate('/add-product')
+        navigate('/admin')
         setFormSteps(1)
         setDefaultValues({ ...initialValues })
       })

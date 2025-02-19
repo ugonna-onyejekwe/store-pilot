@@ -1,4 +1,5 @@
 import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
+import { useVerifyModelName } from '@renderer/apis/products/verifyModel'
 import { Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
 import { animateY } from '@renderer/lib/utils'
@@ -23,6 +24,7 @@ export const EnterModal = ({
   const { hasModel } = categoryData!
   const { actionType } = useParams()
   const editing = actionType && actionType === 'edit' ? true : false
+  const { mutateAsync: VerifyModelName, isPending } = useVerifyModelName()
 
   const initialValues = {
     model: defaultValues.model,
@@ -32,6 +34,17 @@ export const EnterModal = ({
   }
 
   const onSubmit = (values) => {
+    if (!editing) {
+      VerifyModelName({
+        model: values.model,
+        categoryId: defaultValues.category
+      })
+        .then(() => handleProceed(values))
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+
     handleProceed(values)
   }
 
@@ -81,7 +94,7 @@ export const EnterModal = ({
         <div className={editing ? 'btn btn_single' : `btn btn_multi`}>
           {editing || <Button text={'Back'} varient="outline" onClick={backFn} />}
 
-          <Button text={'Proceed'} type="submit" />
+          <Button text={'Proceed'} type="submit" isLoading={isPending} />
         </div>
       </form>
     </motion.div>

@@ -3,7 +3,7 @@ type InputProps = {
   placeholder: string
   value: string | number
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
-  onBlur?: () => void
+  onBlur?: (event: ChangeEvent<HTMLInputElement>) => void
   errorMsg?: string
   touched?: boolean
   type?: 'text' | 'number' | 'password'
@@ -69,4 +69,19 @@ type AddProductDefaultValueTypes = {
   designCustomInputsIndex: number[]
   sizesCustomInputsIndex: number[]
   totalQuantity: number
+}
+
+type SellProductFormValues = {
+  category: string
+  model: string
+  hasModel: boolean
+  hasSize: boolean
+  hasDesign: boolean
+  hasSubProducts: boolean
+  color: string
+  design: string
+  size: string
+  quantity: number
+  typeOfSale: string
+  subproducts: { name: string; defaultQuantity: number; id: string }[]
 }

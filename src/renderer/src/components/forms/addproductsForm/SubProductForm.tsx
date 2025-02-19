@@ -1,4 +1,5 @@
 import Button from '@renderer/components/ui/Button'
+import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 
@@ -17,6 +18,11 @@ const SubProductForm = ({
 }: SizeInputTypes) => {
   const onSubmit = (e) => {
     e.preventDefault()
+
+    const subProductExist = defaultValues.subProducts.find((i) => i.available === true)
+
+    if (!subProductExist) return toastUI.error("All sub product can't be missing")
+
     handleProceed()
   }
 

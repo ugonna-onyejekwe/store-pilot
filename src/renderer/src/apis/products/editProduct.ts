@@ -13,6 +13,7 @@ type payload = {
   colors: { name: string; quantity: number }[]
   designs: { name: string; quantity: number }[]
   productId: string
+  categoryId: string
 }
 
 const editProduct = (payload: payload) => {

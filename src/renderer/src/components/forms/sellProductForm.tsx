@@ -20,28 +20,9 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
   const dispatch = useDispatch()
   const cartItems = useSelector((state: RootState) => state.cart.cartItems)
   const [quantityInCart, setQuantityInCart] = useState(0)
-
-  useEffect(() => {
-    let quantity = 0
-    cartItems.map((i) => {
-      if (i.productId === productData.productId) {
-        quantity += i.quantity
-      }
-    })
-    setQuantityInCart(quantity)
-  }, [cartItems])
-
-  const [subproductsValues, setSubProductsValues] = useState<
-    {
-      name: string
-      id: string
-      available: boolean
-      defaultQuantity: number
-      left: number
-      sellQuantity: number
-    }[]
-  >([])
-
+  const [colourInCart, setColorInCart] = useState(0)
+  const [designInCart, setDesignInCart] = useState(0)
+  const [sizeInCart, setSizeInCart] = useState(0)
   const [quantitiesLeft, setQuantitiesLeft] = useState({
     size: 0,
     color: 0,
@@ -65,17 +46,28 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
       productData.cartoonsPerProduct - 1 === 0 ? 1 : productData.cartoonsPerProduct - 1
   }
 
-  // Filter out avalibale quantities
-  const availableSizes = productData.sizes.filter((i) => i.quantity > 0)
-  const formatedSizeOptions = availableSizes.map((i) => ({ value: i.id, label: i.name }))
-
-  const availableColors = productData.colors.filter((i) => i.quantity > 0)
-  const formatedColorOptions = availableColors.map((i) => ({ value: i.id, label: i.name }))
-
-  const availableDesigns = productData.designs.filter((i) => i.quantity > 0)
-  const formatedDesignOptions = availableDesigns.map((i) => ({ value: i.id, label: i.name }))
-
   const onSubmit = async (values) => {
+    const sizeInfo = productData.sizes.find((i) => i.id === values.size)
+
+    const colorInfo = productData.colors.find((i) => i.id === values.color)
+
+    const designInfo = productData.designs.find((i) => i.id === values.design)
+
+    if (quantitiesLeft.design - designInCart < values.quantity)
+      return toastUI.error(
+        `There is only ${quantitiesLeft.design - designInCart} ${designInfo?.name} left`
+      )
+
+    if (quantitiesLeft.color - colourInCart < values.quantity)
+      return toastUI.error(
+        `There is only ${quantitiesLeft.color - colourInCart} ${colorInfo?.name} left`
+      )
+
+    if (quantitiesLeft.size - sizeInCart < values.quantity)
+      return toastUI.error(
+        `There is only ${quantitiesLeft.size - sizeInCart} ${sizeInfo?.name} left`
+      )
+
     if (productData.totalQuantity - quantityInCart < values.quantity)
       return toastUI.error(`Avaliable quantity is ${productData.totalQuantity - quantityInCart}`)
 
@@ -90,7 +82,11 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
         typeOfSale: values.typeOfSale,
         subproducts: values.subproducts,
         color: values.color,
-        leftOverId: ''
+        leftOverId: '',
+        cartoonQuantity:
+          values.typeOfSale === 'sell part'
+            ? values.cartoonQuantity
+            : productData.cartoonsPerProduct * values.quantity
       })
     )
     toastUI.success('Product added to cart')
@@ -106,6 +102,68 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
       onSubmit
     })
 
+  useEffect(() => {
+    // get product quantity in cart
+    let quantity = 0
+    cartItems.map((i) => {
+      if (i.productId === productData.productId) {
+        quantity += i.quantity
+      }
+    })
+    setQuantityInCart(quantity)
+
+    // getting color quantity in cart
+    let colorQuantity = 0
+    cartItems.map((item) => {
+      if (item.productId === productData.productId && item.color === values.color) {
+        colorQuantity += item.quantity
+      }
+    })
+
+    setColorInCart(colorQuantity)
+
+    // getting size quantity in cart
+    let sizeQuantity = 0
+    cartItems.map((item) => {
+      if (item.productId === productData.productId && item.size === values.size) {
+        sizeQuantity += item.quantity
+      }
+    })
+
+    setSizeInCart(sizeQuantity)
+
+    // getting design quantity in cart
+    let designQuantity = 0
+    cartItems.map((item) => {
+      if (item.productId === productData.productId && item.design === values.design) {
+        designQuantity += item.quantity
+      }
+    })
+
+    setDesignInCart(designQuantity)
+  }, [cartItems, values])
+
+  const [subproductsValues, setSubProductsValues] = useState<
+    {
+      name: string
+      id: string
+      available: boolean
+      defaultQuantity: number
+      left: number
+      sellQuantity: number
+    }[]
+  >([])
+
+  // Filter out avalibale quantities
+  const availableSizes = productData.sizes.filter((i) => i.quantity > 0)
+  const formatedSizeOptions = availableSizes.map((i) => ({ value: i.id, label: i.name }))
+
+  const availableColors = productData.colors.filter((i) => i.quantity > 0)
+  const formatedColorOptions = availableColors.map((i) => ({ value: i.id, label: i.name }))
+
+  const availableDesigns = productData.designs.filter((i) => i.quantity > 0)
+  const formatedDesignOptions = availableDesigns.map((i) => ({ value: i.id, label: i.name }))
+
   // UseEffect to display qunatity left for a product
   useEffect(() => {
     const { color, size, design } = values
@@ -116,9 +174,9 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
 
     setQuantitiesLeft({
       ...quantitiesLeft,
-      color: colorInfo?.quantity ?? 0,
-      design: designInfo?.quantity ?? 0,
-      size: sizeInfo?.quantity ?? 0
+      color: Number(colorInfo?.quantity),
+      design: Number(designInfo?.quantity),
+      size: Number(sizeInfo?.quantity)
     })
   }, [values])
 
@@ -180,7 +238,9 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
               />
 
               {quantitiesLeft.size > 0 && (
-                <p className="info_msg">{`This size has only ${quantitiesLeft.size} left`}</p>
+                <p className="info_msg">{`This size has only ${quantitiesLeft.size - sizeInCart} left. ${
+                  sizeInCart > 0 ? sizeInCart + ' is already in cart' : ''
+                }`}</p>
               )}
             </div>
           )}
@@ -199,7 +259,9 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
               />
 
               {quantitiesLeft.color > 0 && (
-                <p className="info_msg">{`This color has only ${quantitiesLeft.color} left`}</p>
+                <p className="info_msg">{`This color has only ${quantitiesLeft.color - colourInCart} left. ${
+                  colourInCart > 0 ? colourInCart + ' is already in cart' : ''
+                }`}</p>
               )}
             </div>
           )}
@@ -218,7 +280,9 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
               />
 
               {quantitiesLeft.design > 0 && (
-                <p className="info_msg">{`This design has only ${quantitiesLeft.design} left`}</p>
+                <p className="info_msg">{`This design has only ${quantitiesLeft.design - designInCart} left. ${
+                  designInCart > 0 ? designInCart + ' is already in cart' : ''
+                }`}</p>
               )}
             </div>
           )}

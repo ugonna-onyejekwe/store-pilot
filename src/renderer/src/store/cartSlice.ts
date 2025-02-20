@@ -21,6 +21,7 @@ export interface cartItem {
   typeOfSale: 'sell part' | 'sell all' | 'sell leftOver'
   quantity: number
   leftOverId: string
+  cartoonQuantity?: number
 }
 
 export interface cartSlice {

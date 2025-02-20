@@ -1,8 +1,63 @@
+@use '../../lib/variables';
+
 .checkout_form {
   form {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+  }
+}
+
+.checkout__successModel {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+
+  .checkIcon {
+    height: 30px;
+    width: 30px;
+    color: variables.$primary_color;
+  }
+
+  h2 {
+    font-size: 18px !important;
+    padding-bottom: 10px;
+  }
+
+  p {
+    color: variables.$light_text_color2;
+
+    b {
+      font-weight: 500;
+      color: variables.$primary_color;
+    }
+  }
+
+  h3 {
+    display: flex;
+    flex-direction: column;
+    color: variables.$primary_color;
+    padding: 20px 0;
+    font-size: 25px;
+
+    span {
+      color: variables.$light_text_color2;
+      font-size: 15px;
+    }
+  }
+
+  .btns {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    margin-top: 30px;
+    justify-content: space-between;
+
+    button {
+      width: fit-content;
+    }
   }
 }

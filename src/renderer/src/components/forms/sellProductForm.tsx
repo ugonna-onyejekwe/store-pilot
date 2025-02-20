@@ -61,7 +61,8 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
     quantity: 1,
     typeOfSale: '',
     subproducts: [],
-    cartoonQuantity: productData.cartoonsPerProduct - 1
+    cartoonQuantity:
+      productData.cartoonsPerProduct - 1 === 0 ? 1 : productData.cartoonsPerProduct - 1
   }
 
   // Filter out avalibale quantities
@@ -87,8 +88,9 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
         design: values.design,
         quantity: values.quantity,
         typeOfSale: values.typeOfSale,
-        subproduct: values.subproducts,
-        color: values.color
+        subproducts: values.subproducts,
+        color: values.color,
+        leftOverId: ''
       })
     )
     toastUI.success('Product added to cart')
@@ -330,7 +332,7 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
           {quantityInCart > 0 && (
             <p className="info">
               There is only {productData.totalQuantity - quantityInCart} of this product left.{' '}
-              {quantityInCart} are already in cart
+              {quantityInCart} is already in cart
             </p>
           )}
         </div>

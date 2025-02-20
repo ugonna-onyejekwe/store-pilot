@@ -262,3 +262,184 @@ export const verifyModel = async (req: Request, res: Response) => {
 
   res.status(200).json({ message: 'Model is available' })
 }
+
+// CHECKOUT
+export const checkout = async (req: Request, res: Response) => {
+  try {
+    const {
+      listOfProducts,
+      checkoutInfo
+    }: {
+      listOfProducts: Checkout__ProductList
+      checkoutInfo: CheckoutInfo
+    } = req.body
+
+    const categoriesData = req.doc.category
+    const productsData = req.doc.products
+    const historyData = req.doc.history
+
+    const updateProductFn = async (upDatedProductList) => {
+      await db.update({}, { $set: { products: upDatedProductList } }, {}, (updateErr, _) => {
+        if (updateErr) {
+          console.error('Error deleting product', updateErr)
+          res.status(500).json({ error: 'Failed to delete product' })
+          return
+        }
+
+        return
+      })
+    }
+
+    const list = listOfProducts.map((product) => {
+      if (product.typeOfSale.toLowerCase().trim() !== 'sell leftOver') {
+        const productCategory = categoriesData.find((i) => i.id === product.category.id)
+
+        if (!productCategory) return res.status(404).json({ message: 'Product category not found' })
+
+        const productDetails = productsData.find((i) => i.productId === product.productId)
+
+        if (!productDetails) return res.status(404).json({ message: 'Product not found' })
+
+        const { hasColor, hasDesign, hasSize, hasSubProducts, hasModel } = productCategory
+
+        // TODO: implement when product does not have model
+
+        // Decrease product main quantity
+        productDetails.totalQuantity =
+          Number(productDetails.totalQuantity) - Number(product.quantity)
+
+        // Decrease design qunatity if has design
+        if (hasDesign) {
+          productDetails.designs = productDetails.designs.map((i) =>
+            i.id === product.design
+              ? {
+                  ...i,
+                  quantity:
+                    Number(i.quantity) - Number(product.quantity) < 0
+                      ? 0
+                      : Number(i.quantity) - Number(product.quantity)
+                }
+              : i
+          )
+        }
+
+        // Decrease size qunatity if has size
+        if (hasSize) {
+          productDetails.sizes = productDetails.sizes.map((i) =>
+            i.id === product.size
+              ? {
+                  ...i,
+                  quantity:
+                    Number(i.quantity) - Number(product.quantity) < 0
+                      ? 0
+                      : Number(i.quantity) - Number(product.quantity)
+                }
+              : i
+          )
+        }
+
+        // Decrease color qunatity if has color
+        if (hasColor) {
+          productDetails.colors = productDetails.colors.map((i) =>
+            i.id === product.color
+              ? {
+                  ...i,
+                  quantity:
+                    Number(i.quantity) - Number(product.quantity) < 0
+                      ? 0
+                      : Number(i.quantity) - Number(product.quantity)
+                }
+              : i
+          )
+        }
+
+        // Check if only part of the product is sold
+        if (hasSubProducts && product.typeOfSale.toLowerCase().trim() === 'sell part') {
+          console.log(product.subproducts, 'Subproducts')
+
+          product.subproducts = product.subproducts.map((i) => ({
+            ...i,
+            left: Number(i.defaultQuantity) - Number(i.sellQuantity)
+          }))
+
+          const remainingSubproducts = product.subproducts.filter((i) => i.left !== 0)
+
+          if (remainingSubproducts.length === 0) {
+            const UpdatedProduct = productsData.map((i) =>
+              i.productId === product.productId ? productDetails : i
+            )
+            updateProductFn(UpdatedProduct)
+            return
+          }
+
+          const formatedRemainingSubproducts = remainingSubproducts.map((i) => ({
+            name: i.name,
+            defaultQuantity: i.defaultQuantity,
+            id: i.id,
+            left: i.left
+          }))
+
+          const formatedSubproducts = {
+            id: uuidv4(),
+            subproducts: [...formatedRemainingSubproducts]
+          }
+
+          const UpdatedProduct = productsData.map((i) =>
+            i.productId === product.productId
+              ? {
+                  ...productDetails,
+                  leftOver: productDetails.leftOver
+                    ? [...productDetails.leftOver, formatedSubproducts]
+                    : [formatedSubproducts]
+                }
+              : i
+          )
+
+          updateProductFn(UpdatedProduct)
+        }
+
+        const UpdatedProduct = productsData.map((i) =>
+          i.productId === product.productId ? productDetails : i
+        )
+
+        return updateProductFn(UpdatedProduct)
+      } else if (product.typeOfSale.toLowerCase().trim() === 'sell leftOver') {
+        const { leftOverId, productId } = product
+
+        const productDetails = productsData.find((i) => i.productId === productId)
+
+        if (!productDetails) return res.status(404).json({ message: 'Product not found' })
+
+        const leftOverList = productDetails.leftOver.find((i) => i.id === leftOverId)
+
+        if (!leftOverList) return res.status(404).json({ message: 'Product not found' })
+
+        const UpdatedLeftover = product.subproducts.map((i) => ({
+          ...i,
+          left: Number(i.left) - Number(i.sellQuantity)
+        }))
+
+        const availableUpdatedLeftOver = UpdatedLeftover.filter((i) => i.left !== 0)
+
+        if (availableUpdatedLeftOver.length === 0) {
+          productDetails.leftOver = productDetails.leftOver.filter((i) => i.id === leftOverId)
+        } else {
+          productDetails.leftOver = productDetails.leftOver.map((i) =>
+            i.id === leftOverId ? availableUpdatedLeftOver : i
+          )
+        }
+
+        const UpdatedProduct = productsData.map((i) =>
+          i.productId === product.productId ? productDetails : i
+        )
+
+        return updateProductFn(UpdatedProduct)
+      } else return product
+    })
+
+    res.status(200).json(list)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error.message)
+  }
+}

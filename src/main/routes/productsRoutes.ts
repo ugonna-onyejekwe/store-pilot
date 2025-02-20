@@ -1,5 +1,6 @@
 import express, { RequestHandler, Router } from 'express'
 import {
+  checkout,
   createProduct,
   deleteProduct,
   editProduct,
@@ -16,6 +17,7 @@ router.get('/', getDocs, getAllProducts as RequestHandler)
 router.get('/:productId/:categoryId', getDocs, getSingleProduct as RequestHandler)
 router.post('/create', getDocs, formateProduct as RequestHandler, createProduct)
 router.post('/verify-model-name', getDocs, verifyModel as RequestHandler)
+router.post('/checkout', getDocs, checkout as RequestHandler)
 router.patch('/edit', getDocs, formateProduct as RequestHandler, editProduct)
 router.delete('/delete/:productId', getDocs, deleteProduct)
 

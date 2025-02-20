@@ -28,6 +28,15 @@ type ProductResponse = {
   colors: { name: string; id: string; quantity: number }[]
   designs: { name: string; id: string; quantity: number }[]
   productId: string
+  leftOver?: {
+    id: string
+    subproducts: {
+      name: string
+      id: string
+      left: number
+      defaultQuantity: number
+    }
+  }[]
 }[]
 
 const getAllProducts = (payload) => {

@@ -3,24 +3,24 @@ import { createSlice } from '@reduxjs/toolkit'
 
 export interface cartItem {
   category: {
-    name: string
     id: string
+    name: string
   }
-  productId: string
   model: string
+  productId: string
   color: string
   size: string
   design: string
-  quantity: number
-  typeOfSale: 'sale part' | 'sale all' | 'sale leftOver'
-  subproduct: {
+  subproducts: {
     name: string
     id: string
-    available: boolean
     defaultQuantity: number
     left: number
     sellQuantity: number
   }[]
+  typeOfSale: 'sell part' | 'sell all' | 'sell leftOver'
+  quantity: number
+  leftOverId: string
 }
 
 export interface cartSlice {
@@ -42,11 +42,14 @@ export const cart = createSlice({
       const newList = state.cartItems.filter((_, key) => key !== action.payload)
 
       state.cartItems = newList
+    },
+    clearCart: (state) => {
+      state.cartItems = []
     }
   }
 })
 
 // Action creators are generated for each case reducer function
-export const { addTocart, removeFromCart } = cart.actions
+export const { addTocart, removeFromCart, clearCart } = cart.actions
 
 export default cart.reducer

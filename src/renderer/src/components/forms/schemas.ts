@@ -153,12 +153,12 @@ export const checkoutFormSchma = yup.object().shape({
     const { paymentType } = this.parent // Access other field's value
     return paymentType !== 'half payment' || (paymentType === 'half payment' && value)
   }),
-  paymentType: yup.string(),
+  paymentType: yup.string().required('This field is required'),
   sellingPrice: yup.number().required('How much is customer expected to pay?'),
 
   totalQuantity: yup.number().min(1, "Total quantity can't be less than 1"),
   supplyStatus: yup.string().required('Supply status is required'),
   customerName: yup.string().required('Customer name is required'),
   phoneNumber: yup.string(),
-  sellLocation: yup.string().required()
+  sellLocation: yup.string().required('This field is required')
 })

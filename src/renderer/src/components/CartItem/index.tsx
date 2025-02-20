@@ -12,7 +12,7 @@ const CartItem = ({
   size,
   design,
   typeOfSale,
-  subproduct,
+  subproducts,
   quantity,
   productId,
   index
@@ -77,7 +77,7 @@ const CartItem = ({
                 <h4>Subproducts</h4>
 
                 <div className="subproduct_box">
-                  {subproduct.map((i, key) => {
+                  {subproducts.map((i, key) => {
                     return (
                       <p key={key}>
                         {i.name}: <span>{i.sellQuantity}</span>

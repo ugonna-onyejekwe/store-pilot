@@ -16,7 +16,7 @@ const Cart = () => {
           <div className="empty_cart">
             <img src={emptycart} alt="Empty cart" />
 
-            <h2>Your cart is empty.</h2>
+            <h2>Cart is empty.</h2>
           </div>
         ) : (
           <div className="cart_items">

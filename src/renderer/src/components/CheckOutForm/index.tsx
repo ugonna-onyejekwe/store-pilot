@@ -1,10 +1,20 @@
+import { useCheckout } from '@renderer/apis/products/checkout'
+import { getError } from '@renderer/lib/utils'
+import { RootState } from '@renderer/store'
+import { clearCart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
+import { useDispatch, useSelector } from 'react-redux'
 import { checkoutFormSchma } from '../forms/schemas'
 import { Input, SelecInput } from '../inputs'
 import Button from '../ui/Button'
+import { toastUI } from '../ui/toast'
 import './styles.scss'
 
 const CheckOutForm = () => {
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+  const dispatch = useDispatch()
+  const { mutateAsync, isPending } = useCheckout()
+
   const initialValues = {
     sellingPrice: '',
     paymentType: '',
@@ -16,7 +26,26 @@ const CheckOutForm = () => {
   }
 
   const onSubmit = (values) => {
-    console.log(values)
+    mutateAsync({
+      listOfProducts: [...cartItems],
+      checkoutInfo: {
+        locationSold: values.sellLocation,
+        customerName: values.customerName,
+        customerPhoneNumber: values.customerName,
+        supplyStatus: values.supplyStatus,
+        paymentStatus: values.paymentType,
+        sellingPrice: values.sellingPrice,
+        amountPaid: values.amountPaid
+      }
+    })
+      .then(() => toastUI.success('Checked out'))
+      .then(() => {
+        dispatch(clearCart())
+      })
+      .catch((error) => {
+        console.log(error)
+        toastUI.error(getError(error))
+      })
   }
 
   const { values, errors, touched, handleChange, handleSubmit, setFieldValue } = useFormik({
@@ -116,7 +145,7 @@ const CheckOutForm = () => {
         />
 
         <div className="btn">
-          <Button text="Checkout" type="submit" />
+          <Button text="Checkout" type="submit" isLoading={isPending} />
         </div>
       </form>
     </div>

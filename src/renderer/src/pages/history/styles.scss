@@ -1,0 +1,33 @@
+@use '../../lib/variables';
+
+.history_page {
+  .filter_con {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+
+    .search_con {
+      max-width: 250px;
+      width: 100%;
+    }
+
+    .date_con {
+      max-width: 250px;
+      width: 100%;
+
+      input {
+        padding: 20px;
+        border: 1px solid rgb(191, 191, 191);
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 15px;
+        width: 100%;
+
+        &:focus {
+          outline: 1px solid variables.$primary_color;
+        }
+      }
+    }
+  }
+}

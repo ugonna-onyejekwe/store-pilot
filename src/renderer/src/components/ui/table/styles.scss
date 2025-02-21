@@ -1,0 +1,143 @@
+@use '../../../lib/variables';
+
+.table_wrapper {
+  background: variables.$bg_color;
+  box-shadow: 0 0 5px rgb(230, 227, 227);
+  overflow: hidden;
+  width: 100%;
+}
+
+.table_con {
+  position: relative;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+}
+
+thead tr {
+  background: variables.$secondary_color;
+}
+
+thead tr th {
+  color: variables.$dark_text_color;
+  font-weight: 550;
+  text-transform: uppercase;
+  font-size: 13px;
+  padding: 25px 10px !important;
+  text-wrap: nowrap;
+  color: white;
+  position: relative;
+
+  &:not(:first-child) {
+    &::before {
+      position: absolute;
+      background: white;
+      height: 50%;
+      width: 1px !important;
+      content: '';
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+td {
+  font-size: 14px;
+  color: variables.$light_text_color;
+  padding: 16px 10px !important;
+  border-right: 1px solid rgb(208, 207, 207);
+  min-width: 250px;
+  font-weight: 400;
+  white-space: nowrap;
+
+  &:not(:first-child) {
+    border-bottom: 1px solid rgb(208, 207, 207);
+  }
+}
+
+td:last-child {
+  border-right: none;
+}
+
+tbody {
+  width: 100%;
+}
+
+tbody tr {
+  transition: 0.4s ease;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(224, 223, 223);
+}
+
+tbody tr:hover {
+  background: #84b4e416;
+}
+
+tbody .data_not_found,
+tbody .loader {
+  td {
+    text-align: center !important;
+  }
+}
+
+tbody .data_not_found {
+  height: 20vh;
+  span {
+    font-size: 25px;
+  }
+}
+
+.row_data_des {
+  min-width: 250px;
+  text-wrap: wrap;
+}
+
+//STATUS STYLES
+.status {
+  padding: 5px 10px;
+  border: 1px solid grey;
+  width: fit-content;
+  border-radius: 3px;
+}
+
+// Payment status
+.status__full {
+  color: rgb(10, 191, 10);
+  background: rgba(59, 232, 59, 0.089);
+  border-color: rgb(20, 219, 20);
+}
+
+.status__half {
+  color: orange;
+  background: rgba(255, 166, 0, 0.101);
+  border-color: orange;
+}
+
+.status__credit {
+  color: red;
+  background: rgba(255, 0, 0, 0.078);
+  border-color: red;
+}
+
+// Supply status
+.status__supplied {
+  color: rgb(10, 191, 10);
+  background: rgba(59, 232, 59, 0.089);
+  border-color: rgb(20, 219, 20);
+}
+
+.status__not {
+  color: orange;
+  background: rgba(255, 166, 0, 0.101);
+  border-color: orange;
+}

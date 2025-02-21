@@ -105,3 +105,26 @@ type SellLeftOverData = {
     sellQuantity?: number
   }[]
 }
+
+declare type TableProps = {
+  columns: ColumnDef<any, any>[]
+  data: any[]
+  pagination?: {
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+    limit: number
+    nextPage: number
+    page: number
+    totalCount: number
+    totalPages: number
+  }
+  isClickable: boolean
+  searchValue?: string
+  handleClick?: (value: any) => void
+  isLoading: boolean
+}
+
+type ReturnedProductType = {
+  category: string
+  productId: string
+}

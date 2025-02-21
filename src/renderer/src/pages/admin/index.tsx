@@ -62,8 +62,8 @@ const Admin = () => {
               </div>
             </div>
 
-            {/* edit product */}
-            <Link to={''}>
+            {/* return product */}
+            <Link to={'/returned-goods'}>
               <div className="box">
                 <div className="icon_con">
                   <Icons.ReturnedGoods className="icon" />

@@ -468,11 +468,16 @@ export const checkout = async (req: Request, res: Response) => {
     })
 
     const UpdatedHistoryData = [
-      ...historyData,
       {
-        listOfProducts,
+        listOfProducts: {
+          ...listOfProducts,
+          createdAt: Date.now(),
+          modified: false,
+          modeifedAt: ''
+        },
         checkoutInfo
-      }
+      },
+      ...historyData
     ]
 
     await db.update({}, { $set: { history: UpdatedHistoryData } }, {}, (updateErr, _) => {

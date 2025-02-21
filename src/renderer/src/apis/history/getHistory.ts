@@ -1,6 +1,6 @@
 import { toastUI } from '@renderer/components/ui/toast'
 import { ApiEndPoints } from '@renderer/lib/apiEndpoints'
-import { postRequest } from '@renderer/lib/helpers'
+import { getRequest } from '@renderer/lib/helpers'
 import { getError } from '@renderer/lib/utils'
 import { useMutation } from '@tanstack/react-query'
 
@@ -26,7 +26,7 @@ type Product = {
   leftOverId: string
 }
 
-type payload = {
+export type HistoryResponse = {
   listOfProducts: Product[]
   checkoutInfo: {
     locationSold: string
@@ -36,19 +36,23 @@ type payload = {
     paymentStatus: 'full payment' | 'half payment' | 'credit'
     sellingPrice: number
     amountPaid: number
+    createdAt: number
+    modified: boolean
+    modeifedAt: number
   }
 }
 
-const checkout = (payload: payload) => {
-  return postRequest<null, payload>({
-    url: `${ApiEndPoints.checkout}`,
-    payload: payload
+type Response = HistoryResponse[]
+
+const getAllHistory = () => {
+  return getRequest<null, Response>({
+    url: ApiEndPoints.getAllHistory
   })
 }
 
-export const useCheckout = () => {
+export const useReturnAllHistory = () => {
   return useMutation({
-    mutationFn: checkout,
+    mutationFn: getAllHistory,
     onError: (error) => {
       toastUI.error(getError(error))
     }

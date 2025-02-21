@@ -10,7 +10,8 @@ export const ApiEndPoints = {
   getProducts: '/products',
   editProduct: '/products/edit',
   deleteProduct: '/products/delete',
-  checkout: '/products/checkout'
+  checkout: '/products/checkout',
+  getAllHistory: '/history'
 }
 
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL

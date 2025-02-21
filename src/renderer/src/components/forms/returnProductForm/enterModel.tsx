@@ -10,10 +10,11 @@ import { useEffect } from 'react'
 type SelectModelTypes = {
   formData: ReturnedProductType
   setFormData: (values: ReturnedProductType) => void
-  setFormStep: (value: number) => void
+  nextStep: () => void
+  prevStep: () => void
 }
 
-export const SelectModel = ({ formData, setFormData, setFormStep }: SelectModelTypes) => {
+export const SelectModel = ({ formData, setFormData, nextStep, prevStep }: SelectModelTypes) => {
   const {
     mutateAsync: getProductData,
     data: productData,
@@ -35,7 +36,7 @@ export const SelectModel = ({ formData, setFormData, setFormStep }: SelectModelT
 
   const onSubmit = (values) => {
     setFormData({ ...formData, category: values.category })
-    setFormStep(3)
+    nextStep()
   }
 
   const { touched, errors, handleSubmit, setFieldValue } = useFormik({
@@ -62,7 +63,7 @@ export const SelectModel = ({ formData, setFormData, setFormStep }: SelectModelT
         </div>
 
         <div className="btn btn_multi">
-          <Button text={'Proceed'} varient="outline" />
+          <Button text={'Back'} varient="outline" onClick={prevStep} />
 
           <Button text={'Proceed'} type="submit" />
         </div>

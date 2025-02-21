@@ -127,4 +127,7 @@ declare type TableProps = {
 type ReturnedProductType = {
   category: string
   productId: string
+  size: string
+  color: string
+  design: string
 }

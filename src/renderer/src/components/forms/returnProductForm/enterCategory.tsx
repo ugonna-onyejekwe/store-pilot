@@ -8,10 +8,10 @@ import { motion } from 'framer-motion'
 type SelectCategoryType = {
   formData: ReturnedProductType
   setFormData: (values: ReturnedProductType) => void
-  setFormStep: (value: number) => void
+  nextStep: () => void
 }
 
-export const SelectCategory = ({ formData, setFormData, setFormStep }: SelectCategoryType) => {
+export const SelectCategory = ({ formData, setFormData, nextStep }: SelectCategoryType) => {
   const { CategoriesData, isPending: gettingCategories } = useGetCategories()
 
   const initialValues = {
@@ -20,7 +20,7 @@ export const SelectCategory = ({ formData, setFormData, setFormStep }: SelectCat
 
   const onSubmit = (values) => {
     setFormData({ ...formData, category: values.category })
-    setFormStep(2)
+    nextStep()
   }
 
   const { touched, errors, handleSubmit, setFieldValue } = useFormik({

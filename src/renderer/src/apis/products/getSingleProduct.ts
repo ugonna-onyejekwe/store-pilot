@@ -29,6 +29,23 @@ export type ProductResponse = {
   colors: { name: string; id: string; quantity: number }[]
   designs: { name: string; id: string; quantity: number }[]
   productId: string
+  leftOver?: {
+    category: {
+      name: string
+      id: string
+    }
+    productId: string
+    size: string
+    color: string
+    design: string
+    leftOverId: string
+    subproducts: {
+      name: string
+      id: string
+      left: number
+      defaultQuantity: number
+    }
+  }[]
 }
 
 const getSingleProducts = (payload: payload) => {

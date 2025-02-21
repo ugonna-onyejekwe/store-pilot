@@ -3,7 +3,7 @@ import { getError } from '@renderer/lib/utils'
 import { RootState } from '@renderer/store'
 import { clearCart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkoutFormSchma } from '../forms/schemas'
 import { Input, SelecInput } from '../inputs'
@@ -71,6 +71,9 @@ const CheckOutForm = () => {
     (cartoons, item) => Number(cartoons) + Number(item.cartoonQuantity),
     0
   )
+  useEffect(() => {
+    values.paymentType.trim() !== 'Half payment' ? setFieldValue('amountPaid', '') : null
+  }, [values.paymentType])
 
   return (
     <>

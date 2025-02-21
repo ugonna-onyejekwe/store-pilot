@@ -29,7 +29,15 @@ type ProductResponse = {
   designs: { name: string; id: string; quantity: number }[]
   productId: string
   leftOver?: {
-    id: string
+    category: {
+      name: string
+      id: string
+    }
+    productId: string
+    size: string
+    color: string
+    design: string
+    leftOverId: string
     subproducts: {
       name: string
       id: string

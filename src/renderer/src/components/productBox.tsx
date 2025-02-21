@@ -148,6 +148,15 @@ const ProductBox = ({ data }: ProductBoxProps) => {
                 onClick={() => setIsSellingProduct(true)}
               />
             </div>
+
+            {/* has incomplete product */}
+            {data.leftOver && data.leftOver.length !== 0 && (
+              <div className="hasLeftOver">
+                <span>
+                  <Icons.AlertIcon className="alert_icon" />
+                </span>
+              </div>
+            )}
           </>
         )}
       </motion.div>

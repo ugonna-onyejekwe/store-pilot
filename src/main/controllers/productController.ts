@@ -281,8 +281,8 @@ export const checkout = async (req: Request, res: Response) => {
     const updateProductFn = async (upDatedProductList) => {
       await db.update({}, { $set: { products: upDatedProductList } }, {}, (updateErr, _) => {
         if (updateErr) {
-          console.error('Error deleting product', updateErr)
-          res.status(500).json({ error: 'Failed to delete product' })
+          console.error('Error checking out', updateErr)
+          res.status(500).json({ error: 'Failed to  checkout' })
           return
         }
 
@@ -290,7 +290,7 @@ export const checkout = async (req: Request, res: Response) => {
       })
     }
 
-    const list = listOfProducts.map((product) => {
+    listOfProducts.map((product) => {
       if (product.typeOfSale.toLowerCase().trim() !== 'sell leftOver') {
         const productCategory = categoriesData.find((i) => i.id === product.category.id)
 
@@ -355,15 +355,15 @@ export const checkout = async (req: Request, res: Response) => {
 
         // Check if only part of the product is sold
         if (hasSubProducts && product.typeOfSale.toLowerCase().trim() === 'sell part') {
-          console.log(product.subproducts, 'Subproducts')
-
           product.subproducts = product.subproducts.map((i) => ({
             ...i,
             left: Number(i.defaultQuantity) - Number(i.sellQuantity)
           }))
 
+          // check for remaining product
           const remainingSubproducts = product.subproducts.filter((i) => i.left !== 0)
 
+          // update product detials if there is no remaining product
           if (remainingSubproducts.length === 0) {
             const UpdatedProduct = productsData.map((i) =>
               i.productId === product.productId ? productDetails : i
@@ -379,25 +379,44 @@ export const checkout = async (req: Request, res: Response) => {
             left: i.left
           }))
 
-          const formatedSubproducts = {
-            id: uuidv4(),
+          console.log(formatedRemainingSubproducts, 'formatedRemainingSubproducts')
+
+          // getting color
+          const color = productDetails.colors.find((i) => i.id === product.color)
+
+          // getting design
+          const design = productDetails.designs.find((i) => i.id === product.design)
+
+          // getting color
+          const size = productDetails.sizes.find((i) => i.id === product.size)
+
+          const formatedLeftOver = {
+            category: productDetails.category,
+            productId: productDetails.productId,
+            size: size?.name ?? '',
+            color: color?.name ?? '',
+            design: design?.name ?? '',
+            leftOverId: uuidv4(),
             subproducts: [...formatedRemainingSubproducts]
           }
+
+          console.log(formatedLeftOver, 'formatedLeftOver')
 
           const UpdatedProduct = productsData.map((i) =>
             i.productId === product.productId
               ? {
                   ...productDetails,
                   leftOver: productDetails.leftOver
-                    ? [...productDetails.leftOver, formatedSubproducts]
-                    : [formatedSubproducts]
+                    ? [...productDetails.leftOver, formatedLeftOver]
+                    : [formatedLeftOver]
                 }
               : i
           )
 
-          updateProductFn(UpdatedProduct)
+          return updateProductFn(UpdatedProduct)
         }
 
+        console.log('run here')
         const UpdatedProduct = productsData.map((i) =>
           i.productId === product.productId ? productDetails : i
         )
@@ -437,7 +456,25 @@ export const checkout = async (req: Request, res: Response) => {
       } else return product
     })
 
-    res.status(200).json(list)
+    const UpdatedHistoryData = [
+      ...historyData,
+      {
+        listOfProducts,
+        checkoutInfo
+      }
+    ]
+
+    await db.update({}, { $set: { history: UpdatedHistoryData } }, {}, (updateErr, _) => {
+      if (updateErr) {
+        console.error('Error uploading product to history', updateErr)
+        res.status(500).json({ error: 'Failed to checkout' })
+        return
+      }
+
+      res.status(200).json({ message: 'Checkout was successful', data: UpdatedHistoryData })
+
+      return
+    })
   } catch (error) {
     console.log(error)
     res.status(500).json(error.message)

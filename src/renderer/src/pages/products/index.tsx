@@ -13,9 +13,11 @@ const Products = () => {
   return (
     <div className="product_details_container container">
       {/* product container */}
-      <div className="products_container">
-        {productData?.map((i, key) => <ProductBox data={i} key={key} />)}
-      </div>
+      {!isPending && (
+        <div className="products_container">
+          {productData?.map((i, key) => <ProductBox data={i} key={key} />)}
+        </div>
+      )}
     </div>
   )
 }

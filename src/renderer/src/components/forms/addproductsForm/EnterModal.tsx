@@ -76,6 +76,7 @@ export const EnterModal = ({
             touched={touched.totalQuantity}
             errorMsg={errors.totalQuantity}
             value={values.totalQuantity}
+            type="number"
           />
 
           {hasModel && (

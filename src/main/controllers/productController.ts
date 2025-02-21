@@ -291,7 +291,7 @@ export const checkout = async (req: Request, res: Response) => {
     }
 
     listOfProducts.map((product) => {
-      if (product.typeOfSale.toLowerCase().trim() !== 'sell leftOver') {
+      if (product.typeOfSale.trim() !== 'sell leftOver') {
         const productCategory = categoriesData.find((i) => i.id === product.category.id)
 
         if (!productCategory) return res.status(404).json({ message: 'Product category not found' })
@@ -371,15 +371,13 @@ export const checkout = async (req: Request, res: Response) => {
             updateProductFn(UpdatedProduct)
             return
           }
-
+          // Formate list to remove sell quantity property
           const formatedRemainingSubproducts = remainingSubproducts.map((i) => ({
             name: i.name,
             defaultQuantity: i.defaultQuantity,
             id: i.id,
             left: i.left
           }))
-
-          console.log(formatedRemainingSubproducts, 'formatedRemainingSubproducts')
 
           // getting color
           const color = productDetails.colors.find((i) => i.id === product.color)
@@ -393,14 +391,13 @@ export const checkout = async (req: Request, res: Response) => {
           const formatedLeftOver = {
             category: productDetails.category,
             productId: productDetails.productId,
+            model: productDetails.model,
             size: size?.name ?? '',
             color: color?.name ?? '',
             design: design?.name ?? '',
             leftOverId: uuidv4(),
             subproducts: [...formatedRemainingSubproducts]
           }
-
-          console.log(formatedLeftOver, 'formatedLeftOver')
 
           const UpdatedProduct = productsData.map((i) =>
             i.productId === product.productId
@@ -416,35 +413,49 @@ export const checkout = async (req: Request, res: Response) => {
           return updateProductFn(UpdatedProduct)
         }
 
-        console.log('run here')
         const UpdatedProduct = productsData.map((i) =>
           i.productId === product.productId ? productDetails : i
         )
 
         return updateProductFn(UpdatedProduct)
-      } else if (product.typeOfSale.toLowerCase().trim() === 'sell leftOver') {
+      } else if (product.typeOfSale.trim() === 'sell leftOver') {
         const { leftOverId, productId } = product
 
         const productDetails = productsData.find((i) => i.productId === productId)
 
         if (!productDetails) return res.status(404).json({ message: 'Product not found' })
 
-        const leftOverList = productDetails.leftOver.find((i) => i.id === leftOverId)
+        const leftOverList = productDetails.leftOver.find((i) => i.leftOverId === leftOverId)
 
         if (!leftOverList) return res.status(404).json({ message: 'Product not found' })
 
-        const UpdatedLeftover = product.subproducts.map((i) => ({
+        product.subproducts = product.subproducts.map((i) => ({
           ...i,
           left: Number(i.left) - Number(i.sellQuantity)
         }))
 
-        const availableUpdatedLeftOver = UpdatedLeftover.filter((i) => i.left !== 0)
+        const availableUpdatedLeftOver = product.subproducts.filter((i) => i.left !== 0)
 
         if (availableUpdatedLeftOver.length === 0) {
-          productDetails.leftOver = productDetails.leftOver.filter((i) => i.id === leftOverId)
+          productDetails.leftOver = productDetails.leftOver.filter(
+            (i) => i.leftOverId !== leftOverId
+          )
         } else {
+          // Formate list to remove sell quantity property
+          const formatedList = availableUpdatedLeftOver.map((i) => ({
+            name: i.name,
+            defaultQuantity: i.defaultQuantity,
+            id: i.id,
+            left: i.left
+          }))
+
           productDetails.leftOver = productDetails.leftOver.map((i) =>
-            i.id === leftOverId ? availableUpdatedLeftOver : i
+            i.leftOverId === leftOverId
+              ? {
+                  ...i,
+                  subproducts: formatedList
+                }
+              : i
           )
         }
 

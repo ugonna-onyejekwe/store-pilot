@@ -3,6 +3,8 @@ import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
 import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import SellLeftOverForm from './forms/sellLeftOverForm'
+import LeftOverProducts from './LeftOverProducts'
 import ProductDetailsModal from './productdetailsModal'
 import SellProductModal from './sellProductModal.tsx'
 import Button from './ui/Button'
@@ -16,6 +18,9 @@ type ProductBoxProps = {
 const ProductBox = ({ data }: ProductBoxProps) => {
   const [showProductDetails, setShowProductDetails] = useState(false)
   const [isSellingProduct, setIsSellingProduct] = useState(false)
+  const [openleftOvers, setOpenleftOvers] = useState(false)
+  const [leftOverProductInfo, setLeftOverProductInfo] = useState<SellLeftOverData>()
+  const [openSellLeftOverForm, setOpenSellLeftOverForm] = useState(false)
 
   const { data: categoryData, isPending, mutateAsync } = useReturnSingleCategory()
 
@@ -151,7 +156,7 @@ const ProductBox = ({ data }: ProductBoxProps) => {
 
             {/* has incomplete product */}
             {data.leftOver && data.leftOver.length !== 0 && (
-              <div className="hasLeftOver">
+              <div className="hasLeftOver" onClick={() => setOpenleftOvers(true)}>
                 <span>
                   <Icons.AlertIcon className="alert_icon" />
                 </span>
@@ -160,6 +165,17 @@ const ProductBox = ({ data }: ProductBoxProps) => {
           </>
         )}
       </motion.div>
+
+      {/* leftOver */}
+      {openleftOvers && (
+        <LeftOverProducts
+          open={openleftOvers}
+          onOpenChange={setOpenleftOvers}
+          productData={data}
+          setOpenSellLeftOverForm={setOpenSellLeftOverForm}
+          setLeftOverProductInfo={setLeftOverProductInfo}
+        />
+      )}
 
       {/* product details modal */}
       {!isPending && (
@@ -177,6 +193,15 @@ const ProductBox = ({ data }: ProductBoxProps) => {
           onOpen={isSellingProduct}
           onOpenChange={setIsSellingProduct}
           data={data}
+        />
+      )}
+
+      {/* sell left overform */}
+      {openSellLeftOverForm && (
+        <SellLeftOverForm
+          open={openSellLeftOverForm}
+          onOpenChange={setOpenSellLeftOverForm}
+          data={leftOverProductInfo!}
         />
       )}
     </>

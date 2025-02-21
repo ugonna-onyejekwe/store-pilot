@@ -350,7 +350,7 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
                               `This product has only ${i.defaultQuantity} ${i.name}(s) by default`
                             )
                           } else if (e.target.value < 0) {
-                            subproductsValues[key].sellQuantity = 1
+                            subproductsValues[key].sellQuantity = 0
 
                             setSubProductsValues([...subproductsValues])
                             toastUI.error(`Value can't be less than 0`)

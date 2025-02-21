@@ -39,12 +39,13 @@ export type ProductResponse = {
     color: string
     design: string
     leftOverId: string
+    model: string
     subproducts: {
       name: string
       id: string
       left: number
       defaultQuantity: number
-    }
+    }[]
   }[]
 }
 

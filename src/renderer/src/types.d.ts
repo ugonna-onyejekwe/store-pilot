@@ -85,3 +85,23 @@ type SellProductFormValues = {
   typeOfSale: string
   subproducts: { name: string; defaultQuantity: number; id: string }[]
 }
+
+type SellLeftOverData = {
+  category: {
+    name: string
+    id: string
+  }
+  productId: string
+  size: string
+  color: string
+  design: string
+  leftOverId: string
+  model: string
+  subproducts: {
+    name: string
+    id: string
+    left: number
+    defaultQuantity: number
+    sellQuantity?: number
+  }[]
+}

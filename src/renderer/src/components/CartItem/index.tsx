@@ -55,19 +55,21 @@ const CartItem = ({
 
               {size && (
                 <p>
-                  Size: <span>{sizeName?.name}</span>
+                  Size: <span>{typeOfSale.trim() === 'sell leftOver' ? size : sizeName?.name}</span>
                 </p>
               )}
 
               {color && (
                 <p>
-                  Size: <span>{colorName?.name}</span>
+                  Colour:{' '}
+                  <span>{typeOfSale.trim() === 'sell leftOver' ? color : colorName?.name}</span>
                 </p>
               )}
 
               {design && (
                 <p>
-                  Size: <span>{designName?.name}</span>
+                  Design:{' '}
+                  <span>{typeOfSale.trim() === 'sell leftOver' ? design : designName?.name}</span>
                 </p>
               )}
             </div>

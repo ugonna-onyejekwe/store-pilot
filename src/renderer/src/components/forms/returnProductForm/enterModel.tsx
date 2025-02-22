@@ -35,7 +35,7 @@ export const SelectModel = ({ formData, setFormData, nextStep, prevStep }: Selec
   }
 
   const onSubmit = (values) => {
-    setFormData({ ...formData, category: values.category })
+    setFormData({ ...formData, productId: values.productId })
     nextStep()
   }
 
@@ -54,8 +54,8 @@ export const SelectModel = ({ formData, setFormData, nextStep, prevStep }: Selec
             onChange={setFieldValue}
             options={productData?.map((i) => ({ label: i.model, value: i.productId })) ?? []}
             isLoading={isGettingProduct}
-            name="category"
-            id="category"
+            name="productId"
+            id="productId"
             label="Select product model"
             touched={touched.productId}
             errorMsg={errors.productId}

@@ -56,7 +56,7 @@ export const SelectColor = ({
             </div>
 
             <div className="btn btn_multi">
-              <Button text={'Proceed'} varient="outline" onClick={prevStep} />
+              <Button text={'Back'} varient="outline" onClick={prevStep} />
 
               <Button text={'Proceed'} type="submit" />
             </div>

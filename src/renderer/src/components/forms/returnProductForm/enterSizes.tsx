@@ -46,7 +46,7 @@ export const SelectSize = ({
               <SelecInput
                 placeholder="Select size"
                 onChange={setFieldValue}
-                options={productData.sizes.map((i) => ({ label: i.name, value: i.id }))}
+                options={productData?.sizes?.map((i) => ({ label: i.name, value: i.id }))}
                 name="size"
                 id="size"
                 label="Select product size"
@@ -56,7 +56,7 @@ export const SelectSize = ({
             </div>
 
             <div className="btn btn_multi">
-              <Button text={'Proceed'} varient="outline" onClick={prevStep} />
+              <Button text={'Back'} varient="outline" onClick={prevStep} />
 
               <Button text={'Proceed'} type="submit" />
             </div>

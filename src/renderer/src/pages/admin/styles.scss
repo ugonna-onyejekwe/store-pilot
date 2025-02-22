@@ -37,12 +37,14 @@
 
     .box_con {
       margin-top: 30px;
-      display: grid;
+      display: flex;
+      flex-wrap: wrap;
       gap: 20px;
       width: 100%;
-      grid-template-columns: 1fr 1fr;
+      justify-content: center;
+      // grid-template-columns: 1fr 1fr;
 
-      @media (max-width: 700px) {
+      @media (max-width: 800px) {
         display: grid;
         grid-template-columns: 1fr;
       }
@@ -56,6 +58,13 @@
         cursor: pointer;
         height: 200px;
         flex: 1;
+        width: 350px;
+        max-width: 350px;
+
+        @media (max-width: 800px) {
+          width: 100%;
+          max-width: 100%;
+        }
 
         &.danger_zone {
         }

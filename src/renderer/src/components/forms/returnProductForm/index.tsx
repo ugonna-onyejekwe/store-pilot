@@ -43,6 +43,8 @@ const ReturnProductForm = () => {
     if (formData.productId) {
       getProduct({ productId: formData.productId }).catch((error) => toastUI.error(getError(error)))
     }
+
+    console.log(formData)
   }, [formData.category, formData.productId])
 
   const onSubmit = () => {}

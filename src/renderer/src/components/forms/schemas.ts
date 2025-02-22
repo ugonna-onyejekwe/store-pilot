@@ -1,5 +1,29 @@
 import * as yup from 'yup'
 
+// LOGIN SCHEMA
+export const LoginSchema = yup.object().shape({
+  password: yup.string().required('Enter password')
+})
+
+// RESET PASSWORD SCHEMAs STARTS ========
+export const ResetPasswordSchema = yup.object().shape({
+  developerFirstName: yup.string().required('Required'),
+  developerPhoneNumber: yup.string().required('Required')
+})
+
+export const NewPasswordSchema = yup.object().shape({
+  newPassword: yup
+    .string()
+    .required('New password is required')
+    .min(8, 'Password must be at least 8 characters'),
+
+  confirmPassword: yup
+    .string()
+    .required('Confirm password is required')
+    .oneOf([yup.ref('newPassword')], 'Passwords must match')
+})
+// RESET PASSWORD SCHEMAs ENDS ========
+
 // SELL PRODUCT SCHEMA
 export const sellProductSchema = yup.object().shape({
   hasModel: yup.boolean(),
@@ -32,11 +56,6 @@ export const sellProductSchema = yup.object().shape({
   }),
 
   subproducts: yup.array()
-})
-
-// LOGIN SCHEMA
-export const LoginSchema = yup.object().shape({
-  password: yup.string().required('Enter password')
 })
 
 // ADD CATEGORY SCHEMA
@@ -120,8 +139,8 @@ export const WhatToEditSchema = yup.object().shape({
   product: yup.string(),
   productCategory: yup.string()
 })
-// ADD PRODUCT SUB-FORMS SCHEMA STARTS =======
 
+// ADD PRODUCT SUB-FORMS SCHEMA STARTS =======
 export const addPro_selectCategorySchema = yup.object().shape({
   category: yup.string().required('Category is required')
 })
@@ -144,7 +163,6 @@ export const addPro_enterModelSchema = yup.object().shape({
 export const addPro_totalQuantitySchema = yup.object().shape({
   totalQuantity: yup.number().required('Quantity is required')
 })
-
 // ADD PRODUCT SUB-FORMS SCHEMA ENDS =======
 
 // CHECKOUT FORM SCHEMA

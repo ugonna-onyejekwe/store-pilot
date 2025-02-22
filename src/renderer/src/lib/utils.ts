@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from 'clsx'
+import Cookies from 'js-cookie'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -54,4 +55,19 @@ export function formatDate(timestamp: number): string {
   const year = date.getFullYear()
 
   return `${month}, ${day}, ${year}`
+}
+
+// set cookies
+export const setCookies = (name: string, value: string) => {
+  Cookies.set(name, value, { expires: 1 })
+}
+
+// get cookies
+export const getCookies = (name: string) => {
+  return Cookies.get(name)
+}
+
+// delete cookies
+export const deleteCookies = (name: string) => {
+  Cookies.remove(name)
 }

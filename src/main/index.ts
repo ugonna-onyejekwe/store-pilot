@@ -6,9 +6,11 @@ import express from 'express'
 import Datastore from 'nedb'
 import path, { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import authRoutes from './routes/authRoutes'
 import categoryRoutes from './routes/categoryRoutes'
 import historyRoutes from './routes/historyRoutes'
 import productsRoutes from './routes/productsRoutes'
+import storeRoutes from './routes/storeRoutes'
 
 dotenv.config({ path: path.join(__dirname, '.env') })
 
@@ -38,7 +40,13 @@ async function initializeDatabase() {
             products: [],
             history: [],
             returnedGoods: [],
-            category: []
+            category: [],
+            stores: [],
+            authCredentials: {
+              developerName: 'ugonna',
+              developerPhoneNumber: '08101330834',
+              password: '12345678'
+            }
           }
 
           db.insert(initialData, (insertErr, newDoc) => {
@@ -74,6 +82,8 @@ function startExpressServer() {
   expressApp.use('/api/category', categoryRoutes)
   expressApp.use('/api/products', productsRoutes)
   expressApp.use('/api/history', historyRoutes)
+  expressApp.use('/api/auth', authRoutes)
+  expressApp.use('/api/stores', storeRoutes)
 
   const server = expressApp.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`)

@@ -36,6 +36,8 @@
     "express": "^4.21.2",
     "formik": "^2.4.6",
     "framer-motion": "^12.4.1",
+    "js-cookie": "^3.0.5",
+    "js-cookies": "^1.0.4",
     "lucide-react": "^0.474.0",
     "mongoose": "^8.9.5",
     "nedb": "^1.8.0",

@@ -91,6 +91,23 @@ const Admin = () => {
               </div>
             </div>
 
+            {/*  auth settings */}
+            <div
+              onClick={() => {
+                setOpenEditModal(true)
+                setActionType('delete')
+              }}
+            >
+              <div className="box ">
+                <div className="icon_con">
+                  <Icons.KeyIcon className="icon" />
+                </div>
+
+                <h4>Auth settings</h4>
+                <p className="txt">Do you want to change Admin password?</p>
+              </div>
+            </div>
+
             {/* Delete product/category */}
             <div
               onClick={() => {

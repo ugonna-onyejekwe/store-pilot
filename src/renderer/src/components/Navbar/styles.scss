@@ -1,4 +1,4 @@
-@import '../../lib/variables';
+@use '../../lib/variables';
 
 .navbar {
   position: fixed;
@@ -7,7 +7,7 @@
   right: 0;
   z-index: 30;
   backdrop-filter: blur(2px);
-  background: $bg_color;
+  background: variables.$bg_color;
   box-shadow: 0 0 5px rgb(210, 210, 210);
 
   .container {
@@ -23,7 +23,7 @@
       gap: 10px;
 
       .menu_icon {
-        color: $primary-color;
+        color: variables.$primary-color;
         width: 30px;
         height: 30px;
         cursor: pointer;
@@ -62,13 +62,13 @@
         }
 
         .search_icon {
-          color: $primary-color;
+          color: variables.$primary-color;
         }
 
         input {
           background: transparent;
           padding: 15px 0;
-          caret-color: $primary-color;
+          caret-color: variables.$primary-color;
           border: none;
           outline: none;
           flex: 1;
@@ -83,7 +83,7 @@
       }
 
       .shopping_cart {
-        background: $bg_alt_color;
+        background: variables.$bg_alt_color;
         height: 50px;
         width: 50px;
         min-height: 50px;
@@ -98,12 +98,12 @@
 
         &:hover {
           .shopping_cart_icon {
-            color: $dark_text_color;
+            color: variables.$dark_text_color;
           }
         }
 
         .shopping_cart_icon {
-          color: $light_text_color;
+          color: variables.$light_text_color;
         }
 
         span {
@@ -121,6 +121,81 @@
           font-size: 13px;
         }
       }
+
+      .logout {
+        height: 45px !important;
+        width: 45px !important;
+        min-height: 45px;
+        min-width: 45px;
+        background: variables.$bg_alt_color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+
+        &::before {
+          content: '';
+          height: 5px;
+          width: 5px;
+          background: rgb(10, 219, 10);
+          border-radius: 50%;
+          animation: scale 1s ease infinite;
+          position: absolute;
+          top: 7px;
+          right: 7px;
+
+          @keyframes scale {
+            0% {
+              transform: scale(1);
+            }
+            100% {
+              transform: scale(1.5);
+            }
+          }
+        }
+
+        &:hover {
+          .logout_icon {
+            transform: scale(1.05);
+            color: variables.$light_text_color;
+          }
+        }
+
+        .logout_icon {
+          width: 15px;
+          height: 15px;
+          color: variables.$light_text_color2;
+        }
+      }
+    }
+  }
+}
+
+.logout_model {
+  max-width: 500px !important;
+
+  h2 {
+    text-align: center;
+    font-size: 20px;
+    padding-top: 20px;
+  }
+
+  p {
+    text-align: center;
+    color: variables.$light_text_color2;
+  }
+
+  .btns {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+
+    button {
+      width: fit-content;
     }
   }
 }

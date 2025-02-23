@@ -5,12 +5,18 @@
   box-shadow: 0 0 5px rgb(230, 227, 227);
   overflow: hidden;
   width: 100%;
+  // max-width: 100px;
+  // min-width: 100px;
+  background: red;
+  padding: 20px;
 }
 
 .table_con {
   position: relative;
   width: 100%;
   overflow-x: scroll;
+  background: yellow;
+  padding: 10px;
 }
 
 table {

@@ -57,6 +57,20 @@ export function formatDate(timestamp: number): string {
   return `${month}, ${day}, ${year}`
 }
 
+// display date
+export function formatDateFromTimestamp(timestamp) {
+  const date = new Date(timestamp) // Create a Date object from the timestamp
+
+  const options = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }
+
+  return date.toLocaleDateString(undefined, options)
+}
+
 // set cookies
 export const setCookies = (name: string, value: string) => {
   Cookies.set(name, value, { expires: 1 })

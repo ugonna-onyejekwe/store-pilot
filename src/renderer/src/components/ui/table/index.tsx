@@ -42,7 +42,7 @@ export const DataTable = ({
   // }, [searchValue, table])
 
   return (
-    <div className="table_wrapper">
+    <div className="table_wrapper ">
       <div className="table_con">
         <table>
           <thead>

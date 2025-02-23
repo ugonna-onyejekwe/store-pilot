@@ -1,11 +1,13 @@
 import { Icons } from '@renderer/components/ui/icons'
 import { DataTable } from '@renderer/components/ui/table'
 import { Supply_column } from '@renderer/components/ui/table/columns/supplyColumn'
+import { formatDateFromTimestamp } from '@renderer/lib/utils'
 import { useEffect, useState } from 'react'
 import './style.scss'
 
 const Dashboard = () => {
   const [time, setTime] = useState('')
+  const pendingSupplies = []
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -27,7 +29,9 @@ const Dashboard = () => {
       <div className="info_wrapper">
         <div className="time_con">
           <p className="txt">Hello,</p>
-          <h1>{time}</h1>
+          <h1>
+            {time} <span>{formatDateFromTimestamp(Date.now())}</span>
+          </h1>
 
           <p className="sub_txt">
             Welcome back online!
@@ -49,7 +53,7 @@ const Dashboard = () => {
               </div>
 
               <div className="number">
-                <h1>1</h1>
+                <h1>80</h1>
               </div>
             </div>
           </div>
@@ -66,7 +70,7 @@ const Dashboard = () => {
               </div>
 
               <div className="number">
-                <h1>1</h1>
+                <h1>100</h1>
               </div>
             </div>
           </div>
@@ -83,7 +87,7 @@ const Dashboard = () => {
               </div>
 
               <div className="number">
-                <h1>1</h1>
+                <h1>50</h1>
               </div>
             </div>
           </div>
@@ -100,7 +104,7 @@ const Dashboard = () => {
               </div>
 
               <div className="number">
-                <h1>1</h1>
+                <h1>5</h1>
               </div>
             </div>
           </div>
@@ -111,7 +115,11 @@ const Dashboard = () => {
       <div className="table_section">
         <h2>Pending supplies</h2>
 
-        <DataTable columns={Supply_column} isLoading={false} data={[]} isClickable />
+        {pendingSupplies.length === 0 ? (
+          <h1 className="pending_supplies">No pending supplies today.</h1>
+        ) : (
+          <DataTable columns={Supply_column} isLoading={false} data={[]} isClickable />
+        )}
       </div>
     </div>
   )

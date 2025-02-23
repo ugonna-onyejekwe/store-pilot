@@ -1,5 +1,11 @@
 import * as yup from 'yup'
 
+// CONFIG WAREHOUSE
+export const ConfigStoreSchema = yup.object().shape({
+  warehouse: yup.string(),
+  actionType: yup.string()
+})
+
 // LOGIN SCHEMA
 export const LoginSchema = yup.object().shape({
   password: yup.string().required('Enter password')

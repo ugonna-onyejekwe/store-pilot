@@ -20,7 +20,12 @@ export const ApiEndPoints = {
   // auth
   login: '/auth/login',
   validateDev: '/auth/validateDev',
-  resetPassword: '/auth/reset-password'
+  resetPassword: '/auth/reset-password',
+
+  // warehouse
+  getAllWarehouse: '/warehouses',
+  addWarehouse: '/warehouses/add',
+  deleteWarehouse: '/warehouses'
 }
 
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL

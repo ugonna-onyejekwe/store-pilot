@@ -1,5 +1,7 @@
+import AuthModal from '@renderer/components/AdminAuthmodal'
 import { EditModal } from '@renderer/components/adminEditModal'
 import Bot from '@renderer/components/bot'
+import { ConfigStoreModal } from '@renderer/components/ConfigStoreModal'
 import { Icons } from '@renderer/components/ui/icons'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -8,6 +10,8 @@ import './styles.scss'
 const Admin = () => {
   const [openEditModal, setOpenEditModal] = useState(false)
   const [actionType, setActionType] = useState<'edit' | 'delete'>('edit')
+  const [openStoreConfigModel, setOpenStoreConfigModel] = useState(false)
+  const [openAuth, setOpenAuth] = useState(false)
   return (
     <>
       <div className="admin_wrapper container">
@@ -74,11 +78,10 @@ const Admin = () => {
               </div>
             </Link>
 
-            {/*  store location */}
+            {/*  warehouse */}
             <div
               onClick={() => {
-                setOpenEditModal(true)
-                setActionType('delete')
+                setOpenStoreConfigModel(true)
               }}
             >
               <div className="box ">
@@ -86,16 +89,15 @@ const Admin = () => {
                   <Icons.LocationIcon className="icon" />
                 </div>
 
-                <h4>Configure store location</h4>
-                <p className="txt">Do add or delete store location?</p>
+                <h4>Configure warehouses</h4>
+                <p className="txt">Do you want to add or delete warahouse?</p>
               </div>
             </div>
 
             {/*  auth settings */}
             <div
               onClick={() => {
-                setOpenEditModal(true)
-                setActionType('delete')
+                setOpenAuth(true)
               }}
             >
               <div className="box ">
@@ -129,6 +131,10 @@ const Admin = () => {
       </div>
 
       <EditModal open={openEditModal} onOpenChange={setOpenEditModal} actionType={actionType} />
+
+      <ConfigStoreModal open={openStoreConfigModel} onOpenChange={setOpenStoreConfigModel} />
+
+      <AuthModal open={openAuth} setOnOPenChange={setOpenAuth} />
     </>
   )
 }

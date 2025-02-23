@@ -10,7 +10,7 @@ import authRoutes from './routes/authRoutes'
 import categoryRoutes from './routes/categoryRoutes'
 import historyRoutes from './routes/historyRoutes'
 import productsRoutes from './routes/productsRoutes'
-import storeRoutes from './routes/storeRoutes'
+import warehouseRoutes from './routes/warehouseRoutes'
 
 dotenv.config({ path: path.join(__dirname, '.env') })
 
@@ -41,11 +41,11 @@ async function initializeDatabase() {
             history: [],
             returnedGoods: [],
             category: [],
-            stores: [],
+            warehouses: [],
             authCredentials: {
               developerName: 'ugonna',
               developerPhoneNumber: '08101330834',
-              password: '12345678'
+              password: ''
             }
           }
 
@@ -83,7 +83,7 @@ function startExpressServer() {
   expressApp.use('/api/products', productsRoutes)
   expressApp.use('/api/history', historyRoutes)
   expressApp.use('/api/auth', authRoutes)
-  expressApp.use('/api/stores', storeRoutes)
+  expressApp.use('/api/warehouses', warehouseRoutes)
 
   const server = expressApp.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`)

@@ -1,1 +1,130 @@
-@import '../../lib/variables';
+@use '../../lib/variables';
+
+.dasboard_page {
+  .info_wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .time_con {
+      flex: 1;
+      background: variables.$bg_color;
+      padding: 30px;
+      border-radius: 5px;
+      height: 300px;
+
+      .txt {
+        font-size: 15px;
+        color: variables.$light_text_color2;
+      }
+
+      h1 {
+        font-size: 50px;
+        margin-top: 30px;
+      }
+
+      .sub_txt {
+        font-size: 15px;
+        color: variables.$light_text_color2;
+        margin-top: 40px;
+        position: relative;
+        padding-left: 20px;
+
+        &::before {
+          content: '';
+          height: 7px;
+          width: 7px;
+          background: rgb(10, 219, 10);
+          border-radius: 50%;
+          animation: scale 1s ease infinite;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          left: 0;
+
+          @keyframes scale {
+            0% {
+              transform: scale(1);
+            }
+            100% {
+              transform: scale(1.09);
+            }
+          }
+        }
+      }
+    }
+
+    .box_con {
+      flex: 1.5;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+
+      .box {
+        &.sales_box .icon_con {
+          background: #19aabd;
+        }
+
+        &.supplied_box .icon_con {
+          background: #3c9a5e;
+        }
+
+        &.not_supplied_box .icon_con {
+          background: #fc8e02;
+        }
+
+        &.returned_goods_box .icon_con {
+          background: #d83531;
+        }
+
+        .item_wrapper {
+          background: variables.$bg_color;
+          position: relative;
+          border-radius: 5px;
+          display: flex;
+          justify-content: space-between;
+          padding: 20px;
+          height: 100%;
+
+          .icon_con {
+            height: 65px;
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+
+            .icon {
+              height: 20px;
+              width: 20px;
+              color: white;
+            }
+          }
+
+          h3 {
+            white-space: nowrap;
+            font-weight: 500;
+            padding-top: 10px;
+            font-size: 15px;
+          }
+
+          .number {
+            margin: auto 0;
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .table_section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 40px;
+
+    h2 {
+      font-size: 20px;
+    }
+  }
+}

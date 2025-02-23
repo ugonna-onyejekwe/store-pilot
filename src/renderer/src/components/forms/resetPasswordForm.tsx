@@ -8,9 +8,17 @@ import Button from '../ui/Button'
 import { toastUI } from '../ui/toast'
 import { NewPasswordSchema, ResetPasswordSchema } from './schemas'
 
-const ResetPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) => void }) => {
+const ResetPasswordForm = ({
+  setLoggingIn,
+  forgottenPassword,
+  setOpenModel
+}: {
+  setLoggingIn?: (value: boolean) => void
+  setOpenModel?: (value: boolean) => void
+  forgottenPassword: boolean
+}) => {
   const { mutateAsync, isPending } = usevalidateDev()
-  const [formStep, setFormStep] = useState(1)
+  const [formStep, setFormStep] = useState(!forgottenPassword ? 2 : 1)
 
   const onSubmit = (values) => {
     mutateAsync({
@@ -35,7 +43,7 @@ const ResetPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) =>
 
   return (
     <div className="forgotten_password_form">
-      <h2>Forgotten password</h2>
+      {!forgottenPassword ? <h2>Password setting</h2> : <h2>Forgotten password</h2>}
       <p className="sub_header">Enter detials to reset password</p>
       {/* form1 */}
 
@@ -59,7 +67,7 @@ const ResetPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) =>
             touched={touched.developerPhoneNumber}
           />
 
-          <span className="remeber_password" onClick={() => setLoggingIn(true)}>
+          <span className="remeber_password" onClick={() => setLoggingIn && setLoggingIn(true)}>
             Remembered password?
           </span>
 
@@ -68,7 +76,9 @@ const ResetPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) =>
       )}
 
       {/* form 2 */}
-      {formStep === 2 && <NewPasswordForm setLoggingIn={setLoggingIn} />}
+      {formStep === 2 && (
+        <NewPasswordForm setOpenModel={setOpenModel} setLoggingIn={setLoggingIn} />
+      )}
     </div>
   )
 }
@@ -76,7 +86,13 @@ const ResetPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) =>
 export default ResetPasswordForm
 
 // NEW PASSWORD FORM
-const NewPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) => void }) => {
+const NewPasswordForm = ({
+  setLoggingIn,
+  setOpenModel
+}: {
+  setLoggingIn?: (value: boolean) => void
+  setOpenModel?: (value: boolean) => void
+}) => {
   const { mutateAsync, isPending } = useResetPassword()
 
   const onSubmit = (values) => {
@@ -86,8 +102,9 @@ const NewPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) => v
       .then(() => {
         toastUI.success('Password reset successful')
         toastUI.success('You can now login with your new password')
-        setLoggingIn(true)
+        setLoggingIn && setLoggingIn(true)
         resetForm()
+        setOpenModel && setOpenModel(false)
       })
       .catch((error) => console.log(error))
   }
@@ -121,7 +138,7 @@ const NewPasswordForm = ({ setLoggingIn }: { setLoggingIn: (value: boolean) => v
         touched={touched.confirmPassword}
       />
 
-      <Button text="Reset password" type="submit" />
+      <Button text="Reset password" type="submit" isLoading={isPending} />
     </form>
   )
 }

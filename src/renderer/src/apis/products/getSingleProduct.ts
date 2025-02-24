@@ -29,6 +29,7 @@ export type ProductResponse = {
   colors: { name: string; id: string; quantity: number }[]
   designs: { name: string; id: string; quantity: number }[]
   productId: string
+  lastPrice: number
   leftOver?: {
     category: {
       name: string

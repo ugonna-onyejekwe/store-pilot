@@ -6,12 +6,18 @@ type ModalProps = {
   children: ReactNode
   onOpenChange: (value: boolean) => void
   open: boolean
+  zIndex?: number
 }
 
-export const Modal = ({ children, onOpenChange, open }: ModalProps) => {
+export const Modal = ({ children, onOpenChange, open, zIndex }: ModalProps) => {
   return (
     <>
-      <div className={open ? 'modal_main_container active' : 'modal_main_container'}>
+      <div
+        className={open ? 'modal_main_container active' : 'modal_main_container'}
+        style={{
+          zIndex: zIndex
+        }}
+      >
         <div className="wrapper">
           <div className="close_btn" onClick={() => onOpenChange(false)}>
             <Icons.CloseIcon className="close_icon" />
@@ -20,7 +26,7 @@ export const Modal = ({ children, onOpenChange, open }: ModalProps) => {
         </div>
       </div>
 
-      <Overlay open={open} onOpenChange={onOpenChange} />
+      <Overlay open={open} onOpenChange={onOpenChange} zIndex={zIndex && zIndex - 1} />
     </>
   )
 }
@@ -28,15 +34,19 @@ export const Modal = ({ children, onOpenChange, open }: ModalProps) => {
 type OverlayProps = {
   onOpenChange?: (value: boolean) => void
   open: boolean
+  zIndex?: number
 }
 
-export const Overlay = ({ open, onOpenChange }: OverlayProps) => {
+export const Overlay = ({ open, onOpenChange, zIndex }: OverlayProps) => {
   return (
     <div
       className={open ? 'overlay_container active' : 'overlay_container'}
       onClick={() => {
         if (!onOpenChange) return
         onOpenChange(false)
+      }}
+      style={{
+        zIndex: zIndex
       }}
     />
   )

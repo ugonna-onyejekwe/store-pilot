@@ -8,8 +8,10 @@ import { SelectColor } from './enterColor'
 import { SelectDesign } from './enterDesign'
 import { SelectModel } from './enterModel'
 import { SelectSize } from './enterSizes'
-import { SelectSubProduct } from './enterSubProduct'
+import { SubProductQuantities } from './enterSubProduct'
+import { SelectReturnDisposition } from './productStatus'
 import './styles.scss'
+import { Summary } from './summary'
 
 const ReturnProductForm = () => {
   const [formSteps, setFormSteps] = useState<number>(1)
@@ -30,7 +32,10 @@ const ReturnProductForm = () => {
     productId: '',
     size: '',
     design: '',
-    color: ''
+    color: '',
+    subproducts: [],
+    returnDisposition: '',
+    quantity: 1
   })
 
   useEffect(() => {
@@ -43,9 +48,18 @@ const ReturnProductForm = () => {
     if (formData.productId) {
       getProduct({ productId: formData.productId }).catch((error) => toastUI.error(getError(error)))
     }
-
-    console.log(formData)
   }, [formData.category, formData.productId])
+
+  useEffect(() => {
+    if (categoryData?.hasSubProducts === true) {
+      formData.subproducts =
+        productData?.subProducts.map((i) => ({ ...i, inputedQuantity: 0 })) ?? []
+
+      console.log(formData.subproducts)
+
+      setFormData({ ...formData })
+    }
+  }, [productData, categoryData])
 
   const onSubmit = () => {}
 
@@ -90,6 +104,10 @@ const ReturnProductForm = () => {
     if (formSteps === 6) {
       return setFormSteps(7)
     }
+
+    if (formSteps === 7) {
+      return setFormSteps(8)
+    }
   }
 
   //fn: Go back to previous form
@@ -127,10 +145,14 @@ const ReturnProductForm = () => {
               ? setFormSteps(3)
               : setFormSteps(2)
     }
+
+    if (formSteps === 8) {
+      setFormSteps(7)
+    }
   }
 
   return (
-    <div>
+    <div className="returnedGoodsForm">
       {formSteps === 1 && (
         <SelectCategory formData={formData} setFormData={setFormData} nextStep={fnSetFormStep} />
       )}
@@ -158,12 +180,11 @@ const ReturnProductForm = () => {
 
       {/* Subproduct */}
       {formSteps === 4 && (
-        <SelectSubProduct
+        <SubProductQuantities
           formData={formData}
           setFormData={setFormData}
           nextStep={fnSetFormStep}
           prevStep={goToPrevForm}
-          productData={productData!}
           isLoading={isGettingProducts || isgettingCategory}
         />
       )}
@@ -192,13 +213,24 @@ const ReturnProductForm = () => {
         />
       )}
 
-      {/* summary */}
+      {/* status */}
       {formSteps === 7 && (
-        <SelectModel
+        <SelectReturnDisposition
           formData={formData}
           setFormData={setFormData}
           nextStep={fnSetFormStep}
           prevStep={goToPrevForm}
+        />
+      )}
+
+      {/* Summary */}
+      {formSteps === 8 && (
+        <Summary
+          formData={formData}
+          nextStep={fnSetFormStep}
+          prevStep={goToPrevForm}
+          productData={productData!}
+          categoryData={categoryData!}
         />
       )}
     </div>

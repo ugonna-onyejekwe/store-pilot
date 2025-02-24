@@ -1,6 +1,6 @@
 import { useReturnAllCategories } from '@renderer/apis/categories/getCategories'
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Icons } from '../ui/icons'
 import { Overlay } from '../ui/modal.tsx'
 import { navLinks } from './links'
@@ -17,11 +17,11 @@ const Sidebar = ({ setOpenSidebar, openSidebar, setCurrentPage }: SidebarProps) 
   const [openSubCate, setOpenSubCat] = useState(false)
   const { pathname } = useLocation()
   const naviagte = useNavigate()
+  const params = useParams()
 
   useEffect(() => {
     mutate()
-    console.log(AllCategories, 'data')
-  }, [])
+  }, [params])
 
   return (
     <>

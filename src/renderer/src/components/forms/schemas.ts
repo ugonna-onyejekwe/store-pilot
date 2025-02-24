@@ -163,7 +163,11 @@ export const addPro_enterModelSchema = yup.object().shape({
       const { hasModel } = this.parent // Access other field's value
       return !hasModel || (hasModel && value)
     }),
-  totalQuantity: yup.number().min(1, "Total quantity can't be less than 1")
+  totalQuantity: yup.number().min(1, "Total quantity can't be less than 1"),
+  lastPrice: yup.number().test('is-required-if-has-modal', 'Enter last price', function (value) {
+    const { hasModel } = this.parent // Access other field's value
+    return !hasModel || (hasModel && value)
+  })
 })
 
 export const addPro_totalQuantitySchema = yup.object().shape({
@@ -184,5 +188,6 @@ export const checkoutFormSchma = yup.object().shape({
   supplyStatus: yup.string().required('Supply status is required'),
   customerName: yup.string().required('Customer name is required'),
   phoneNumber: yup.string(),
+  supplyLocation: yup.string(),
   sellLocation: yup.string().required('This field is required')
 })

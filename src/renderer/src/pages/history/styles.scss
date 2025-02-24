@@ -1,6 +1,8 @@
 @use '../../lib/variables';
 
 .history_page {
+  width: 95vw;
+
   .filter_con {
     display: flex;
     align-items: center;
@@ -26,6 +28,104 @@
 
         &:focus {
           outline: 1px solid variables.$primary_color;
+        }
+      }
+    }
+  }
+
+  .details_con {
+    .header {
+      text-align: center;
+
+      h2 {
+        font-size: 20px;
+      }
+
+      p {
+        color: variables.$light_text_color2;
+        font-size: 15px;
+      }
+    }
+
+    .info_con {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+
+      p {
+        font-weight: 500;
+        color: variables.$light_text_color;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        span {
+          color: variables.$secondary_color;
+        }
+      }
+    }
+
+    .goods_section {
+      margin-top: 30px;
+
+      h3 {
+        font-size: 20px;
+      }
+
+      .box_con {
+        margin-top: 10px;
+        background: variables.$bg_alt_color;
+        border-radius: 5px;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        .box {
+          padding: 20px;
+          background: variables.$bg_color;
+          border-radius: 5px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+
+          p {
+            font-weight: 500;
+            color: variables.$light_text_color;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            span {
+              color: variables.$secondary_color;
+            }
+          }
+
+          .subproducts {
+            h3 {
+              font-size: 15px;
+              color: variables.$light_text_color2;
+            }
+
+            .subproduct_list {
+              margin-top: 5px;
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+
+              p {
+                font-weight: 500;
+                color: variables.$light_text_color;
+              }
+            }
+          }
         }
       }
     }

@@ -1,58 +1,78 @@
-import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
-import { SelecInput } from '@renderer/components/inputs'
+import { Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
+import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
-import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 
-type SelectSubProductProps = {
+type SubProductQuantitiesProps = {
   formData: ReturnedProductType
   setFormData: (values: ReturnedProductType) => void
   nextStep: () => void
   prevStep: () => void
-  productData: ProductResponse
   isLoading: boolean
 }
 
-export const SelectSubProduct = ({
+export const SubProductQuantities = ({
   formData,
   setFormData,
   nextStep,
   prevStep,
-  isLoading,
-  productData
-}: SelectSubProductProps) => {
-  const initialValues = {
-    size: formData.size
-  }
+  isLoading
+}: SubProductQuantitiesProps) => {
+  const onSubmit = (e) => {
+    e.preventDefault()
 
-  const onSubmit = (values) => {
-    setFormData({ ...formData, size: values.size })
+    const cumulatedSizeQuantity = formData.subproducts.reduce(
+      (sum, product) => Number(sum) + Number(product.inputedQuantity),
+      0
+    )
+
+    if (cumulatedSizeQuantity <= 0) return toastUI.error("Number of sub products can't be zero")
+
     nextStep()
   }
-
-  const { touched, errors, handleSubmit, setFieldValue } = useFormik({
-    initialValues,
-    // validationSchema: addPro_selectCategorySchema,
-    onSubmit
-  })
 
   return (
     <>
       {!isLoading && (
         <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
-          <form onSubmit={handleSubmit} className="form">
-            <div className="form_container">
-              <SelecInput
-                placeholder="Select size"
-                onChange={setFieldValue}
-                options={productData.sizes.map((i) => ({ label: i.name, value: i.id }))}
-                name="size"
-                id="size"
-                label="Select product size"
-                touched={touched.size}
-                errorMsg={errors.size}
-              />
+          <form onSubmit={onSubmit} className="form sub_product_quantities_con">
+            <h3>Enter quantity for each sub product</h3>
+
+            <div className="form_con">
+              {formData.subproducts.map((i, key) => (
+                <div className="box_con" key={key}>
+                  <Input
+                    label={i.name}
+                    placeholder="Enter quantity"
+                    value={i.inputedQuantity}
+                    onChange={(e) => {
+                      formData.subproducts[key].inputedQuantity = e.target.value
+
+                      setFormData({ ...formData })
+                    }}
+                    onBlur={() => {
+                      if (i.inputedQuantity > i.defaultQuantity) {
+                        formData.subproducts[key].inputedQuantity = i.defaultQuantity
+
+                        setFormData({ ...formData })
+
+                        return toastUI.error(`product can be greater than ${i.defaultQuantity}`)
+                      }
+
+                      if (i.inputedQuantity < 0) {
+                        formData.subproducts[key].inputedQuantity = 0
+
+                        setFormData({ ...formData })
+
+                        return toastUI.error(`product can be less than zero`)
+                      }
+                    }}
+                  />
+                  <span>{i.defaultQuantity}</span>
+                  <p>Max number of this product is {i.defaultQuantity}</p>
+                </div>
+              ))}
             </div>
 
             <div className="btn btn_multi">

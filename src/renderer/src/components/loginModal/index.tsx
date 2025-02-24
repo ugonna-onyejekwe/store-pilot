@@ -34,7 +34,7 @@ const LoginModal = ({ onOpen, onOpenChange }: LoginModalProps) => {
 
           {loggingIn && <LoginForm setLoggingIn={setLoggingIn} openModel={onOpenChange} />}
 
-          {!loggingIn && <ResetPasswordForm setLoggingIn={setLoggingIn} />}
+          {!loggingIn && <ResetPasswordForm setLoggingIn={setLoggingIn} forgottenPassword />}
         </>
       </AlertModal>
     </>

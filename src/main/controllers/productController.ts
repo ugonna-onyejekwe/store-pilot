@@ -13,7 +13,8 @@ export const formateProduct = async (req: Request, res: Response, next: NextFunc
       sizes,
       subProducts,
       colors,
-      designs
+      designs,
+      lastPrice
     } = req.body
 
     const allCategory = req.doc.category
@@ -29,7 +30,8 @@ export const formateProduct = async (req: Request, res: Response, next: NextFunc
       sizes,
       subProducts,
       colors,
-      designs
+      designs,
+      lastPrice
     }
 
     //  Adding ID to each size
@@ -300,9 +302,7 @@ export const checkout = async (req: Request, res: Response) => {
 
         if (!productDetails) return res.status(404).json({ message: 'Product not found' })
 
-        const { hasColor, hasDesign, hasSize, hasSubProducts, hasModel } = productCategory
-
-        // TODO: implement when product does not have model
+        const { hasColor, hasDesign, hasSize, hasSubProducts } = productCategory
 
         // Decrease product main quantity
         productDetails.totalQuantity =
@@ -469,13 +469,13 @@ export const checkout = async (req: Request, res: Response) => {
 
     const UpdatedHistoryData = [
       {
-        listOfProducts: {
-          ...listOfProducts,
+        listOfProducts: listOfProducts,
+        checkoutInfo: {
+          ...checkoutInfo,
           createdAt: Date.now(),
           modified: false,
           modeifedAt: ''
-        },
-        checkoutInfo
+        }
       },
       ...historyData
     ]

@@ -48,7 +48,7 @@ export const convertAmount = (amount: number) => {
 }
 
 // formate date
-export function formatDate(timestamp: number): string {
+export function formatDate(timestamp: string) {
   const date = new Date(timestamp)
   const month = date.toLocaleString('default', { month: 'short' }) // Get short month name
   const day = date.getDate()

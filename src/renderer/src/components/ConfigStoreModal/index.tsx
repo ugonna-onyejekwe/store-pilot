@@ -64,11 +64,13 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
     })
 
   useEffect(() => {
-    getAllWarehouse()
-      .then(() => {
-        if (warehouses?.length === 0) return toastUI.error('No warehouses yet')
-      })
-      .catch((error) => console.log(error))
+    if (values.actionType !== 'add') {
+      getAllWarehouse()
+        .then(() => {
+          if (warehouses?.length === 0) return toastUI.error('No warehouses yet')
+        })
+        .catch((error) => console.log(error))
+    }
   }, [values.actionType])
 
   return (

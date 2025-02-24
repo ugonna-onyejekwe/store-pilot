@@ -1,6 +1,6 @@
 import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
-import { animateY } from '@renderer/lib/utils'
+import { animateY, convertAmount } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import SellLeftOverForm from './forms/sellLeftOverForm'
@@ -77,6 +77,18 @@ const ProductBox = ({ data }: ProductBoxProps) => {
                   Quantity left: <b>{data.totalQuantity}</b>
                 </li>
               </p>
+
+              {categoryData?.hasModel && (
+                <p className="txt">
+                  <small>
+                    <Icons.BulletPoint2 className="bullet_icon" />
+                  </small>
+
+                  <li>
+                    Last price: <b>{convertAmount(data.lastPrice)}</b>
+                  </li>
+                </p>
+              )}
 
               {categoryData?.hasModel && (
                 <p className="txt">

@@ -36,6 +36,7 @@ type payload = {
     paymentStatus: 'full payment' | 'half payment' | 'credit'
     sellingPrice: number
     amountPaid: number
+    supplyLocation: string
   }
 }
 

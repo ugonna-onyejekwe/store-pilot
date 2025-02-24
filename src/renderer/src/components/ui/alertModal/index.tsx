@@ -9,6 +9,7 @@ type AlertModalProps = {
   children: ReactNode
   className?: string
   isCloseable?: boolean
+  zIndex?: number
 }
 
 const AlertModal = ({
@@ -16,7 +17,8 @@ const AlertModal = ({
   onOpenChange,
   children,
   className,
-  isCloseable = true
+  isCloseable = true,
+  zIndex
 }: AlertModalProps) => {
   return (
     <>
@@ -24,6 +26,9 @@ const AlertModal = ({
         className={
           open ? `${className} AlertModal_container active` : `${className} AlertModal_container`
         }
+        style={{
+          zIndex: zIndex
+        }}
       >
         {isCloseable && (
           <div className="close_btn" onClick={() => onOpenChange(false)}>
@@ -34,7 +39,11 @@ const AlertModal = ({
         {children}
       </div>
 
-      <Overlay open={open} onOpenChange={isCloseable ? onOpenChange : () => {}} />
+      <Overlay
+        open={open}
+        onOpenChange={isCloseable ? onOpenChange : () => {}}
+        zIndex={zIndex && zIndex - 1}
+      />
     </>
   )
 }

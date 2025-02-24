@@ -30,11 +30,12 @@ export const EnterModal = ({
     model: defaultValues.model,
     cartoonQuantity: defaultValues.cartoonQuantity,
     totalQuantity: defaultValues.totalQuantity,
-    hasModel: hasModel
+    hasModel: hasModel,
+    lastPrice: defaultValues.lastPrice
   }
 
   const onSubmit = (values) => {
-    if (!editing) {
+    if (!editing && hasModel) {
       VerifyModelName({
         model: values.model,
         categoryId: defaultValues.category
@@ -79,6 +80,17 @@ export const EnterModal = ({
             type="number"
           />
 
+          {hasModel && (
+            <Input
+              placeholder="Enter last price ..."
+              onChange={handleChange('lastPrice')}
+              label="What's the last price for this model"
+              touched={touched.lastPrice}
+              errorMsg={errors.lastPrice}
+              value={values.lastPrice}
+              type="number"
+            />
+          )}
           {hasModel && (
             <Input
               placeholder="Enter cartoons per product"

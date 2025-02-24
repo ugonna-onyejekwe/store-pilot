@@ -1,7 +1,8 @@
-import { deleteCookies, getCookies } from '@renderer/lib/utils'
+import { deleteCookies } from '@renderer/lib/utils'
 import { RootState } from '@renderer/store'
+import { removeCookie } from '@renderer/store/authSlice'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
@@ -9,9 +10,9 @@ import { Icons } from '../ui/icons'
 import './styles.scss'
 
 const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
-  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+  const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const [openLogout, setOpenLogout] = useState(false)
-  const authCookie = getCookies('auth')
+  const authCookie = useSelector((state: RootState) => state.authReducer.cookie)
 
   return (
     <>
@@ -62,6 +63,7 @@ const LogoutModel = ({
   open: boolean
   onOpenChange: (value: boolean) => void
 }) => {
+  const dispatch = useDispatch()
   return (
     <AlertModal open={open} onOpenChange={onOpenChange} className="logout_model">
       <h2>Do you want to logout of admin?</h2>
@@ -73,6 +75,7 @@ const LogoutModel = ({
           text="Logout"
           onClick={() => {
             deleteCookies('auth')
+            dispatch(removeCookie())
             onOpenChange(false)
           }}
         />

@@ -14,6 +14,7 @@ type payload = {
   designs: { name: string; quantity: number }[]
   productId: string
   categoryId: string
+  lastPrice: number
 }
 
 const editProduct = (payload: payload) => {

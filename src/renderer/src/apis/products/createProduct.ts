@@ -13,6 +13,7 @@ type payload = {
   subProducts: { name: string; available: boolean; defaultQuantity: number }[]
   colors: { name: string; quantity: number }[]
   designs: { name: string; quantity: number }[]
+  lastPrice: number
 }
 
 const createProduct = (payload: payload) => {

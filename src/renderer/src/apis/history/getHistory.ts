@@ -36,9 +36,10 @@ export type HistoryResponse = {
     paymentStatus: 'full payment' | 'half payment' | 'credit'
     sellingPrice: number
     amountPaid: number
-    createdAt: number
+    createdAt: string
     modified: boolean
-    modeifedAt: number
+    modeifedAt: string
+    supplyLocation: string
   }
 }
 

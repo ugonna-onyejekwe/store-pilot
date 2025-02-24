@@ -13,6 +13,7 @@ type ProductResponse = {
     name: string
     id: string
   }
+  lastPrice: number
   totalQuantity: number
   cartoonsPerProduct: number
   model: string

@@ -9,6 +9,7 @@ import { DeleteCategory } from '@renderer/pages/deleteCategory'
 import DeleteProduct from '@renderer/pages/deleteProduct'
 import History from '@renderer/pages/history'
 import Products from '@renderer/pages/products'
+import { ReturnedGoodsHistory } from '@renderer/pages/returnedGoodsHistory'
 import ReturnProduct from '@renderer/pages/returnProduct'
 
 import { createBrowserRouter } from 'react-router-dom'
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: '/history',
         element: <History />
+      },
+      {
+        path: '/returned-goods-history',
+        element: <ReturnedGoodsHistory />
       }
     ]
   },

@@ -25,7 +25,6 @@ const Dashboard = () => {
   return (
     <div className="dasboard_page container">
       {/* info_con */}
-
       <div className="info_wrapper">
         <div className="time_con">
           <p className="txt">Hello,</p>
@@ -97,10 +96,10 @@ const Dashboard = () => {
             <div className="item_wrapper">
               <div className="txt">
                 <span className="icon_con">
-                  <Icons.ReturnedGoods className="icon" />
+                  <Icons.MoneyIcon className="icon" />
                 </span>
 
-                <h3>Returned Goods</h3>
+                <h3>Incomplete payments</h3>
               </div>
 
               <div className="number">
@@ -113,13 +112,25 @@ const Dashboard = () => {
 
       {/* table */}
       <div className="table_section">
-        <h2>Pending supplies</h2>
+        <div className="pending_supplies_tables table">
+          <h2>Pending supplies</h2>
 
-        {pendingSupplies.length === 0 ? (
-          <h1 className="pending_supplies">No pending supplies today.</h1>
-        ) : (
+          {/* {pendingSupplies.length === 0 ? (
+            <h1 className="no_data_text">No pending supplies today.</h1>
+          ) : ( */}
           <DataTable columns={Supply_column} isLoading={false} data={[]} isClickable />
-        )}
+          {/* // )} */}
+        </div>
+
+        <div className="incomplete_payments_table table">
+          <h2>Incomplete payments</h2>
+
+          {/* {pendingSupplies.length === 0 ? (
+            <h1 className="no_data_text">No pending payments today.</h1>
+          ) : ( */}
+          <DataTable columns={Supply_column} isLoading={false} data={[]} isClickable />
+          {/* )} */}
+        </div>
       </div>
     </div>
   )

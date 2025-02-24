@@ -69,6 +69,7 @@ type AddProductDefaultValueTypes = {
   designCustomInputsIndex: number[]
   sizesCustomInputsIndex: number[]
   totalQuantity: number
+  lastPrice: number
 }
 
 type SellProductFormValues = {
@@ -130,4 +131,12 @@ type ReturnedProductType = {
   size: string
   color: string
   design: string
+  subproducts: {
+    name: string
+    defaultQuantity: number
+    id: string
+    inputedQuantity: number
+  }[]
+  returnDisposition: string
+  quantity: number
 }

@@ -1,4 +1,5 @@
 import { useCheckout } from '@renderer/apis/products/checkout'
+import { useReturnAllWarehouses } from '@renderer/apis/warehouses/getAllWarehouses'
 import { getError } from '@renderer/lib/utils'
 import { RootState } from '@renderer/store'
 import { clearCart } from '@renderer/store/cartSlice'
@@ -14,9 +15,14 @@ import { toastUI } from '../ui/toast'
 import './styles.scss'
 
 const CheckOutForm = () => {
-  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+  const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const { mutateAsync, isPending } = useCheckout()
   const [openSuccessModel, setOpenSuccessModel] = useState(false)
+  const {
+    isPending: isGettingWareHouses,
+    data: wareHouses,
+    mutateAsync: getwareHouses
+  } = useReturnAllWarehouses()
 
   const initialValues = {
     sellingPrice: '',
@@ -25,7 +31,8 @@ const CheckOutForm = () => {
     supplyStatus: '',
     customerName: '',
     phoneNumber: '',
-    sellLocation: ''
+    sellLocation: '',
+    supplyLocation: ''
   }
 
   const onSubmit = (values) => {
@@ -34,11 +41,12 @@ const CheckOutForm = () => {
       checkoutInfo: {
         locationSold: values.sellLocation,
         customerName: values.customerName,
-        customerPhoneNumber: values.customerName,
+        customerPhoneNumber: values.phoneNumber,
         supplyStatus: values.supplyStatus,
         paymentStatus: values.paymentType,
         sellingPrice: values.sellingPrice,
-        amountPaid: values.amountPaid
+        amountPaid: values.amountPaid,
+        supplyLocation: values.supplyLocation
       }
     })
       .then(() => setOpenSuccessModel(true))
@@ -74,6 +82,10 @@ const CheckOutForm = () => {
   useEffect(() => {
     values.paymentType.trim() !== 'Half payment' ? setFieldValue('amountPaid', '') : null
   }, [values.paymentType])
+
+  useEffect(() => {
+    getwareHouses().catch((error) => console.log(error))
+  }, [])
 
   return (
     <>
@@ -113,6 +125,18 @@ const CheckOutForm = () => {
           )}
 
           <SelecInput
+            label="Where was this product sold?"
+            onChange={setFieldValue}
+            errorMsg={errors.sellLocation}
+            touched={touched.sellLocation}
+            name="sellLocation"
+            id="sellLocation"
+            options={wareHouses?.map((i) => ({ label: i.name, value: i.name })) ?? []}
+            placeholder="Select"
+            isLoading={isGettingWareHouses}
+          />
+
+          <SelecInput
             label="Select supply status"
             onChange={setFieldValue}
             errorMsg={errors.supplyStatus}
@@ -123,15 +147,13 @@ const CheckOutForm = () => {
             placeholder="Select"
           />
 
-          <SelecInput
-            label="Where was this product sold?"
-            onChange={setFieldValue}
-            errorMsg={errors.sellLocation}
-            touched={touched.sellLocation}
-            name="sellLocation"
-            id="sellLocation"
-            options={supplyStatus}
-            placeholder="Select"
+          <Input
+            label="Enter supply location (optional)"
+            onChange={handleChange('supplyLocation')}
+            errorMsg={errors.supplyLocation}
+            touched={touched.supplyLocation}
+            value={values.supplyLocation}
+            placeholder="Location.."
           />
 
           <Input
@@ -203,7 +225,7 @@ const Checkout_SuccessModel = ({
 
       <h3>
         {totalCartons}
-        <span>Cartoons</span>
+        <span>Cartoon(s)</span>
       </h3>
 
       <p>

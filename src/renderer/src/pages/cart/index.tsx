@@ -6,7 +6,7 @@ import emptycart from '../../assets/images/cart.webp'
 import './styles.scss'
 
 const Cart = () => {
-  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+  const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
 
   return (
     <div className="cart_page container">

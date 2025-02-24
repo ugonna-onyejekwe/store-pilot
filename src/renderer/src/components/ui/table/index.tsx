@@ -5,7 +5,7 @@ import {
   getPaginationRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Icons } from '../icons'
 import { ScaleLoaderUI } from '../loader'
 import './styles.scss'
@@ -33,13 +33,13 @@ export const DataTable = ({
     onGlobalFilterChange: setGlobalFilter
   })
 
-  // useEffect(() => {
-  //   if (searchValue) {
-  //     table.setGlobalFilter(String(searchValue))
-  //   } else {
-  //     table.setGlobalFilter('')
-  //   }
-  // }, [searchValue, table])
+  useEffect(() => {
+    if (searchValue) {
+      table.setGlobalFilter(String(searchValue))
+    } else {
+      table.setGlobalFilter('')
+    }
+  }, [searchValue, table])
 
   return (
     <div className="table_wrapper ">
@@ -63,7 +63,7 @@ export const DataTable = ({
             {isLoading ? (
               <tr className="loader">
                 <td colSpan={columns.length}>
-                  <ScaleLoaderUI minHeight={500} />
+                  <ScaleLoaderUI minHeight={300} />
                 </td>
               </tr>
             ) : table.getRowModel().rows?.length ? (

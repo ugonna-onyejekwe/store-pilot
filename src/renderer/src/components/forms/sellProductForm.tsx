@@ -18,7 +18,7 @@ type SellProductFormProps = {
 
 const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProductFormProps) => {
   const dispatch = useDispatch()
-  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
+  const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const [quantityInCart, setQuantityInCart] = useState(0)
   const [colourInCart, setColorInCart] = useState(0)
   const [designInCart, setDesignInCart] = useState(0)
@@ -192,6 +192,11 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
 
       setSubProductsValues(formatedSubproduct)
       setFieldValue('quantity', 1)
+    }
+
+    if (values.typeOfSale !== '' && values.typeOfSale.toLowerCase().trim() === 'sell all') {
+      setSubProductsValues([])
+      setFieldValue('subproducts', [])
     }
   }, [values.typeOfSale])
 

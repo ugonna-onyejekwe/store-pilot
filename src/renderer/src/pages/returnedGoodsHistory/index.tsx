@@ -6,6 +6,6 @@
 <label for="discard">Mark as Damaged/Discard</label> */
 }
 
-export const ReturnedGoods = () => {
+export const ReturnedGoodsHistory = () => {
   return <div>index</div>
 }

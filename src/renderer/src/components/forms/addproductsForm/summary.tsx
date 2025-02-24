@@ -2,7 +2,7 @@ import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCateg
 import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
 import { toastUI } from '@renderer/components/ui/toast'
-import { animateY } from '@renderer/lib/utils'
+import { animateY, convertAmount } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 import { useParams } from 'react-router-dom'
 
@@ -20,8 +20,7 @@ export const Summary = ({
   handleProceed,
   defaultValues,
   categoryData,
-  backFn,
-  setDefaultValues
+  backFn
 }: SummaryTypes) => {
   const {
     name: categoryName,
@@ -101,9 +100,16 @@ export const Summary = ({
             <p>
               Total available quantity: <span>{defaultValues.totalQuantity}</span>
             </p>
+
             {hasModel && (
               <p>
-                cartoons per product: <span>{defaultValues.cartoonQuantity}</span>
+                Last price for this model: <span>{convertAmount(defaultValues.lastPrice)}</span>
+              </p>
+            )}
+
+            {hasModel && (
+              <p>
+                Cartoons per product: <span>{defaultValues.cartoonQuantity}</span>
               </p>
             )}
           </div>

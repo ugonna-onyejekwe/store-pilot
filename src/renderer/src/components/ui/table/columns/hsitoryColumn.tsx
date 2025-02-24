@@ -21,7 +21,7 @@ export const History_column: ColumnDef<HistoryResponse>[] = [
   },
   {
     accessorKey: 'checkoutInfo.paymentStatus',
-    header: 'Payment status',
+    header: 'Payment type',
     cell: ({ row }) => {
       const data = row.original
       return (

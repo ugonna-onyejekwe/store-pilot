@@ -23,8 +23,7 @@ const LeftOverProducts = ({
 }: LeftOverProductsprops) => {
   const { leftOver } = productData
   const [activeProduct, setActiveProduct] = useState<number>(-1)
-  const cartItems = useSelector((state: RootState) => state.cart.cartItems)
-  const [openForm, setOpenForm] = useState(false)
+  const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
 
   return (
     <>
@@ -99,14 +98,6 @@ const LeftOverProducts = ({
           </div>
         </div>
       </Modal>
-
-      {/* {openForm && (
-        <SellLeftOverForm
-          open={openForm}
-          onOpenChange={setOpenForm}
-          data={leftOver?.[activeProduct]}
-        />
-      )} */}
     </>
   )
 }

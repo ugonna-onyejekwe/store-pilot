@@ -14,7 +14,7 @@ export const navLinks = [
   },
   {
     name: 'Returned products',
-    path: '/returned-product-history'
+    path: '/returned-goods-history'
   },
   {
     name: 'Admin',

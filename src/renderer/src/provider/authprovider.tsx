@@ -1,16 +1,18 @@
 import LoginModal from '@renderer/components/loginModal'
-import { getCookies } from '@renderer/lib/utils'
+import { RootState } from '@renderer/store'
+import { initCookie } from '@renderer/store/authSlice'
 import { ReactNode, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [openLoginModal, setOpenLoginModal] = useState(false)
-  const params = useParams()
+  const cookie = useSelector((state: RootState) => state.authReducer.cookie)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    const cookie = getCookies('auth')
-    if (!cookie) return setOpenLoginModal(true)
-  }, [params])
+    dispatch(initCookie())
+    if (!cookie) setOpenLoginModal(true)
+  }, [cookie])
 
   return (
     <>

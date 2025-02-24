@@ -1,6 +1,8 @@
 import { useLogin } from '@renderer/apis/auth/login'
 import { getError, setCookies } from '@renderer/lib/utils'
+import { initCookie } from '@renderer/store/authSlice'
 import { useFormik } from 'formik'
+import { useDispatch } from 'react-redux'
 import { Input } from '../inputs'
 import Button from '../ui/Button'
 import { toastUI } from '../ui/toast'
@@ -13,12 +15,15 @@ type LoginFormProps = {
 
 const LoginForm = ({ setLoggingIn, openModel }: LoginFormProps) => {
   const { isPending, mutateAsync } = useLogin()
+  const dispatch = useDispatch()
+
   const onSubmit = (values) => {
     mutateAsync({ password: values.password })
       .then(() => {
         toastUI.success('Login successful')
         openModel(false)
         setCookies('auth', 'LOGGED_IN')
+        dispatch(initCookie())
         resetForm()
       })
       .catch((error) => toastUI.error(getError(error)))

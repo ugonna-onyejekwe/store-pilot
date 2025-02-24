@@ -45,7 +45,8 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
     colorCustomInputsIndex: [],
     designCustomInputsIndex: [],
     sizesCustomInputsIndex: [],
-    totalQuantity: editing && productData ? productData.totalQuantity : 0
+    totalQuantity: editing && productData ? productData.totalQuantity : 0,
+    lastPrice: 0
   }
 
   const [defaultValues, setDefaultValues] = useState<AddProductDefaultValueTypes>({
@@ -199,8 +200,17 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
   }
 
   const onSubmit = async () => {
-    const { category, model, sizes, subProducts, cartoonQuantity, colors, designs, totalQuantity } =
-      defaultValues
+    const {
+      category,
+      model,
+      sizes,
+      subProducts,
+      cartoonQuantity,
+      colors,
+      designs,
+      totalQuantity,
+      lastPrice
+    } = defaultValues
 
     // if editing product
     if (editing) {
@@ -213,7 +223,8 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
         subProducts,
         colors,
         designs,
-        categoryId: productData.category.id
+        categoryId: productData.category.id,
+        lastPrice
       })
         .then(() => {
           toastUI.success('Product updated successfully')
@@ -235,7 +246,8 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
       sizes,
       subProducts,
       colors,
-      designs
+      designs,
+      lastPrice
     })
       .then(() => {
         toastUI.success('Product add successfully')
@@ -285,7 +297,8 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
                   ...defaultValues,
                   cartoonQuantity: formData.cartoonQuantity,
                   model: formData.model,
-                  totalQuantity: formData.totalQuantity
+                  totalQuantity: formData.totalQuantity,
+                  lastPrice: formData.lastPrice
                 })
 
                 fnSetFormStep()

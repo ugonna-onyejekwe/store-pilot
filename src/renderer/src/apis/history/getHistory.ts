@@ -32,8 +32,8 @@ export type HistoryResponse = {
     locationSold: string
     customerName: string
     customerPhoneNumber: string
-    supplyStatus: 'supplied | not supplied'
-    paymentStatus: 'full payment' | 'half payment' | 'credit'
+    supplyStatus: string
+    paymentStatus: string
     sellingPrice: number
     amountPaid: number
     createdAt: string

@@ -474,7 +474,8 @@ export const checkout = async (req: Request, res: Response) => {
           ...checkoutInfo,
           createdAt: Date.now(),
           modified: false,
-          modeifedAt: ''
+          modeifedAt: '',
+          checkoutId: uuidv4()
         }
       },
       ...historyData

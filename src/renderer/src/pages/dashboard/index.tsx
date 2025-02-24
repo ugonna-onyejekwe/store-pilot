@@ -1,4 +1,5 @@
-import { useReturnAllHistory } from '@renderer/apis/history/getHistory'
+import { HistoryResponse, useReturnAllHistory } from '@renderer/apis/history/getHistory'
+import EditPaymentModel from '@renderer/components/EditPaymentModal'
 import EditSupplyModel from '@renderer/components/editSupplyModel'
 import { Icons } from '@renderer/components/ui/icons'
 import { convertAmount, formatDate, formatDateFromTimestamp } from '@renderer/lib/utils'
@@ -8,7 +9,10 @@ import './style.scss'
 const Dashboard = () => {
   const [time, setTime] = useState('')
   const [openEditSupplyModel, setOpenEditSupplyModel] = useState(false)
+  const [openEditPaymentModel, setOpenEditPaymentModel] = useState(false)
+  const [ActiveHistory, setActiveHistory] = useState<HistoryResponse>()
   const [activeCheckoutId, setActiveCheckoutId] = useState('')
+
   const { mutate: fetchHistry, data: history, isPending } = useReturnAllHistory()
 
   // Use efffect that sets time
@@ -34,6 +38,8 @@ const Dashboard = () => {
   const pendingSupplies = history?.filter((i) => i.checkoutInfo.supplyStatus === 'Not supplied')
 
   const pendingPayments = history?.filter((i) => i.checkoutInfo.paymentStatus !== 'Full payment')
+
+  console.log(pendingSupplies, history)
 
   return (
     <>
@@ -217,7 +223,13 @@ const Dashboard = () => {
                         {i.checkoutInfo.paymentStatus}
                       </span>
 
-                      <span className="icon_con">
+                      <span
+                        className="icon_con"
+                        onClick={() => {
+                          setActiveHistory(i)
+                          setOpenEditPaymentModel(true)
+                        }}
+                      >
                         <Icons.EditIcon className="icon" />
                       </span>
                     </div>
@@ -229,12 +241,23 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <EditSupplyModel
-        open={openEditSupplyModel}
-        onOpenChange={setOpenEditSupplyModel}
-        checkoutId={activeCheckoutId}
-        reFetchHistry={fetchHistry}
-      />
+      {openEditSupplyModel && (
+        <EditSupplyModel
+          open={openEditSupplyModel}
+          onOpenChange={setOpenEditSupplyModel}
+          checkoutId={activeCheckoutId}
+          reFetchHistry={fetchHistry}
+        />
+      )}
+
+      {openEditPaymentModel && (
+        <EditPaymentModel
+          open={openEditPaymentModel}
+          onOpenChange={setOpenEditPaymentModel}
+          data={ActiveHistory!}
+          reFetchHistry={fetchHistry}
+        />
+      )}
     </>
   )
 }

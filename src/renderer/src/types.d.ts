@@ -7,6 +7,7 @@ type InputProps = {
   errorMsg?: string
   touched?: boolean
   type?: 'text' | 'number' | 'password'
+  disabled?: boolean
 }
 
 type SelecInputProps = {

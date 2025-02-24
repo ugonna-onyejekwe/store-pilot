@@ -5,6 +5,11 @@
   flex-direction: column;
   gap: 2px;
 
+  &.disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
   label {
     font-size: 15px;
     color: variables.$dark_text_color;

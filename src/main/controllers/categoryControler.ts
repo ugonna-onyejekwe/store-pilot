@@ -175,7 +175,7 @@ export const editCategory: RequestHandler = async (req: Request, res: Response) 
         : i
     )
 
-    db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+    await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
       if (err) {
         return res.status(500).json({ error: 'Failed to update category' })
       }
@@ -224,7 +224,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
     const updatedCategories = allCategory.filter((i) => i.id !== categoryId)
 
-    db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+    await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
       if (err) {
         return res.status(500).json({ error: 'Failed to delete category' })
       }

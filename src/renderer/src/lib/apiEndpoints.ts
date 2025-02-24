@@ -16,7 +16,8 @@ export const ApiEndPoints = {
 
   // history
   getAllHistory: '/history',
-  editSupplyStatus: '/edit-supply-status',
+  editSupplyStatus: '/history/edit-supply-status',
+  editPayment: '/history/edit-payment',
 
   // auth
   login: '/auth/login',

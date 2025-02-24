@@ -66,6 +66,60 @@
       }
     }
 
+    .status_con {
+      margin-top: 30px;
+      h3 {
+        font-size: 18px;
+        padding-bottom: 10px;
+      }
+
+      p {
+        font-weight: 500;
+        color: variables.$light_text_color;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        span {
+          color: variables.$secondary_color;
+        }
+
+        &:not(:last-child) {
+          padding-bottom: 10px;
+        }
+      }
+
+      .btns {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        margin-top: 10px;
+
+        .edit_con {
+          height: 40px;
+          width: 40px;
+          background: variables.$bg_alt_color;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 5px;
+          cursor: pointer;
+
+          &:hover {
+            .editIcon {
+              color: variables.$dark_text_color;
+            }
+          }
+
+          .editIcon {
+            height: 15px;
+            width: 15px;
+            color: variables.$light_text_color2;
+          }
+        }
+      }
+    }
+
     .goods_section {
       margin-top: 30px;
 
@@ -77,7 +131,8 @@
         margin-top: 10px;
         background: variables.$bg_alt_color;
         border-radius: 5px;
-        height: 300px;
+        height: fit-content;
+        max-height: 300px;
         display: flex;
         flex-direction: column;
         gap: 20px;

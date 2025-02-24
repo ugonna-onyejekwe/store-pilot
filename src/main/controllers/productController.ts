@@ -134,7 +134,7 @@ export const createProduct = async (req: Request, res: Response) => {
 
     const allProduct = req.doc.products
 
-    const updatedProductsList = [...allProduct, newProduct]
+    const updatedProductsList = [newProduct, ...allProduct]
 
     await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
       if (updateErr) {

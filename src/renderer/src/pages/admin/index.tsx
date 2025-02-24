@@ -89,8 +89,8 @@ const Admin = () => {
                   <Icons.LocationIcon className="icon" />
                 </div>
 
-                <h4>Configure warehouses</h4>
-                <p className="txt">Do you want to add or delete warahouse?</p>
+                <h4>Configure stores</h4>
+                <p className="txt">Do you want to add or delete store?</p>
               </div>
             </div>
 

@@ -1,37 +1,10 @@
 @use '../../lib/variables';
 
 .product_details_container {
-  .filter_items {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    row-gap: 6px;
-
-    span {
-      padding: 7px 20px;
-      border: 1px solid rgb(197, 196, 196);
-      border-radius: 25px;
-      font-size: 14px;
-      text-transform: capitalize;
-      color: variables.$light_text_color;
-      font-weight: 400;
-      cursor: pointer;
-      transition: 0.4s ease;
-
-      &.active {
-        border-color: #046ddd;
-        color: #0a63c3;
-        background: #007bff14;
-      }
-    }
-  }
-
   .products_container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    margin-top: 40px;
 
     @media (max-width: 1024px) {
       grid-template-columns: repeat(2, 1fr);

@@ -29,12 +29,12 @@ export const addWarehouse = async (req: Request, res: Response) => {
 
     await db.update({}, { $set: { warehouses: newWarehouses } }, {}, (updateErr, _) => {
       if (updateErr) {
-        console.error('Error storing warehouse:', updateErr)
-        res.status(500).json({ error: 'Failed to store warehouse' })
+        console.error('Error adding store:', updateErr)
+        res.status(500).json({ error: 'Failed to Add  store' })
         return
       }
 
-      res.status(201).json({ message: 'Warehouse added' })
+      res.status(201).json({ message: 'store added' })
     })
   } catch (error) {
     console.log(error)
@@ -52,12 +52,12 @@ export const deletewarehouse = async (req: Request, res: Response) => {
 
     await db.update({}, { $set: { warehouses: newWarehouses } }, {}, (updateErr, _) => {
       if (updateErr) {
-        console.error('Error deleting warehouse:', updateErr)
-        res.status(500).json({ error: 'Failed to delete warehouse' })
+        console.error('Error deleting store:', updateErr)
+        res.status(500).json({ error: 'Failed to delete store' })
         return
       }
 
-      res.status(200).json({ message: 'Warehouse deleted successfully' })
+      res.status(200).json({ message: 'Store deleted successfully' })
     })
   } catch (error) {
     console.log(error)

@@ -1,6 +1,9 @@
 import { HistoryResponse, useReturnAllHistory } from '@renderer/apis/history/getHistory'
 import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
+import EditPaymentModel from '@renderer/components/EditPaymentModal'
+import EditSupplyModel from '@renderer/components/editSupplyModel'
 import { Input } from '@renderer/components/inputs'
+import { Icons } from '@renderer/components/ui/icons'
 import { ScaleLoaderUI } from '@renderer/components/ui/loader'
 import { Modal } from '@renderer/components/ui/modal.tsx'
 import { DataTable } from '@renderer/components/ui/table'
@@ -16,6 +19,8 @@ const History = () => {
   const [filteredHistory, setFilteredHistory] = useState<HistoryResponse[]>([])
   const [rowData, setRowData] = useState<HistoryResponse>()
   const [openDetails, setOpenDetails] = useState(false)
+
+  // fetch data
   useEffect(() => mutate(), [])
 
   useEffect(() => {
@@ -40,6 +45,10 @@ const History = () => {
       setFilteredHistory(list ?? [])
     }
   }, [date])
+
+  useEffect(() => {
+    setOpenDetails(false)
+  }, [history])
 
   return (
     <div className="container history_page">
@@ -69,7 +78,12 @@ const History = () => {
         }}
       />
 
-      <RowDetails open={openDetails} onOpenChange={setOpenDetails} data={rowData!} />
+      <RowDetails
+        open={openDetails}
+        onOpenChange={setOpenDetails}
+        data={rowData!}
+        refetchHistory={mutate}
+      />
     </div>
   )
 }
@@ -80,92 +94,175 @@ type RowDetailsProps = {
   open: boolean
   onOpenChange: (value: boolean) => void
   data: HistoryResponse
+  refetchHistory: () => void
 }
 
-const RowDetails = ({ open, onOpenChange, data }: RowDetailsProps) => {
+const RowDetails = ({ open, onOpenChange, data, refetchHistory }: RowDetailsProps) => {
   if (!data) return null
-  console.log(data.listOfProducts)
+  const [openEditSupplyModel, setOpenEditSupplyModel] = useState(false)
+  const [openEditPaymentModel, setOpenEditPaymentModel] = useState(false)
+  const [ActiveHistory, setActiveHistory] = useState<HistoryResponse>()
+  const [activeCheckoutId, setActiveCheckoutId] = useState('')
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
-      <div className="details_con">
-        <div className="header">
-          <h2>Details</h2>
-          <p>
-            {' '}
-            Viewing Details of <b>{data.checkoutInfo.customerName}</b>{' '}
-          </p>
-        </div>
-
-        <div className="info_con">
-          <p>
-            Customer name: <span>{data.checkoutInfo.customerName}</span>
-          </p>
-          <p>
-            Customer phone number:{' '}
-            <span>{data.checkoutInfo.customerPhoneNumber || 'Not provided'}</span>
-          </p>
-          <p>
-            Checkout price: <span>{convertAmount(Number(data.checkoutInfo.sellingPrice))}</span>
-          </p>
-
-          <p>
-            Payment type: <span>{data.checkoutInfo.paymentStatus.toUpperCase()}</span>
-          </p>
-
-          <p>
-            Amount left to pay:{' '}
-            <span>
-              {data.checkoutInfo.paymentStatus.toLowerCase() === 'full payment'
-                ? convertAmount(0)
-                : convertAmount(
-                    Number(data.checkoutInfo.sellingPrice) - Number(data.checkoutInfo.amountPaid)
-                  )}
-            </span>
-          </p>
-
-          <p>
-            Store where product is sold: <span>{data.checkoutInfo.locationSold}</span>
-          </p>
-
-          <p>
-            Supply status: <span>{data.checkoutInfo.supplyStatus.toUpperCase()}</span>
-          </p>
-
-          <p>
-            Supply location: <span>{data.checkoutInfo.supplyLocation || 'Not specified'}</span>
-          </p>
-
-          <p>
-            Date of checkout: <span>{formatDate(data.checkoutInfo.createdAt)}</span>
-          </p>
-          {data.checkoutInfo.modified && (
+    <>
+      <Modal open={open} onOpenChange={onOpenChange}>
+        <div className="details_con">
+          <div className="header">
+            <h2>Details</h2>
             <p>
-              Modified at: <span>{formatDate(data.checkoutInfo.modeifedAt)}</span>
+              {' '}
+              Viewing Details of <b>{data.checkoutInfo.customerName}</b>{' '}
             </p>
-          )}
-        </div>
+          </div>
 
-        {data.listOfProducts.length > 0 && (
-          <div className="goods_section">
-            <h3>Goods bought</h3>
+          <div className="info_con">
+            <p>
+              Customer name: <span>{data.checkoutInfo.customerName}</span>
+            </p>
+            <p>
+              Customer phone number:{' '}
+              <span>{data.checkoutInfo.customerPhoneNumber || 'Not provided'}</span>
+            </p>
 
-            <div className="box_con">
-              {data.listOfProducts.map((i, key) => (
-                <ProductBox key={key} {...i} />
-              ))}
+            <p>
+              Store where product is sold: <span>{data.checkoutInfo.locationSold}</span>
+            </p>
+
+            <p>
+              Date of checkout: <span>{formatDate(data.checkoutInfo.createdAt)}</span>
+            </p>
+            {data.checkoutInfo.modified && (
+              <p>
+                Modified at: <span>{formatDate(data.checkoutInfo.modeifedAt)}</span>
+              </p>
+            )}
+          </div>
+
+          {/* supply details */}
+          <div className="status_con">
+            <h3>Supply Details</h3>
+
+            <div className="box">
+              <p>
+                Supply location: <span>{data.checkoutInfo.supplyLocation || 'Not specified'}</span>
+              </p>
+
+              <div className="btns">
+                <span
+                  className={'status ' + 'status__' + data.checkoutInfo.supplyStatus.toLowerCase()}
+                >
+                  {data.checkoutInfo.supplyStatus}
+                </span>
+
+                <span
+                  className="edit_con"
+                  onClick={() => {
+                    setActiveCheckoutId(data.checkoutInfo.checkoutId)
+                    setOpenEditSupplyModel(true)
+                    console.log('yes')
+                  }}
+                >
+                  <Icons.EditIcon className="editIcon" />
+                </span>
+              </div>
             </div>
           </div>
-        )}
 
-        <div className="action_section">
-          <div className="box"></div>
+          {/* payment detials */}
+          <div className="status_con">
+            <h3>Payment Details</h3>
+
+            <div className="box">
+              <p>
+                Checkout price: <span>{convertAmount(Number(data.checkoutInfo.sellingPrice))}</span>
+              </p>
+
+              <p>
+                Amount paid:{' '}
+                <span>
+                  {data.checkoutInfo.paymentStatus.toLowerCase() === 'full payment'
+                    ? convertAmount(data.checkoutInfo.sellingPrice)
+                    : convertAmount(Number(data.checkoutInfo.amountPaid))}
+                </span>
+              </p>
+
+              <p>
+                Amount left to pay:{' '}
+                <span>
+                  {data.checkoutInfo.paymentStatus.toLowerCase() === 'full payment'
+                    ? convertAmount(0)
+                    : convertAmount(
+                        Number(data.checkoutInfo.sellingPrice) -
+                          Number(data.checkoutInfo.amountPaid)
+                      )}
+                </span>
+              </p>
+
+              <div className="btns">
+                <span
+                  className={'status ' + 'status__' + data.checkoutInfo.paymentStatus.toLowerCase()}
+                >
+                  {data.checkoutInfo.paymentStatus}
+                </span>
+
+                {data.checkoutInfo.paymentStatus.toLowerCase() !== 'full payment' && (
+                  <span
+                    className="edit_con"
+                    onClick={() => {
+                      setActiveHistory(data)
+                      setOpenEditPaymentModel(true)
+                    }}
+                  >
+                    <Icons.EditIcon className="editIcon" />
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {data.listOfProducts.length > 0 && (
+            <div className="goods_section">
+              <h3>Goods bought</h3>
+
+              <div className="box_con">
+                {data.listOfProducts.map((i, key) => (
+                  <ProductBox key={key} {...i} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="action_section">
+            <div className="box"></div>
+          </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      {openEditSupplyModel && (
+        <EditSupplyModel
+          open={openEditSupplyModel}
+          onOpenChange={setOpenEditSupplyModel}
+          checkoutId={activeCheckoutId}
+          zIndex={10000}
+          reFetchHistry={refetchHistory}
+        />
+      )}
+
+      {openEditPaymentModel && (
+        <EditPaymentModel
+          open={openEditPaymentModel}
+          onOpenChange={setOpenEditPaymentModel}
+          data={ActiveHistory!}
+          zIndex={10000}
+          reFetchHistry={refetchHistory}
+        />
+      )}
+    </>
   )
 }
 
+// PRODUCT BOUGHT===========================
 type productBoxProps = {
   productId: string
   quantity: number

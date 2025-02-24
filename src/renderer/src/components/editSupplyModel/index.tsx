@@ -68,7 +68,7 @@ const EditSupplyModel = ({
         />
 
         <div className="btns">
-          <Button text="Cancel" varient="outline" />
+          <Button text={'Cancel'} varient="outline" onClick={() => onOpenChange(false)} />
           <Button text="Proceed" type="submit" isLoading={isPending} />
         </div>
       </form>

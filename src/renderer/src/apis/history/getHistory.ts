@@ -40,6 +40,7 @@ export type HistoryResponse = {
     modified: boolean
     modeifedAt: string
     supplyLocation: string
+    checkoutId: string
   }
 }
 

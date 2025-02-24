@@ -43,10 +43,11 @@ export const EnterModal = ({
         .then(() => handleProceed(values))
         .catch((error) => {
           console.log(error)
+          return
         })
+    } else {
+      handleProceed(values)
     }
-
-    handleProceed(values)
   }
 
   const { values, touched, errors, handleSubmit, handleChange } = useFormik({

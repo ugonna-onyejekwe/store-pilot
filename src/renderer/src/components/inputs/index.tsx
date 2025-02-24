@@ -9,10 +9,11 @@ export const Input = ({
   onBlur,
   touched,
   errorMsg,
-  type = 'text'
+  type = 'text',
+  disabled
 }: InputProps) => {
   return (
-    <div className="text_input input_con">
+    <div className={disabled ? 'text_input input_con disabled' : 'text_input input_con'}>
       {label && <label>{label}</label>}
       <input
         placeholder={placeholder}

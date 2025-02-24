@@ -64,10 +64,10 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
     })
 
   useEffect(() => {
-    if (values.actionType !== 'add') {
+    if (values.actionType === 'delete') {
       getAllWarehouse()
         .then(() => {
-          if (warehouses?.length === 0) return toastUI.error('No warehouses yet')
+          if (warehouses?.length === 0) return toastUI.error('No uploaded store yet')
         })
         .catch((error) => console.log(error))
     }
@@ -77,12 +77,12 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
     <AlertModal open={open} onOpenChange={onOpenChange} className="config_wareHouse_form">
       <form onSubmit={handleSubmit}>
         <div className="head">
-          <h2>Configure warehouses </h2>
+          <h2>Configure store </h2>
           <p className="subheader">Enter details to proceed</p>
         </div>
 
         <SelecInput
-          label="Do you want to delete or add warehouse name?"
+          label="Do you want to delete or add store name?"
           placeholder="Select"
           onChange={setFieldValue}
           id="actionType"
@@ -95,7 +95,7 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
 
         {values.actionType === 'delete' && (
           <SelecInput
-            label="Select warehouse name you want to delete "
+            label="Select store name you want to delete "
             placeholder="Select"
             onChange={setFieldValue}
             id="warehouse"
@@ -106,8 +106,8 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
 
         {values.actionType === 'add' && (
           <Input
-            label="Enter warehouse name"
-            placeholder="Warehouse name"
+            label="Enter store name"
+            placeholder="Store name"
             onChange={handleChange('warehouse')}
             value={values.warehouse}
           />

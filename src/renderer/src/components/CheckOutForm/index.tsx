@@ -148,7 +148,7 @@ const CheckOutForm = () => {
           />
 
           <Input
-            label="Enter supply location (optional)"
+            label="Where will you be supppling the product to? (optional)"
             onChange={handleChange('supplyLocation')}
             errorMsg={errors.supplyLocation}
             touched={touched.supplyLocation}

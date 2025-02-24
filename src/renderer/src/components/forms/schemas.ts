@@ -191,3 +191,12 @@ export const checkoutFormSchma = yup.object().shape({
   supplyLocation: yup.string(),
   sellLocation: yup.string().required('This field is required')
 })
+
+// ADMIN AUTH VALIDATIONSCHMA
+export const AdminAuthValidationSchema = yup.object().shape({
+  oldPassword: yup.string().required('Old password required'),
+  newPassword: yup
+    .string()
+    .required('New password required')
+    .min(8, 'Password must be upto 8 characters')
+})

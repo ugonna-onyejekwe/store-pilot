@@ -1,9 +1,9 @@
 import { deleteCookies } from '@renderer/lib/utils'
 import { RootState } from '@renderer/store'
 import { removeCookie } from '@renderer/store/authSlice'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
 import { Icons } from '../ui/icons'
@@ -13,6 +13,20 @@ const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
   const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const [openLogout, setOpenLogout] = useState(false)
   const authCookie = useSelector((state: RootState) => state.authReducer.cookie)
+  const [searchValue, setSearchValue] = useState('')
+  const [params, setSearchParams] = useSearchParams()
+
+  const handleInputKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      setSearchParams({ seacrhValue: searchValue })
+    }
+  }
+
+  useEffect(() => {
+    if (searchValue === '') {
+      setSearchParams({ seacrhValue: '' })
+    }
+  }, [searchValue])
 
   return (
     <>
@@ -29,7 +43,13 @@ const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
             <div className="search_con">
               <Icons.SearchIcon className="search_icon" />
 
-              <input type="search" placeholder="Search product by name..." />
+              <input
+                type="search"
+                placeholder="Search product by name..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={handleInputKeyDown}
+              />
             </div>
 
             {/* Shopping cart */}

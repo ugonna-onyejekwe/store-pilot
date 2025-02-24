@@ -23,6 +23,7 @@ export const ApiEndPoints = {
   login: '/auth/login',
   validateDev: '/auth/validateDev',
   resetPassword: '/auth/reset-password',
+  adminResetPassword: '/auth/admin-reset-password',
 
   // warehouse
   getAllWarehouse: '/warehouses',

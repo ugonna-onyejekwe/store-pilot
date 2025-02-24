@@ -153,9 +153,15 @@ export const createProduct = async (req: Request, res: Response) => {
 // GET ALL PRODUCTS || GET FILTERED PRODUCT
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const { categoryId } = req.query
+    const { categoryId, model } = req.query as { categoryId: string; model: string }
 
     const productList = req.doc.products
+
+    if (model) {
+      const filteredList = productList.filter((i) => i.model.toLowerCase() === model.toLowerCase())
+
+      return res.status(200).json(filteredList)
+    }
 
     if (categoryId) {
       const filteredList = productList.filter((i) => i.category.id === categoryId)

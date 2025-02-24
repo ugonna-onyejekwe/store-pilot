@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Icons } from '../icons'
 import { ScaleLoaderUI } from '../loader'
+import { TablePagination } from './dataTablePagination'
 import './styles.scss'
 
 export const DataTable = ({
@@ -96,7 +97,7 @@ export const DataTable = ({
         </table>
       </div>
 
-      {/* {table.getRowModel().rows?.length > 0 && <TablePagination table={table} data={pagination} />} */}
+      {table.getRowModel().rows?.length > 0 && <TablePagination table={table} />}
     </div>
   )
 }

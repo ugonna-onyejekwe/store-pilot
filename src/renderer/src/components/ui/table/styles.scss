@@ -141,3 +141,55 @@ tbody .data_not_found {
   background: rgba(255, 166, 0, 0.101);
   border-color: orange;
 }
+
+// Pagination style =====================
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+
+  .page_count {
+    color: variables.$light_text_color2;
+    font-size: 15px;
+  }
+
+  .action_col {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+
+    select {
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      button {
+        padding: 7px 10px;
+        background: variables.$secondary_color;
+        line-height: 0;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        color: white;
+
+        &:disabled {
+          background: variables.$secondary_color;
+          opacity: 0.7;
+        }
+
+        .icon {
+          height: 20px;
+          width: 20px;
+        }
+      }
+    }
+  }
+}

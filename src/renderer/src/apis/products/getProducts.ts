@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 
 type payload = {
   categoryId?: string
+  model?: string
 }
 
 type ProductResponse = {

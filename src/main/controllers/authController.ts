@@ -8,7 +8,7 @@ export const Login = async (req: Request, res: Response) => {
 
     const authInfo = req.doc.authCredentials
 
-    if (password.toLowerCase() === authInfo.password.toLowerCase())
+    if (password.trim() === authInfo.password.trim())
       return res.status(200).json({ message: 'Login successful' })
 
     res.status(400).json({ message: 'Wrong password' })
@@ -60,6 +60,38 @@ export const resetPassword = async (req: Request, res: Response) => {
       }
 
       res.status(200).json({ message: 'Password reset successful' })
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error.message)
+  }
+}
+
+//ADMIN RESET PASSWORD
+export const adminResetPassword = async (req: Request, res: Response) => {
+  try {
+    const { newPassword, oldPassword } = req.body
+
+    if (!newPassword) return res.status(400).json({ message: 'New password nrequired' })
+
+    const authInfo = req.doc.authCredentials
+
+    if (oldPassword.trim() !== authInfo.password.trim())
+      return res.status(400).json({ message: 'Wrong password' })
+
+    const newAuthDetials = {
+      ...authInfo,
+      password: newPassword
+    }
+
+    await db.update({}, { $set: { authCredentials: newAuthDetials } }, {}, (updateErr, _) => {
+      if (updateErr) {
+        console.error('Error updating auth details', updateErr)
+        res.status(500).json({ error: 'Failed to create new password' })
+        return
+      }
+
+      return res.status(200).json({ message: 'Password reset successful' })
     })
   } catch (error) {
     console.log(error)

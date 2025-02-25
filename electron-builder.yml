@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: '-'
+appId: com.StorePilot.app
+productName: 'StorePilot'
 directories:
   buildResources: build
 files:

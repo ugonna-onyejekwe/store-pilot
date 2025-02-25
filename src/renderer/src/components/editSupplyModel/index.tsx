@@ -38,6 +38,7 @@ const EditSupplyModel = ({
       .then(() => {
         onOpenChange(false)
         reFetchHistry && reFetchHistry()
+        toastUI.success('Supply status updated')
       })
       .catch((error) => console.log(error))
   }

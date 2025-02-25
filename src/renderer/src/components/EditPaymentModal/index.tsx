@@ -42,6 +42,7 @@ const EditPaymentModel = ({
       .then(() => {
         onOpenChange(false)
         reFetchHistry && reFetchHistry()
+        toastUI.success('Payment updated')
       })
       .catch((error) => console.log(error))
   }

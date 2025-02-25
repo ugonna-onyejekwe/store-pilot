@@ -12,6 +12,7 @@ export const getAllHistory = async (req: Request, res: Response) => {
   }
 }
 
+// EDIT SUPPLY
 export const editSuppyStatus = async (req: Request, res: Response) => {
   try {
     const { checkoutId } = req.params
@@ -46,6 +47,7 @@ export const editSuppyStatus = async (req: Request, res: Response) => {
   }
 }
 
+// EDIT PAYMENT
 export const editPayment = async (req: Request, res: Response) => {
   try {
     const { checkoutId } = req.params

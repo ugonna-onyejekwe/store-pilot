@@ -9,18 +9,20 @@ const Layout = () => {
   const [currentPage, setCurrentPage] = useState('Dashboard')
 
   return (
-    <div className="main">
-      <Sidebar
-        openSidebar={openSidebar}
-        setOpenSidebar={setOpenSidebar}
-        setCurrentPage={setCurrentPage}
-      />
+    <>
+      <div className="main">
+        <Sidebar
+          openSidebar={openSidebar}
+          setOpenSidebar={setOpenSidebar}
+          setCurrentPage={setCurrentPage}
+        />
 
-      <div className="main_wrapper">
-        <Navbar setOpenSidebar={setOpenSidebar} currentPage={currentPage} />
-        <Outlet />
+        <div className="main_wrapper">
+          <Navbar setOpenSidebar={setOpenSidebar} currentPage={currentPage} />
+          <Outlet />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

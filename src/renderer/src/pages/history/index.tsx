@@ -21,25 +21,28 @@ const History = () => {
   const [openDetails, setOpenDetails] = useState(false)
 
   // fetch data
-  useEffect(() => mutate(), [])
+  useEffect(() => {
+    mutate()
+  }, [])
 
   useEffect(() => {
     if (date) {
-      const dateString = new Date(date)
-      const timestamp = dateString.getTime()
+      const targetDate = new Date(date)
+      const startOfDay = new Date(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate()
+      )
+      const endOfDay = new Date(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate() + 1
+      )
 
       const list = history?.filter(
         (i) =>
-          Number(i.checkoutInfo.createdAt) === timestamp ||
-          Number(i.checkoutInfo.modeifedAt) === timestamp
-      )
-
-      history?.map((i) =>
-        console.log(
-          formatDate(i.checkoutInfo.createdAt),
-          formatDate(i.checkoutInfo.createdAt) === formatDate(date),
-          formatDate(date)
-        )
+          new Date(i.checkoutInfo.createdAt) >= startOfDay &&
+          new Date(i.checkoutInfo.createdAt) < endOfDay
       )
 
       setFilteredHistory(list ?? [])
@@ -69,7 +72,7 @@ const History = () => {
       <DataTable
         columns={History_column}
         isLoading={isPending}
-        data={filteredHistory.length > 0 ? filteredHistory : (history ?? [])}
+        data={date ? filteredHistory : (history ?? [])}
         isClickable
         searchValue={searchValue}
         handleClick={(rowData) => {

@@ -39,12 +39,6 @@ const ReturnProductForm = () => {
   })
 
   useEffect(() => {
-    if (formData.category) {
-      getCategory({
-        id: formData.category
-      }).catch((error) => toastUI.error(getError(error)))
-    }
-
     if (formData.productId) {
       getProduct({ productId: formData.productId }).catch((error) => toastUI.error(getError(error)))
     }
@@ -55,8 +49,6 @@ const ReturnProductForm = () => {
       formData.subproducts =
         productData?.subProducts.map((i) => ({ ...i, inputedQuantity: 0 })) ?? []
 
-      console.log(formData.subproducts)
-
       setFormData({ ...formData })
     }
   }, [productData, categoryData])
@@ -65,40 +57,38 @@ const ReturnProductForm = () => {
 
   // fn:Go to next form
   const fnSetFormStep = () => {
-    if (formSteps === 1) return setFormSteps(2)
+    const { hasModel, hasSize, hasSubProducts, hasColor, hasDesign } = categoryData!
+
+    if (formSteps === 1) return hasModel ? setFormSteps(2) : setFormSteps(7)
 
     if (formSteps === 2) {
-      return categoryData?.hasSize
+      return hasSize
         ? setFormSteps(3)
-        : categoryData?.hasSubProducts
+        : hasSubProducts
           ? setFormSteps(4)
-          : categoryData?.hasColor
+          : hasColor
             ? setFormSteps(5)
-            : categoryData?.hasDesign
+            : hasDesign
               ? setFormSteps(6)
               : setFormSteps(7)
     }
 
     if (formSteps === 3) {
-      return categoryData?.hasSubProducts
+      return hasSubProducts
         ? setFormSteps(4)
-        : categoryData?.hasColor
+        : hasColor
           ? setFormSteps(5)
-          : categoryData?.hasDesign
+          : hasDesign
             ? setFormSteps(6)
             : setFormSteps(7)
     }
 
     if (formSteps === 4) {
-      return categoryData?.hasColor
-        ? setFormSteps(5)
-        : categoryData?.hasDesign
-          ? setFormSteps(6)
-          : setFormSteps(7)
+      return hasColor ? setFormSteps(5) : hasDesign ? setFormSteps(6) : setFormSteps(7)
     }
 
     if (formSteps === 5) {
-      return categoryData?.hasDesign ? setFormSteps(6) : setFormSteps(7)
+      return hasDesign ? setFormSteps(6) : setFormSteps(7)
     }
 
     if (formSteps === 6) {
@@ -112,11 +102,11 @@ const ReturnProductForm = () => {
 
   //fn: Go back to previous form
   const goToPrevForm = () => {
-    const { hasSize, hasSubProducts, hasColor, hasDesign } = categoryData!
+    const { hasModel, hasSize, hasSubProducts, hasColor, hasDesign } = categoryData!
 
     if (formSteps === 2) return setFormSteps(1)
 
-    if (formSteps === 3) return setFormSteps(2)
+    if (formSteps === 3) return hasModel ? setFormSteps(2) : setFormSteps(1)
 
     if (formSteps === 4) return hasSize ? setFormSteps(3) : setFormSteps(2)
 
@@ -135,15 +125,17 @@ const ReturnProductForm = () => {
     }
 
     if (formSteps === 7) {
-      return hasDesign
-        ? setFormSteps(6)
-        : hasColor
-          ? setFormSteps(5)
-          : hasSubProducts
-            ? setFormSteps(4)
-            : hasSize
-              ? setFormSteps(3)
-              : setFormSteps(2)
+      return !hasModel
+        ? setFormSteps(1)
+        : hasDesign
+          ? setFormSteps(6)
+          : hasColor
+            ? setFormSteps(5)
+            : hasSubProducts
+              ? setFormSteps(4)
+              : hasSize
+                ? setFormSteps(3)
+                : setFormSteps(2)
     }
 
     if (formSteps === 8) {
@@ -154,15 +146,31 @@ const ReturnProductForm = () => {
   return (
     <div className="returnedGoodsForm">
       {formSteps === 1 && (
-        <SelectCategory formData={formData} setFormData={setFormData} nextStep={fnSetFormStep} />
+        <SelectCategory
+          formData={formData}
+          setFormData={setFormData}
+          handleProceed={async (values) => {
+            getCategory({
+              id: values.category
+            })
+              .then(() => fnSetFormStep())
+              .catch((error) => toastUI.error(getError(error)))
+          }}
+          isLoading={isgettingCategory}
+        />
       )}
 
       {formSteps === 2 && (
         <SelectModel
           formData={formData}
           setFormData={setFormData}
-          nextStep={fnSetFormStep}
           prevStep={goToPrevForm}
+          handleProceed={async (values) => {
+            getProduct({ productId: values.productId })
+              .then(() => fnSetFormStep())
+              .catch((error) => toastUI.error(getError(error)))
+          }}
+          isLoading={isGettingProducts}
         />
       )}
 
@@ -228,7 +236,7 @@ const ReturnProductForm = () => {
         <Summary
           formData={formData}
           nextStep={fnSetFormStep}
-          prevStep={goToPrevForm}
+          handleSubmit={onSubmit}
           productData={productData!}
           categoryData={categoryData!}
         />

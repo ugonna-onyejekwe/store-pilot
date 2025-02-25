@@ -39,7 +39,9 @@ export const History_column: ColumnDef<HistoryResponse>[] = [
       const { checkoutInfo } = row.original
       return (
         <p>
-          {Number(checkoutInfo.amountPaid) === 0 ? '--' : convertAmount(checkoutInfo.amountPaid)}
+          {checkoutInfo.paymentStatus.toLowerCase() === 'full payment'
+            ? convertAmount(checkoutInfo.sellingPrice)
+            : convertAmount(checkoutInfo.amountPaid)}
         </p>
       )
     }

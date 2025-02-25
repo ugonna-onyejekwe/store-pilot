@@ -1,0 +1,70 @@
+@use '../../lib/variables';
+
+.splashScreenCon {
+  position: fixed;
+  z-index: 1000000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: hide 300ms ease;
+  animation-delay: 700ms;
+  overflow: hidden;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .box {
+    transform: scale(1);
+    animation: open 700ms ease;
+
+    @keyframes open {
+      0% {
+        transform: scale(0);
+      }
+    }
+
+    .bot_con {
+      display: flex;
+      justify-content: center;
+      height: 60px;
+      width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      background: variables.$bg_alt_color;
+      border-radius: 5px;
+
+      .logo {
+        height: 30px;
+        width: 30px;
+      }
+    }
+
+    h1 {
+      font-size: 30px;
+      color: #0466cf;
+      text-align: center;
+      padding-top: 5px;
+
+      span {
+        font-weight: 500;
+      }
+    }
+
+    p {
+      color: #3c4043;
+      font-size: 16px;
+      font-style: italic;
+      text-align: center;
+      padding-top: 5px;
+    }
+  }
+}

@@ -12,6 +12,13 @@ const Dashboard = () => {
   const [openEditPaymentModel, setOpenEditPaymentModel] = useState(false)
   const [ActiveHistory, setActiveHistory] = useState<HistoryResponse>()
   const [activeCheckoutId, setActiveCheckoutId] = useState('')
+  const targetDate = new Date(Date.now())
+  const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate())
+  const endOfDay = new Date(
+    targetDate.getFullYear(),
+    targetDate.getMonth(),
+    targetDate.getDate() + 1
+  )
 
   const { mutate: fetchHistry, data: history, isPending } = useReturnAllHistory()
 
@@ -39,7 +46,13 @@ const Dashboard = () => {
 
   const pendingPayments = history?.filter((i) => i.checkoutInfo.paymentStatus !== 'Full payment')
 
-  console.log(pendingSupplies, history)
+  const todaySales = history?.filter(
+    (i) =>
+      new Date(i.checkoutInfo.createdAt) >= startOfDay &&
+      new Date(i.checkoutInfo.createdAt) < endOfDay
+  )
+
+  const suppliedGood = todaySales?.filter((i) => i.checkoutInfo.supplyStatus !== 'Not supplied')
 
   return (
     <>
@@ -72,7 +85,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="number">
-                  <h1>80</h1>
+                  <h1>{todaySales?.length}</h1>
                 </div>
               </div>
             </div>
@@ -85,11 +98,11 @@ const Dashboard = () => {
                     <Icons.SuppliedIcon className="icon" />
                   </span>
 
-                  <h3>Supplied Goods</h3>
+                  <h3>Supplied Goods today</h3>
                 </div>
 
                 <div className="number">
-                  <h1>100</h1>
+                  <h1>{suppliedGood?.length}</h1>
                 </div>
               </div>
             </div>
@@ -106,7 +119,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="number">
-                  <h1>50</h1>
+                  <h1>{pendingSupplies?.length}</h1>
                 </div>
               </div>
             </div>
@@ -123,7 +136,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="number">
-                  <h1>5</h1>
+                  <h1>{pendingPayments?.length}</h1>
                 </div>
               </div>
             </div>

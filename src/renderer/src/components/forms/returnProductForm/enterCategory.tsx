@@ -8,10 +8,16 @@ import { motion } from 'framer-motion'
 type SelectCategoryType = {
   formData: ReturnedProductType
   setFormData: (values: ReturnedProductType) => void
-  nextStep: () => void
+  handleProceed: (values) => void
+  isLoading: boolean
 }
 
-export const SelectCategory = ({ formData, setFormData, nextStep }: SelectCategoryType) => {
+export const SelectCategory = ({
+  formData,
+  setFormData,
+  handleProceed,
+  isLoading
+}: SelectCategoryType) => {
   const { CategoriesData, isPending: gettingCategories } = useGetCategories()
 
   const initialValues = {
@@ -20,7 +26,7 @@ export const SelectCategory = ({ formData, setFormData, nextStep }: SelectCatego
 
   const onSubmit = (values) => {
     setFormData({ ...formData, category: values.category })
-    nextStep()
+    handleProceed(values)
   }
 
   const { touched, errors, handleSubmit, setFieldValue } = useFormik({
@@ -47,7 +53,7 @@ export const SelectCategory = ({ formData, setFormData, nextStep }: SelectCatego
         </div>
 
         <div className="btn btn_single">
-          <Button text={'Proceed'} type="submit" />
+          <Button text={'Proceed'} type="submit" isLoading={isLoading} />
         </div>
       </form>
     </motion.div>

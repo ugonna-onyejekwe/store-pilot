@@ -7,18 +7,16 @@ import { motion } from 'framer-motion'
 type SummaryTypes = {
   formData: ReturnedProductType
   nextStep: () => void
-  prevStep: () => void
-  isLoading: boolean
+  handleSubmit: () => void
   productData: ProductResponse
   categoryData: SingleCategoryResponse
 }
 
 export const Summary = ({
   formData,
-  isLoading,
   nextStep,
   productData,
-  prevStep,
+  handleSubmit,
   categoryData
 }: SummaryTypes) => {
   const color = productData.colors.find((i) => i.id === formData.color)

@@ -67,7 +67,7 @@ export function formatDateFromTimestamp(timestamp) {
     month: 'long',
     year: 'numeric'
   }
-
+  // @ts-expect-error: Overload
   return date.toLocaleDateString(undefined, options)
 }
 

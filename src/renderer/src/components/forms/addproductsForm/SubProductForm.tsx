@@ -21,7 +21,10 @@ const SubProductForm = ({
 
     const subProductExist = defaultValues.subProducts.find((i) => i.available === true)
 
-    if (!subProductExist) return toastUI.error("All sub product can't be missing")
+    if (!subProductExist) {
+      toastUI.error("All sub product can't be missing")
+      return
+    }
 
     handleProceed()
   }

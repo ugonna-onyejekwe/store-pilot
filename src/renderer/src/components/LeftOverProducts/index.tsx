@@ -90,6 +90,7 @@ const LeftOverProducts = ({
               text="Proceed"
               disable={activeProduct < 0}
               onClick={() => {
+                // @ts-expect-error: undefined
                 setLeftOverProductInfo(leftOver?.[activeProduct])
                 setOpenSellLeftOverForm(true)
                 onOpenChange(false)

@@ -59,22 +59,28 @@ export const Summary = ({
       hasSize &&
       (cumulatedSizeQuantity > defaultValues.totalQuantity ||
         cumulatedSizeQuantity < defaultValues.totalQuantity)
-    )
-      return toastUI.error('Pls, fix quanity issues')
+    ) {
+      toastUI.error('Pls, fix quanity issues')
+      return
+    }
 
     if (
       hasColor &&
       (cumulatedColorQuantity > defaultValues.totalQuantity ||
         cumulatedColorQuantity < defaultValues.totalQuantity)
-    )
-      return toastUI.error('Pls, fix quanity issues')
+    ) {
+      toastUI.error('Pls, fix quanity issues')
+      return
+    }
 
     if (
       hasDesign &&
       (cumulatedDesignQuantity > defaultValues.totalQuantity ||
         cumulatedDesignQuantity < defaultValues.totalQuantity)
-    )
-      return toastUI.error('Pls, fix quanity issues')
+    ) {
+      toastUI.error('Pls, fix quanity issues')
+      return
+    }
 
     handleProceed()
   }

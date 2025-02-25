@@ -14,7 +14,7 @@ const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
   const [openLogout, setOpenLogout] = useState(false)
   const authCookie = useSelector((state: RootState) => state.authReducer.cookie)
   const [searchValue, setSearchValue] = useState('')
-  const [params, setSearchParams] = useSearchParams()
+  const [_, setSearchParams] = useSearchParams()
 
   const handleInputKeyDown = (event) => {
     if (event.key === 'Enter') {

@@ -8,8 +8,10 @@ export const Login = async (req: Request, res: Response) => {
 
     const authInfo = req.doc.authCredentials
 
-    if (password.trim() === authInfo.password.trim())
-      return res.status(200).json({ message: 'Login successful' })
+    if (password.trim() === authInfo.password.trim()) {
+      res.status(200).json({ message: 'Login successful' })
+      return
+    }
 
     res.status(400).json({ message: 'Wrong password' })
   } catch (error) {
@@ -28,8 +30,10 @@ export const validateDevCredentails = async (req: Request, res: Response) => {
     if (
       developerPhoneNumber === authInfo.developerPhoneNumber &&
       developerName.toLowerCase() === authInfo.developerName.toLowerCase()
-    )
-      return res.status(200).json({ message: 'Verified' })
+    ) {
+      res.status(200).json({ message: 'Verified' })
+      return
+    }
 
     res.status(400).json({ message: 'Wrong info' })
   } catch (error) {
@@ -52,15 +56,20 @@ export const resetPassword = async (req: Request, res: Response) => {
       password: newPassword
     }
 
-    await db.update({}, { $set: { authCredentials: newAuthDetials } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error updating auth details', updateErr)
-        res.status(500).json({ error: 'Failed to create new password' })
-        return
-      }
+    return await db.update(
+      {},
+      { $set: { authCredentials: newAuthDetials } },
+      {},
+      (updateErr, _) => {
+        if (updateErr) {
+          console.error('Error updating auth details', updateErr)
+          res.status(500).json({ error: 'Failed to create new password' })
+          return
+        }
 
-      res.status(200).json({ message: 'Password reset successful' })
-    })
+        res.status(200).json({ message: 'Password reset successful' })
+      }
+    )
   } catch (error) {
     console.log(error)
     res.status(500).json(error)
@@ -76,23 +85,30 @@ export const adminResetPassword = async (req: Request, res: Response) => {
 
     const authInfo = req.doc.authCredentials
 
-    if (oldPassword.trim() !== authInfo.password.trim())
-      return res.status(400).json({ message: 'Wrong password' })
+    if (oldPassword.trim() !== authInfo.password.trim()) {
+      res.status(400).json({ message: 'Wrong password' })
+      return
+    }
 
     const newAuthDetials = {
       ...authInfo,
       password: newPassword
     }
 
-    await db.update({}, { $set: { authCredentials: newAuthDetials } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error updating auth details', updateErr)
-        res.status(500).json({ error: 'Failed to create new password' })
-        return
-      }
+    return await db.update(
+      {},
+      { $set: { authCredentials: newAuthDetials } },
+      {},
+      (updateErr, _) => {
+        if (updateErr) {
+          console.error('Error updating auth details', updateErr)
+          res.status(500).json({ error: 'Failed to create new password' })
+          return
+        }
 
-      return res.status(200).json({ message: 'Password reset successful' })
-    })
+        return res.status(200).json({ message: 'Password reset successful' })
+      }
+    )
   } catch (error) {
     console.log(error)
     res.status(500).json(error)

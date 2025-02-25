@@ -26,7 +26,10 @@ const EditSupplyModel = ({
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    if (values.supplyStatus === '') return toastUI.error('Select a value')
+    if (values.supplyStatus === '') {
+      toastUI.error('Select a value')
+      return
+    }
 
     mutateAsync({
       checkoutId: checkoutId,

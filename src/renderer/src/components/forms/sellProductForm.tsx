@@ -53,23 +53,27 @@ const SellProductForm = ({ categoryData, productData, setOpenModel }: SellProduc
 
     const designInfo = productData.designs.find((i) => i.id === values.design)
 
-    if (quantitiesLeft.design - designInCart < values.quantity)
-      return toastUI.error(
+    if (quantitiesLeft.design - designInCart < values.quantity) {
+      toastUI.error(
         `There is only ${quantitiesLeft.design - designInCart} ${designInfo?.name} left`
       )
+      return
+    }
 
-    if (quantitiesLeft.color - colourInCart < values.quantity)
-      return toastUI.error(
-        `There is only ${quantitiesLeft.color - colourInCart} ${colorInfo?.name} left`
-      )
+    if (quantitiesLeft.color - colourInCart < values.quantity) {
+      toastUI.error(`There is only ${quantitiesLeft.color - colourInCart} ${colorInfo?.name} left`)
+      return
+    }
 
-    if (quantitiesLeft.size - sizeInCart < values.quantity)
-      return toastUI.error(
-        `There is only ${quantitiesLeft.size - sizeInCart} ${sizeInfo?.name} left`
-      )
+    if (quantitiesLeft.size - sizeInCart < values.quantity) {
+      toastUI.error(`There is only ${quantitiesLeft.size - sizeInCart} ${sizeInfo?.name} left`)
+      return
+    }
 
-    if (productData.totalQuantity - quantityInCart < values.quantity)
-      return toastUI.error(`Avaliable quantity is ${productData.totalQuantity - quantityInCart}`)
+    if (productData.totalQuantity - quantityInCart < values.quantity) {
+      toastUI.error(`Avaliable quantity is ${productData.totalQuantity - quantityInCart}`)
+      return
+    }
 
     dispatch(
       addTocart({

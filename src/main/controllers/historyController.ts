@@ -27,7 +27,8 @@ export const editSuppyStatus = async (req: Request, res: Response) => {
       data.checkoutInfo.modified = true
       data.checkoutInfo.modeifedAt = Date.now()
     } else {
-      return res.status(404).json({ message: 'history not found' })
+      res.status(404).json({ message: 'history not found' })
+      return
     }
 
     const updatedHistory = historyData.map((i) =>
@@ -74,7 +75,8 @@ export const editPayment = async (req: Request, res: Response) => {
         data.checkoutInfo.paymentStatus = 'Half payment'
       }
     } else {
-      return res.status(404).json({ message: 'history not found' })
+      res.status(404).json({ message: 'history not found' })
+      return
     }
 
     const updatedHistory = historyData.map((i) =>

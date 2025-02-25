@@ -18,15 +18,17 @@ type ConfigStoreProps = {
 export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
   const { isPending: isDeletingWarehouse, mutateAsync } = useDeleteWarehouse()
   const { isPending: isAdding, mutateAsync: addWarehouse } = useAddWarehouse()
-  const {
-    mutateAsync: getAllWarehouse,
-    isPending: isGettingCategory,
-    data: warehouses
-  } = useReturnAllWarehouses()
+  const { mutateAsync: getAllWarehouse, data: warehouses } = useReturnAllWarehouses()
 
   const onSubmit = async (values) => {
-    if ((values.actionType === 'delete' || values.actionType === 'add') && values.warehouse === '')
-      return toastUI.error('Warehouse name is required')
+    if (
+      (values.actionType === 'delete' || values.actionType === 'add') &&
+      values.warehouse === ''
+    ) {
+      toastUI.error('Warehouse name is required')
+
+      return
+    }
 
     if (values.actionType === 'add') {
       addWarehouse({
@@ -53,21 +55,23 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
     }
   }
 
-  const { values, handleChange, handleSubmit, errors, touched, setFieldValue, resetForm } =
-    useFormik({
-      initialValues: {
-        actionType: '',
-        warehouse: ''
-      },
-      validationSchema: ConfigStoreSchema,
-      onSubmit
-    })
+  const { values, handleChange, handleSubmit, setFieldValue, resetForm } = useFormik({
+    initialValues: {
+      actionType: '',
+      warehouse: ''
+    },
+    validationSchema: ConfigStoreSchema,
+    onSubmit
+  })
 
   useEffect(() => {
     if (values.actionType === 'delete') {
       getAllWarehouse()
         .then(() => {
-          if (warehouses?.length === 0) return toastUI.error('No uploaded store yet')
+          if (warehouses?.length === 0) {
+            toastUI.error('No uploaded store yet')
+            return
+          }
         })
         .catch((error) => console.log(error))
     }

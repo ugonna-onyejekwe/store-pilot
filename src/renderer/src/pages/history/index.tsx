@@ -230,6 +230,7 @@ const RowDetails = ({ open, onOpenChange, data, refetchHistory }: RowDetailsProp
 
               <div className="box_con">
                 {data.listOfProducts.map((i, key) => (
+                  // @ts-expect-error: undefined
                   <ProductBox key={key} {...i} />
                 ))}
               </div>

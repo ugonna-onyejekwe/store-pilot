@@ -56,9 +56,11 @@ export const SelecInput = ({
       {label && <label>{label}</label>}
       <Select
         id={id}
+        // @ts-expect-error: undefined
         options={options}
         isLoading={isLoading}
         onChange={(e) => {
+          // @ts-expect-error: undefined
           onChange(name, e?.value)
         }}
         defaultValue={defaultValue}

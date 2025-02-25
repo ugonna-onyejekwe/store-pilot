@@ -30,7 +30,10 @@ const EditPaymentModel = ({
   const onSubmit = async (e) => {
     e.preventDefault()
 
-    if (Number(values.amountPaid) < 1) return toastUI.error("Amount can't be less than zero")
+    if (Number(values.amountPaid) < 1) {
+      toastUI.error("Amount can't be less than zero")
+      return
+    }
 
     EditPayment({
       amountPaid: values.amountPaid,

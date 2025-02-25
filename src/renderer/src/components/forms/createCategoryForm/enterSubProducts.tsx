@@ -32,7 +32,7 @@ export const EnterSubProductForm = ({
       return
     }
 
-    const emptyField = values.subProducts.find((i, key) => i.name === '')
+    const emptyField = values.subProducts.find((i) => i.name === '')
 
     if (emptyField) {
       toastUI.error(`Pls, fill all input field you have created.`)
@@ -59,7 +59,7 @@ export const EnterSubProductForm = ({
 
   // Fucntion to remove field
   const removeField = (key: number) => {
-    values.subProducts = values.subProducts.filter((i, index) => index !== key)
+    values.subProducts = values.subProducts.filter((_, index) => index !== key)
     setFieldValue('subProducts', values.subProducts)
   }
 

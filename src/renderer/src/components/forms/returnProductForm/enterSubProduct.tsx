@@ -27,7 +27,11 @@ export const SubProductQuantities = ({
       0
     )
 
-    if (cumulatedSizeQuantity <= 0) return toastUI.error("Number of sub products can't be zero")
+    if (cumulatedSizeQuantity <= 0) {
+      toastUI.error("Number of sub products can't be zero")
+
+      return
+    }
 
     nextStep()
   }
@@ -57,7 +61,8 @@ export const SubProductQuantities = ({
 
                         setFormData({ ...formData })
 
-                        return toastUI.error(`product can be greater than ${i.defaultQuantity}`)
+                        toastUI.error(`product can be greater than ${i.defaultQuantity}`)
+                        return
                       }
 
                       if (i.inputedQuantity < 0) {
@@ -65,7 +70,8 @@ export const SubProductQuantities = ({
 
                         setFormData({ ...formData })
 
-                        return toastUI.error(`product can be less than zero`)
+                        toastUI.error(`product can be less than zero`)
+                        return
                       }
                     }}
                   />

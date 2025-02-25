@@ -29,14 +29,19 @@ export const DesignInput = ({
       (sum, size) => Number(sum) + Number(size.quantity),
       0
     )
-    if (cumulatedDesignQuantity < 1) return toastUI.error('Design is required')
+    if (cumulatedDesignQuantity < 1) {
+      toastUI.error('Design is required')
+      return
+    }
 
     const emptyInput = defaultValues.designs.filter(
       (i, key) => i.quantity === 0 && defaultValues.designCustomInputsIndex.includes(key)
     )
 
-    if (emptyInput.length > 0)
-      return toastUI.error('Enter value for any input you created or delete it')
+    if (emptyInput.length > 0) {
+      toastUI.error('Enter value for any input you created or delete it')
+      return
+    }
 
     handleProceed()
   }
@@ -121,13 +126,19 @@ const AddFieldModal = ({ open, setOpen, defaultValues, setDefaultValues }: addFi
   const [value, setValue] = useState('')
 
   const addField = () => {
-    if (value === '') return toastUI.error('Enter a value')
+    if (value === '') {
+      toastUI.error('Enter a value')
+      return
+    }
 
     const alredyExist = defaultValues.designs.filter(
       (i) => i.name.trim().toLowerCase() === value.trim().toLowerCase()
     )
 
-    if (alredyExist.length > 0) return toastUI.error('Field already exist ')
+    if (alredyExist.length > 0) {
+      toastUI.error('Field already exist ')
+      return
+    }
 
     defaultValues.designCustomInputsIndex = [
       ...defaultValues.designCustomInputsIndex,

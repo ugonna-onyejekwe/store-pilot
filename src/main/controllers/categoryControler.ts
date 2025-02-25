@@ -65,7 +65,7 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
       formatedListOfDesigns
     }
 
-    next()
+    return next()
   } catch (error) {
     res.status(500).json({ message: 'Error occured while formatting data' })
   }
@@ -98,14 +98,13 @@ export const createCategory = async (req: Request, res: Response) => {
     // geting and updating store data
     const updatedCategories = [...allCategory, newCategoryData]
 
-    await db.update({}, { $set: { category: updatedCategories } }, {}, (updateErr, _) => {
+    return await db.update({}, { $set: { category: updatedCategories } }, {}, (updateErr, _) => {
       if (updateErr) {
         console.error('Error updating categories:', updateErr)
-        res.status(500).json({ error: 'Failed to create category' })
-        return
+        return res.status(500).json({ error: 'Failed to create category' })
       }
 
-      res.status(201).json({ message: 'Category created' })
+      return res.status(201).json({ message: 'Category created' })
     })
   } catch (error) {
     console.log(error)
@@ -117,8 +116,6 @@ export const createCategory = async (req: Request, res: Response) => {
 export const getAllCategories = async (req: Request, res: Response) => {
   try {
     const allCategory = req.doc.category
-
-    if (!allCategory) return res.status(500).json({ message: 'Error fetching categories' })
 
     res.status(200).json(allCategory)
   } catch (error) {
@@ -175,12 +172,12 @@ export const editCategory: RequestHandler = async (req: Request, res: Response) 
         : i
     )
 
-    await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+    return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
       if (err) {
         return res.status(500).json({ error: 'Failed to update category' })
       }
 
-      res.status(200).json({ message: 'Category updated' })
+      return res.status(200).json({ message: 'Category updated' })
     })
   } catch (error) {
     res.status(500).send(error)
@@ -197,10 +194,10 @@ export const verifyCategoryName = async (req: Request, res: Response) => {
       (i) => i.name.toLowerCase() === categoryName.toLowerCase()
     )
 
-    if (categoryAlreadyExist.length > 0)
-      return res
-        .status(400)
-        .json({ message: `Category with name: '${categoryName}' already exist` })
+    if (categoryAlreadyExist.length > 0) {
+      res.status(400).json({ message: `Category with name: '${categoryName}' already exist` })
+      return
+    }
 
     res.status(200).json({ message: 'Category name is available' })
   } catch (error) {
@@ -224,12 +221,12 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
     const updatedCategories = allCategory.filter((i) => i.id !== categoryId)
 
-    await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+    return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
       if (err) {
         return res.status(500).json({ error: 'Failed to delete category' })
       }
 
-      res.status(200).json({ message: 'Category deleted' })
+      return res.status(200).json({ message: 'Category deleted' })
     })
   } catch (error) {
     res.status(500).send(error)

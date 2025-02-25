@@ -30,7 +30,7 @@ export const SelectCategory = ({
     handleProceed(values)
   }
 
-  const { values, touched, errors, handleSubmit, setFieldValue } = useFormik({
+  const { touched, errors, handleSubmit, setFieldValue } = useFormik({
     initialValues,
     validationSchema: addPro_selectCategorySchema,
     onSubmit

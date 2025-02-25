@@ -20,7 +20,7 @@ type AddProductFormProps = {
   productData: ProductResponse
 }
 
-const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormProps) => {
+const AddProductForm = ({ productData }: AddProductFormProps) => {
   const { actionType, productId, categoryId } = useParams()
   const editing = actionType && actionType === 'edit' ? true : false
   const [formSteps, setFormSteps] = useState(1)
@@ -46,7 +46,7 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
     designCustomInputsIndex: [],
     sizesCustomInputsIndex: [],
     totalQuantity: editing && productData ? productData.totalQuantity : 0,
-    lastPrice: 0
+    lastPrice: editing && productData ? productData.lastPrice : 0
   }
 
   const [defaultValues, setDefaultValues] = useState<AddProductDefaultValueTypes>({
@@ -59,7 +59,7 @@ const AddProductForm = ({ gettingSingleProduct, productData }: AddProductFormPro
         .then(() => {
           fnSetFormStep()
         })
-        .catch((error) => {
+        .catch(() => {
           toastUI.error('Category not found')
           navigate('/admin')
         })

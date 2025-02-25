@@ -21,7 +21,10 @@ export const formateProduct = async (req: Request, res: Response, next: NextFunc
 
     const productCategory = allCategory.find((i) => i.id === categoryId)
 
-    if (!productCategory) return res.status(404).json({ message: 'Product category not found' })
+    if (!productCategory) {
+      res.status(404).json({ message: 'Product category not found' })
+      return
+    }
 
     const { hasSize, hasColor, hasDesign, hasSubProducts } = productCategory!
 
@@ -106,7 +109,7 @@ export const formateProduct = async (req: Request, res: Response, next: NextFunc
 
     req.productInfo = productInfo
 
-    next()
+    return next()
   } catch (error) {
     console.log(error)
     res.status(500).json(error)
@@ -123,7 +126,10 @@ export const createProduct = async (req: Request, res: Response) => {
 
     const productCategory = allCategory.find((i) => i.id === categoryId)
 
-    if (!productCategory) return res.status(404).json({ message: 'product category not found' })
+    if (!productCategory) {
+      res.status(404).json({ message: 'product category not found' })
+      return
+    }
 
     const { name: categoryName } = productCategory!
 
@@ -140,7 +146,7 @@ export const createProduct = async (req: Request, res: Response) => {
 
     const updatedProductsList = [newProduct, ...allProduct]
 
-    await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
+    return await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
       if (updateErr) {
         console.error('Error updating product list', updateErr)
         res.status(500).json({ error: 'Failed to create product' })
@@ -164,13 +170,16 @@ export const getAllProducts = async (req: Request, res: Response) => {
     if (model) {
       const filteredList = productList.filter((i) => i.model.toLowerCase() === model.toLowerCase())
 
-      return res.status(200).json(filteredList)
+      res.status(200).json(filteredList)
+      return
     }
 
     if (categoryId) {
       const filteredList = productList.filter((i) => i.category.id === categoryId)
 
-      return res.status(200).json(filteredList)
+      res.status(200).json(filteredList)
+
+      return
     }
 
     res.status(200).json(productList)
@@ -182,13 +191,16 @@ export const getAllProducts = async (req: Request, res: Response) => {
 // GET SINGLE PRODUCT
 export const getSingleProduct = async (req: Request, res: Response) => {
   try {
-    const { productId, categoryId } = req.params
+    const { productId } = req.params
 
     const productList = req.doc.products
 
     const product = productList.find((i) => i.productId === productId)
 
-    if (!product) return res.status(404).json({ message: `Product not found` })
+    if (!product) {
+      res.status(404).json({ message: `Product not found` })
+      return
+    }
 
     res.status(200).json(product)
   } catch (error) {
@@ -264,14 +276,17 @@ export const verifyModel = async (req: Request, res: Response) => {
 
   const productList = req.doc.products
 
-  const alreadyExist = await productList.find(
+  const alreadyExist = productList.find(
     (i) => i.model.toLowerCase() === model.toLowerCase() && i.category.id === categoryId
   )
 
-  if (alreadyExist)
-    return res
+  if (alreadyExist) {
+    res
       .status(409)
       .json({ message: `A product with this Model - ${model} already exist, you can edit it.` })
+
+    return
+  }
 
   res.status(200).json({ message: 'Model is available' })
 }

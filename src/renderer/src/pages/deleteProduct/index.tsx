@@ -31,12 +31,12 @@ const DeleteProduct = () => {
     getSingleProduct({
       productId: productId!,
       categoryId: categoryId!
-    }).catch((error) => {
+    }).catch(() => {
       toastUI.error('Product not found')
       navigate('/admin')
     })
 
-    getCategoryData({ id: categoryId! }).catch((error) => {
+    getCategoryData({ id: categoryId! }).catch(() => {
       toastUI.error('Category not found')
       navigate('/admin')
     })

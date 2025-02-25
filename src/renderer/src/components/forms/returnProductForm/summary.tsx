@@ -1,6 +1,5 @@
 import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
-import Button from '@renderer/components/ui/Button'
 import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 
@@ -14,9 +13,9 @@ type SummaryTypes = {
 
 export const Summary = ({
   formData,
-  nextStep,
+  // nextStep,
   productData,
-  handleSubmit,
+  // handleSubmit,
   categoryData
 }: SummaryTypes) => {
   const color = productData.colors.find((i) => i.id === formData.color)
@@ -87,8 +86,8 @@ export const Summary = ({
           </div>
 
           <div className="btn btn_multi">
-            <Button text={'Edit'} varient="outline" onClick={prevStep} />
-            <Button text={'Submit'} type="submit" isLoading={isLoading} onClick={nextStep} />
+            {/* <Button text={'Edit'} varient="outline" onClick={prevStep} />
+            <Button text={'Submit'} type="submit" isLoading={isLoading} onClick={nextStep} /> */}
           </div>
         </div>
       </motion.div>

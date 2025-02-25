@@ -26,7 +26,10 @@ const SellLeftOverForm = ({ data, open, onOpenChange }: SellLeftOverFormProps) =
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if (!cartoonQuantity || cartoonQuantity === 0) return toastUI.error('Enter cartoon quantity')
+    if (!cartoonQuantity || cartoonQuantity === 0) {
+      toastUI.error('Enter cartoon quantity')
+      return
+    }
 
     const subproductList = data.subproducts.map((i, index) => ({
       ...i,

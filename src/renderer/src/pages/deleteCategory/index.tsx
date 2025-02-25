@@ -21,7 +21,7 @@ export const DeleteCategory = () => {
   } = useReturnSingleCategory()
 
   useEffect(() => {
-    getCategoryData({ id: categoryId! }).catch((error) => {
+    getCategoryData({ id: categoryId! }).catch(() => {
       toastUI.error('Category not found')
       navigate('/admin')
     })
@@ -165,7 +165,7 @@ const DeleteCategoryModel = ({
   return (
     <AlertModal open={open} onOpenChange={onOpenChange} className="deleteCategoryModel">
       <h3>Are you sure you wants to delete this category?</h3>
-      <p>Remember you can't delete this category if their are still products under it.</p>
+      <p>{"Remember you can't delete this category if their are still products under it."}</p>
 
       <div className="btns">
         <Button text="cancel" varient="outline" onClick={() => onOpenChange(false)} />

@@ -17,8 +17,7 @@ export const DataTable = ({
   searchValue,
   handleClick,
   isClickable,
-  isLoading,
-  pagination
+  isLoading
 }: TableProps) => {
   const [globalFilter, setGlobalFilter] = useState('')
 

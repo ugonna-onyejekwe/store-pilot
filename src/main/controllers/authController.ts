@@ -14,7 +14,7 @@ export const Login = async (req: Request, res: Response) => {
     res.status(400).json({ message: 'Wrong password' })
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }
 
@@ -34,7 +34,7 @@ export const validateDevCredentails = async (req: Request, res: Response) => {
     res.status(400).json({ message: 'Wrong info' })
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }
 
@@ -63,7 +63,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }
 
@@ -95,6 +95,6 @@ export const adminResetPassword = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }

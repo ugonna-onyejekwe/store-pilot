@@ -9,7 +9,7 @@ export const getAllWarehouses = async (req: Request, res: Response) => {
     res.status(200).json(allWarehouses)
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }
 
@@ -38,7 +38,7 @@ export const addWarehouse = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }
 
@@ -61,6 +61,6 @@ export const deletewarehouse = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }

@@ -6,9 +6,9 @@ export const getAllHistory = async (req: Request, res: Response) => {
   try {
     const historyData = req.doc.history
     res.status(200).send(historyData)
-  } catch (error: any) {
-    console.log(error.message)
-    res.status(500).json(error.message)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
   }
 }
 
@@ -22,9 +22,13 @@ export const editSuppyStatus = async (req: Request, res: Response) => {
 
     const data = historyData.find((i) => i.checkoutInfo.checkoutId === checkoutId)
 
-    data.checkoutInfo.supplyStatus = status
-    data.checkoutInfo.modified = true
-    data.checkoutInfo.modeifedAt = Date.now()
+    if (data) {
+      data.checkoutInfo.supplyStatus = status
+      data.checkoutInfo.modified = true
+      data.checkoutInfo.modeifedAt = Date.now()
+    } else {
+      return res.status(404).json({ message: 'history not found' })
+    }
 
     const updatedHistory = historyData.map((i) =>
       i.checkoutInfo.checkoutId === checkoutId ? data : i
@@ -41,9 +45,9 @@ export const editSuppyStatus = async (req: Request, res: Response) => {
 
       return
     })
-  } catch (error: any) {
-    console.log(error.message)
-    res.status(500).json(error.message)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
   }
 }
 
@@ -56,18 +60,21 @@ export const editPayment = async (req: Request, res: Response) => {
     const historyData = req.doc.history
 
     const data = historyData.find((i) => i.checkoutInfo.checkoutId === checkoutId)
+    if (data) {
+      data.checkoutInfo = {
+        ...data.checkoutInfo,
+        modified: true,
+        modeifedAt: Date.now(),
+        amountPaid: Number(data.checkoutInfo.amountPaid) + Number(amountPaid)
+      }
 
-    data.checkoutInfo = {
-      ...data.checkoutInfo,
-      modified: true,
-      modeifedAt: Date.now(),
-      amountPaid: Number(data.checkoutInfo.amountPaid) + Number(amountPaid)
-    }
-
-    if (data.checkoutInfo.amountPaid >= data.checkoutInfo.sellingPrice) {
-      data.checkoutInfo.paymentStatus = 'Full payment'
+      if (data.checkoutInfo.amountPaid >= data.checkoutInfo.sellingPrice) {
+        data.checkoutInfo.paymentStatus = 'Full payment'
+      } else {
+        data.checkoutInfo.paymentStatus = 'Half payment'
+      }
     } else {
-      data.checkoutInfo.paymentStatus = 'Half payment'
+      return res.status(404).json({ message: 'history not found' })
     }
 
     const updatedHistory = historyData.map((i) =>
@@ -85,8 +92,8 @@ export const editPayment = async (req: Request, res: Response) => {
 
       return
     })
-  } catch (error: any) {
-    console.log(error.message)
-    res.status(500).json(error.message)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
   }
 }

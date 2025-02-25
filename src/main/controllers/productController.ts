@@ -19,9 +19,11 @@ export const formateProduct = async (req: Request, res: Response, next: NextFunc
 
     const allCategory = req.doc.category
 
-    const productCategory = await allCategory.find((i) => i.id === categoryId)
+    const productCategory = allCategory.find((i) => i.id === categoryId)
 
-    const { hasSize, hasColor, hasDesign, hasSubProducts } = productCategory
+    if (!productCategory) return res.status(404).json({ message: 'Product category not found' })
+
+    const { hasSize, hasColor, hasDesign, hasSubProducts } = productCategory!
 
     let productInfo = {
       totalQuantity,
@@ -119,9 +121,11 @@ export const createProduct = async (req: Request, res: Response) => {
 
     const allCategory = req.doc.category
 
-    const productCategory = await allCategory.find((i) => i.id === categoryId)
+    const productCategory = allCategory.find((i) => i.id === categoryId)
 
-    const { name: categoryName } = productCategory
+    if (!productCategory) return res.status(404).json({ message: 'product category not found' })
+
+    const { name: categoryName } = productCategory!
 
     const newProduct = {
       category: {
@@ -171,7 +175,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
 
     res.status(200).json(productList)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json(error)
   }
 }
 
@@ -204,6 +208,7 @@ export const editProduct = async (req: Request, res: Response) => {
 
     let product = productList.find((i) => i.productId === productId)
 
+    // @ts-ignore: Gives error of incompactible
     product = {
       ...product,
       ...productInfo
@@ -431,7 +436,7 @@ export const checkout = async (req: Request, res: Response) => {
 
         if (!productDetails) return res.status(404).json({ message: 'Product not found' })
 
-        const leftOverList = productDetails.leftOver.find((i) => i.leftOverId === leftOverId)
+        const leftOverList = productDetails?.leftOver?.find((i) => i.leftOverId === leftOverId)
 
         if (!leftOverList) return res.status(404).json({ message: 'Product not found' })
 
@@ -443,7 +448,7 @@ export const checkout = async (req: Request, res: Response) => {
         const availableUpdatedLeftOver = product.subproducts.filter((i) => i.left !== 0)
 
         if (availableUpdatedLeftOver.length === 0) {
-          productDetails.leftOver = productDetails.leftOver.filter(
+          productDetails.leftOver = productDetails?.leftOver?.filter(
             (i) => i.leftOverId !== leftOverId
           )
         } else {
@@ -455,7 +460,7 @@ export const checkout = async (req: Request, res: Response) => {
             left: i.left
           }))
 
-          productDetails.leftOver = productDetails.leftOver.map((i) =>
+          productDetails.leftOver = productDetails?.leftOver?.map((i) =>
             i.leftOverId === leftOverId
               ? {
                   ...i,
@@ -500,6 +505,6 @@ export const checkout = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(500).json(error.message)
+    res.status(500).json(error)
   }
 }

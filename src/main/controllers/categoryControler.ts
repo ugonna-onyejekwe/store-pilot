@@ -115,11 +115,16 @@ export const createCategory = async (req: Request, res: Response) => {
 
 // GETTING ALL CATEGORY
 export const getAllCategories = async (req: Request, res: Response) => {
-  const allCategory = req.doc.category
+  try {
+    const allCategory = req.doc.category
 
-  if (!allCategory) return res.status(500).json({ message: 'Error fetching categories' })
+    if (!allCategory) return res.status(500).json({ message: 'Error fetching categories' })
 
-  res.status(200).json(allCategory)
+    res.status(200).json(allCategory)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
+  }
 }
 
 // GETTING SINGLE CATEGORY
@@ -130,12 +135,7 @@ export const getSingleCategory = async (req: Request, res: Response) => {
 
     const filteredCategory = allCategory.filter((i) => i.id === id)[0]
 
-    const {
-      formatedListOfSizes,
-      formatedListOfSubproducts,
-      formatedListOfColors,
-      formatedListOfDesigns
-    } = filteredCategory
+    const { formatedListOfSizes, formatedListOfColors, formatedListOfDesigns } = filteredCategory
 
     // Formating values to return value
     filteredCategory.formatedListOfSizes = formatedListOfSizes

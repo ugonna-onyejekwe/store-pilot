@@ -20,7 +20,7 @@ export type CategoryResponse = {
 }[]
 
 const getCategories = () => {
-  return getRequest<CategoryResponse>({ url: ApiEndPoints.getCategory })
+  return getRequest<null, CategoryResponse>({ url: ApiEndPoints.getCategory })
 }
 
 export const useReturnAllCategories = () => {

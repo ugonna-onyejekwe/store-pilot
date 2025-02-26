@@ -1,10 +1,10 @@
 @use '../../lib/variables';
 
 .dasboard_page {
-  .info_wrapper {
+  .wrapper_1 {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
 
     .time_con {
       flex: 1;
@@ -70,65 +70,10 @@
       flex: 1.5;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 30px;
 
       @media (max-width: 500px) {
         grid-template-columns: 1fr;
-      }
-
-      .box {
-        &.sales_box .icon_con {
-          background: #19aabd;
-        }
-
-        &.supplied_box .icon_con {
-          background: #3c9a5e;
-        }
-
-        &.not_supplied_box .icon_con {
-          background: #fc8e02;
-        }
-
-        &.returned_goods_box .icon_con {
-          background: #d83531;
-        }
-
-        .item_wrapper {
-          background: variables.$bg_color;
-          position: relative;
-          border-radius: 5px;
-          display: flex;
-          justify-content: space-between;
-          padding: 20px;
-          height: 100%;
-
-          .icon_con {
-            height: 65px;
-            width: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-
-            .icon {
-              height: 20px;
-              width: 20px;
-              color: white;
-            }
-          }
-
-          h3 {
-            white-space: nowrap;
-            font-weight: 500;
-            padding-top: 10px;
-            font-size: 15px;
-          }
-
-          .number {
-            margin: auto 0;
-            font-size: 17px;
-          }
-        }
       }
     }
 
@@ -145,136 +90,18 @@
     }
   }
 
-  .table_section {
-    display: flex;
-    gap: 15px;
-    margin-top: 40px;
+  .wrapper_2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 30px;
+    margin-top: 30px;
 
     @media (max-width: 900px) {
-      flex-direction: column;
+      grid-template-columns: 1fr 1fr;
     }
 
-    h2 {
-      font-size: 20px;
-    }
-
-    .no_data_text {
-      text-align: center;
-      font-size: 20px;
-      margin-top: 70px;
-      font-style: italic;
-      color: rgb(172, 171, 171);
-    }
-
-    .pending_supplies,
-    .incomplete_payments_table {
-      flex: 1;
-
-      .box_con {
-        background: rgb(234, 234, 234);
-        margin-top: 5px;
-        border-radius: 5px;
-        padding: 20px;
-        min-height: 250px;
-        max-height: 500px;
-        overflow-y: scroll;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-        &::-webkit-scrollbar {
-          width: 3px;
-        }
-
-        .box {
-          background: variables.$bg_color;
-          border-radius: 5px;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-
-          p {
-            font-weight: 450;
-            color: variables.$light_text_color2;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            span {
-              color: variables.$dark_text_color;
-            }
-          }
-
-          .btns {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-
-            .status {
-              height: fit-content;
-              border-radius: 5px;
-
-              // Payment status
-              &.status__full {
-                color: rgb(10, 191, 10);
-                background: rgba(59, 232, 59, 0.089);
-                border-color: rgb(20, 219, 20);
-              }
-
-              &.status__half {
-                color: orange;
-                background: rgba(255, 166, 0, 0.101);
-                border-color: orange;
-              }
-
-              &.status__credit {
-                color: red;
-                background: rgba(255, 0, 0, 0.078);
-                border-color: red;
-              }
-
-              // Supply status
-              &.status__supplied {
-                color: rgb(10, 191, 10);
-                background: rgba(59, 232, 59, 0.089);
-                border-color: rgb(20, 219, 20);
-              }
-
-              &.status__not {
-                color: orange;
-                background: rgba(255, 166, 0, 0.101);
-                border-color: orange;
-              }
-            }
-
-            .icon_con {
-              height: 45px;
-              width: 45px;
-              background: variables.$bg_alt_color;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 5px;
-              cursor: pointer;
-              transition: 0.4s ease;
-
-              .icon {
-                color: variables.$light_text_color2;
-                height: 16px;
-                width: 16px;
-              }
-
-              &:hover {
-                .icon {
-                  color: variables.$light_text_color;
-                }
-              }
-            }
-          }
-        }
-      }
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
     }
   }
 }

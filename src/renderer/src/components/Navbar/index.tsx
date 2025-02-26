@@ -9,12 +9,17 @@ import Button from '../ui/Button'
 import { Icons } from '../ui/icons'
 import './styles.scss'
 
-const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
+const Navbar = ({
+  currentPage,
+  isDashboard = false,
+  isSearchable = true,
+  prevPageLink = null
+}: NavbarProps) => {
   const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const [openLogout, setOpenLogout] = useState(false)
   const authCookie = useSelector((state: RootState) => state.authReducer.cookie)
   const [searchValue, setSearchValue] = useState('')
-  const [_, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const handleInputKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -24,7 +29,9 @@ const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
 
   useEffect(() => {
     if (searchValue === '') {
-      setSearchParams({ seacrhValue: '' })
+      const newSearchParams = new URLSearchParams(searchParams.toString())
+      newSearchParams.delete('seacrhValue')
+      setSearchParams(newSearchParams)
     }
   }, [searchValue])
 
@@ -34,7 +41,7 @@ const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
         <div className="container">
           <div className="page_name">
             {!isDashboard && (
-              <Link to={'/'} className="back_btn">
+              <Link to={prevPageLink ?? '/'} className="back_btn">
                 <Icons.BackArrow className="back_icon" />
               </Link>
             )}
@@ -44,17 +51,19 @@ const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
 
           <div className="sec2">
             {/* Search section */}
-            <div className="search_con">
-              <Icons.SearchIcon className="search_icon" />
+            {isSearchable && (
+              <div className="search_con">
+                <Icons.SearchIcon className="search_icon" />
 
-              <input
-                type="search"
-                placeholder="Search product by name..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={handleInputKeyDown}
-              />
-            </div>
+                <input
+                  type="search"
+                  placeholder="Search product by name..."
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyDown={handleInputKeyDown}
+                />
+              </div>
+            )}
 
             {/* Shopping cart */}
             <Link to="/cart" className="shopping_cart">

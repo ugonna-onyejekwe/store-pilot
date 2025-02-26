@@ -1,0 +1,163 @@
+@use '../../lib/variables';
+
+.customers_container {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 800px;
+
+  .box_con {
+    display: flex;
+    flex-direction: column;
+    background: variables.$bg_color;
+    border-radius: 5px;
+    margin-top: 20px;
+
+    .box {
+      padding: 25px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: 0.4s ease;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid rgb(238, 235, 235);
+      }
+
+      .col_1 {
+        h3 {
+          font-size: 15px;
+          text-transform: capitalize;
+          color: variables.$dark_text_color;
+        }
+
+        p {
+          font-size: 14px;
+          color: variables.$light_text_color2;
+          padding-top: 5px;
+        }
+      }
+
+      .col_2 {
+        display: flex;
+        align-items: center;
+
+        .status {
+          border-radius: 30px;
+          padding-left: 30px;
+          position: relative;
+          padding-right: 15px;
+          text-transform: capitalize;
+          font-size: 14px;
+
+          &.status__settled {
+            background: rgba(0, 128, 0, 0.107) !important;
+            color: green !important;
+            border-color: rgba(0, 128, 0, 0.581) !important;
+
+            &::before {
+              background: green;
+            }
+          }
+
+          &.status__outstanding {
+            background: rgba(244, 25, 25, 0.084) !important;
+            color: rgb(241, 29, 29) !important;
+            border-color: rgba(255, 0, 0, 0.24) !important;
+
+            &::before {
+              background: red;
+            }
+          }
+
+          &::before {
+            content: '';
+            position: absolute;
+            height: 7px;
+            width: 7px;
+            background: red;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 15px;
+          }
+        }
+
+        h4 {
+          font-size: 15px;
+          padding-top: 10px;
+          color: variables.$light_text_color;
+        }
+
+        .arrow_forward {
+          display: flex;
+          justify-content: right;
+          width: 0px;
+          overflow-x: hidden;
+          transition: 0.4s ease;
+
+          .icon {
+            height: 20px;
+            width: 20px;
+            color: variables.$light_text_color;
+            transform: translateX(30px);
+          }
+        }
+      }
+
+      //   when the box is hoveredo on the arrow displays
+      &:hover {
+        background: variables.$primary_color_alpha;
+
+        .col_2 .arrow_forward {
+          width: 50px;
+
+          .icon {
+            transform: translateX(0);
+            transition: 0.4s ease;
+            color: variables.$primary_color;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+
+    .action_btns {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      .btn {
+        height: 45px;
+        width: 45px;
+        background: variables.$bg_color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        transition: 0.4s ease;
+        cursor: pointer;
+
+        &:hover {
+          background: variables.$primary_color;
+
+          .icon {
+            color: white;
+          }
+        }
+
+        .icon {
+          height: 15px;
+          width: 15px;
+          color: variables.$light_text_color;
+        }
+      }
+    }
+  }
+}

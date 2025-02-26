@@ -1,0 +1,103 @@
+@use '../../lib/variables';
+
+.single_customer_page {
+  .page_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .payment_status_con {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      h3 {
+        font-size: 15px;
+        color: variables.$light_text_color;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        span {
+          color: variables.$primary_color;
+        }
+      }
+
+      .status {
+        border-radius: 30px;
+        padding-left: 30px;
+        position: relative;
+        padding-right: 15px;
+        text-transform: capitalize;
+        font-size: 14px;
+
+        &.status__settled {
+          background: rgba(0, 128, 0, 0.107) !important;
+          color: green !important;
+          border-color: rgba(0, 128, 0, 0.581) !important;
+
+          &::before {
+            background: green;
+          }
+        }
+
+        &.status__outstanding {
+          background: rgba(244, 25, 25, 0.084) !important;
+          color: rgb(241, 29, 29) !important;
+          border-color: rgba(255, 0, 0, 0.24) !important;
+
+          &::before {
+            background: red;
+          }
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          height: 7px;
+          width: 7px;
+          background: red;
+          border-radius: 50%;
+          top: 50%;
+          transform: translateY(-50%);
+          left: 15px;
+        }
+      }
+    }
+
+    button {
+      width: fit-content;
+    }
+  }
+
+  .filter_con {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    margin-top: 30px;
+
+    .search_con {
+      max-width: 250px;
+      width: 100%;
+    }
+
+    .date_con {
+      max-width: 250px;
+      width: 100%;
+
+      input {
+        padding: 20px;
+        border: 1px solid rgb(191, 191, 191);
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 15px;
+        width: 100%;
+
+        &:focus {
+          outline: 1px solid variables.$primary_color;
+        }
+      }
+    }
+  }
+}

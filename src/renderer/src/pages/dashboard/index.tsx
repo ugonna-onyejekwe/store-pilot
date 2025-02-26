@@ -7,8 +7,6 @@ import './style.scss'
 
 const Dashboard = () => {
   const [time, setTime] = useState('')
-  const [openEditSupplyModel, setOpenEditSupplyModel] = useState(false)
-  const [openEditPaymentModel, setOpenEditPaymentModel] = useState(false)
 
   // Use efffect that sets time
   useEffect(() => {

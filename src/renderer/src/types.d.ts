@@ -29,6 +29,8 @@ type SelecInputProps = {
 type NavbarProps = {
   currentPage: string
   isDashboard?: boolean
+  isSearchable?: boolean
+  prevPageLink?: string | null
 }
 
 type BooleanInputProps = {

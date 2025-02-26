@@ -9,7 +9,7 @@ import Button from '../ui/Button'
 import { Icons } from '../ui/icons'
 import './styles.scss'
 
-const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
+const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
   const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const [openLogout, setOpenLogout] = useState(false)
   const authCookie = useSelector((state: RootState) => state.authReducer.cookie)
@@ -33,7 +33,11 @@ const Navbar = ({ setOpenSidebar, currentPage }: NavbarProps) => {
       <div className="navbar">
         <div className="container">
           <div className="page_name">
-            <Icons.MenuIcon className="menu_icon" onclick={() => setOpenSidebar(true)} />
+            {!isDashboard && (
+              <Link to={'/'} className="back_btn">
+                <Icons.BackArrow className="back_icon" />
+              </Link>
+            )}
 
             <h1>{currentPage}</h1>
           </div>

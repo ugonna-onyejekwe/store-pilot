@@ -22,17 +22,33 @@
       align-items: center;
       gap: 10px;
 
-      .menu_icon {
-        color: variables.$primary-color;
-        width: 30px;
-        height: 30px;
+      .back_btn {
         cursor: pointer;
+        background: variables.$bg_alt_color;
+        height: 40px;
+        width: 40px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: variables.$light_text_color2;
+        transition: 0.4s ease;
+
+        &:hover {
+          color: variables.$primary-color;
+        }
+
+        .back_icon {
+          height: 20px;
+          width: 20px;
+        }
       }
 
       h1 {
         line-height: 0;
-        font-size: 21px;
-        text-transform: capitalize;
+        font-size: 20px;
+        text-transform: uppercase;
+        font-weight: 900;
       }
     }
 

@@ -1,6 +1,7 @@
 import { HistoryResponse, useReturnAllHistory } from '@renderer/apis/history/getHistory'
 import EditPaymentModel from '@renderer/components/EditPaymentModal'
 import EditSupplyModel from '@renderer/components/editSupplyModel'
+import Navbar from '@renderer/components/Navbar'
 import { Icons } from '@renderer/components/ui/icons'
 import { convertAmount, formatDate, formatDateFromTimestamp } from '@renderer/lib/utils'
 import { useEffect, useState } from 'react'
@@ -56,6 +57,10 @@ const Dashboard = () => {
 
   return (
     <>
+      {/* === NAVBAR SECTION STARTS ==== */}
+      <Navbar currentPage="dashboard" isDashboard />
+      {/* === NAVBAR SECTION ENDS ==== */}
+
       <div className="dasboard_page container">
         {/* info_con */}
         <div className="info_wrapper">

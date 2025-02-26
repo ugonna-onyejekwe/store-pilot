@@ -26,7 +26,10 @@ type SelecInputProps = {
   defaultValue?: string
 }
 
-type NavbarProps = { setOpenSidebar: (value: boolean) => void; currentPage: string }
+type NavbarProps = {
+  currentPage: string
+  isDashboard?: boolean
+}
 
 type BooleanInputProps = {
   name: string

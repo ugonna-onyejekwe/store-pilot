@@ -6,6 +6,7 @@ import express from 'express'
 import Datastore from 'nedb'
 import path, { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+
 import authRoutes from './routes/authRoutes'
 import categoryRoutes from './routes/categoryRoutes'
 import historyRoutes from './routes/historyRoutes'
@@ -99,7 +100,6 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    icon: path.join(__dirname, 'src/assets/images/bot.png'),
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),

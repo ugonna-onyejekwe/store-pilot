@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useRef } from 'react'
 import { Icons } from '../icons'
 import './style.scss'
 
@@ -10,6 +10,14 @@ type ModalProps = {
 }
 
 export const Modal = ({ children, onOpenChange, open, zIndex }: ModalProps) => {
+  const innerWrapper = useRef(null)
+
+  const handleClick = (e) => {
+    if (innerWrapper.current?.contains(e.target) === false) {
+      onOpenChange(false)
+    }
+  }
+
   return (
     <>
       <div
@@ -17,8 +25,9 @@ export const Modal = ({ children, onOpenChange, open, zIndex }: ModalProps) => {
         style={{
           zIndex: zIndex
         }}
+        onClick={handleClick}
       >
-        <div className="wrapper">
+        <div className="wrapper" ref={innerWrapper}>
           <div className="close_btn" onClick={() => onOpenChange(false)}>
             <Icons.CloseIcon className="close_icon" />
           </div>

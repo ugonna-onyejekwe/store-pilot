@@ -17,7 +17,7 @@ import Dashboard from './pages/dashboard'
 import { DeleteCategory } from './pages/deleteCategory'
 import DeleteProduct from './pages/deleteProduct'
 import History from './pages/history'
-import Products from './pages/products'
+import Goods from './pages/products'
 import { ReturnedGoodsHistory } from './pages/returnedGoodsHistory'
 import ReturnProduct from './pages/returnProduct'
 import SingleCustomer from './pages/singleCustomerPage'
@@ -51,7 +51,7 @@ function App() {
                   <Route element={<Layout />}>
                     <Route path="/" element={<Dashboard />} />
 
-                    <Route path="/:productname/:subcatId" element={<Products />} />
+                    <Route path="/goods" element={<Goods />} />
 
                     <Route path="/cart" element={<Cart />} />
 

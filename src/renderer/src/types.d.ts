@@ -31,6 +31,7 @@ type NavbarProps = {
   isDashboard?: boolean
   isSearchable?: boolean
   prevPageLink?: string | null
+  openSearch?: (value: boolean) => void
 }
 
 type BooleanInputProps = {

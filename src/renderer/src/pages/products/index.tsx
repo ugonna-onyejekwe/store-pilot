@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import './styles.scss'
 
-const Products = () => {
+const Goods = () => {
   const { data: productData, isPending, mutateAsync } = useReturnAllProducts()
   const { subcatId } = useParams()
   const [params] = useSearchParams()
@@ -35,4 +35,4 @@ const Products = () => {
   )
 }
 
-export default Products
+export default Goods

@@ -1,10 +1,14 @@
 import Navbar from '@renderer/components/Navbar'
+import SearchModal from '@renderer/components/searchModal'
 import { Icons } from '@renderer/components/ui/icons'
 import { convertAmount } from '@renderer/lib/utils'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './styles.scss'
 
 const Customers = () => {
+  const [searchValue, setSearchValue] = useState('')
+  const [openSearchModal, setOpenSearchModal] = useState(false)
   const data = [
     {
       name: 'ugonna onyejekwe',
@@ -56,7 +60,7 @@ const Customers = () => {
 
   return (
     <>
-      <Navbar currentPage="Customers" />
+      <Navbar currentPage="Customers" openSearch={setOpenSearchModal} />
 
       <div className="container ">
         <div className="customers_container">
@@ -111,6 +115,13 @@ const Customers = () => {
           </div>
         </div>
       </div>
+
+      {/* SEARCH MODAL ============= */}
+      <SearchModal
+        placeholder={'Search customer by name'}
+        open={openSearchModal}
+        onOpenChange={setOpenSearchModal}
+      />
     </>
   )
 }

@@ -7,15 +7,14 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
   try {
     const {
       name,
-      hasSize,
       hasModel,
       hasColor,
-      hasDesign,
       hasSubProducts,
-      sizes,
       subProducts,
       colors,
-      designs
+      designs,
+      subcategories,
+      hasSubcategories
     } = req.body
 
     if (!name) {
@@ -24,7 +23,7 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
       })
     }
 
-    let formatedListOfSizes: { name: string; id: string }[] = []
+    let formatedListOfsubCategories: { name: string; id: string }[] = []
     let formatedListOfSubproducts: { name: string; defaultQuantity: number; id?: string }[] = []
     let formatedListOfColors: { name: string; id: string }[] = []
     let formatedListOfDesigns: { name: string; id: string }[] = []
@@ -35,7 +34,7 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
     const listOfDesigns = designs ? designs.split(',') : []
 
     // Formating values to return id with each value
-    formatedListOfSizes = listOfSizes.map((i) => ({
+    formatedListOfsubCategories = listOfSizes.map((i) => ({
       name: i,
       id: uuidv4()
     }))
@@ -55,11 +54,8 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
     req.formatedData = {
       name,
       hasModel,
-      hasSize,
       hasColor,
-      hasDesign,
       hasSubProducts,
-      formatedListOfSizes,
       formatedListOfSubproducts,
       formatedListOfColors,
       formatedListOfDesigns

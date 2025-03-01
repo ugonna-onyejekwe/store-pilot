@@ -139,7 +139,6 @@ declare namespace Express {
       hasModel: boolean
       hasSize: boolean
       hasColor: boolean
-      hasDesign: boolean
       hasSubProducts: boolean
       formatedListOfColors: { name: string; id: string }[]
       formatedListOfDesigns: { name: string; id: string }[]

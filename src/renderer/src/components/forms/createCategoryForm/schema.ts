@@ -51,3 +51,21 @@ export const EnterSubCategories = yup.object().shape({
       }
     )
 })
+
+export const EnterColorsSchema = yup.object().shape({
+  hasColor: yup.boolean(),
+
+  colors: yup
+    .string()
+    .test('is-required-if-has-colors', 'List of colours is required', function (value) {
+      const { hasColor } = this.parent
+      return !hasColor || (hasColor && value)
+    }),
+
+  designs: yup
+    .string()
+    .test('is-required-if-has-colors', 'List of designs is required', function (value) {
+      const { hasColor } = this.parent
+      return !hasColor || (hasColor && value)
+    })
+})

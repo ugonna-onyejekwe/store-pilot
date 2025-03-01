@@ -70,27 +70,6 @@ export const EnterSubProductSchema = yup.object().shape({
   subProducts: yup.array()
 })
 
-export const EnterColorsSchema = yup.object().shape({
-  hasColor: yup.boolean(),
-
-  colors: yup
-    .string()
-    .test('is-required-if-has-colors', 'List of colours is required', function (value) {
-      const { hasColor } = this.parent
-      return !hasColor || (hasColor && value)
-    })
-})
-
-export const EnterDesignSchema = yup.object().shape({
-  hasDesign: yup.boolean(),
-
-  designs: yup
-    .string()
-    .test('is-required-if-has-colors', 'List of designs is required', function (value) {
-      const { hasDesign } = this.parent
-      return !hasDesign || (hasDesign && value)
-    })
-})
 // CREATE CATEGORY SUB-FORMS SCHEMA ENDS =====
 
 // WHAT DO YOU WANT TO EDIT SCHEMA

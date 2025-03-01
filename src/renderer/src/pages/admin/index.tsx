@@ -3,6 +3,7 @@ import { EditModal } from '@renderer/components/adminEditModal'
 import AdminLinkBox from '@renderer/components/adminLinkBox'
 import Bot from '@renderer/components/bot'
 import { ConfigStoreModal } from '@renderer/components/ConfigStoreModal'
+import Navbar from '@renderer/components/Navbar'
 import { Icons } from '@renderer/components/ui/icons'
 import { useState } from 'react'
 import './styles.scss'
@@ -14,6 +15,9 @@ const Admin = () => {
   const [openAuth, setOpenAuth] = useState(false)
   return (
     <>
+      {/* navbar */}
+      <Navbar currentPage="Admin" isSearchable={false} />
+
       <div className="admin_wrapper container">
         <div className="admin_container">
           <div className="bot">

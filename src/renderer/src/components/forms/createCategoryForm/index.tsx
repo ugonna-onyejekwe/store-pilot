@@ -7,12 +7,12 @@ import { getError } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AddCategoryFormSchema } from '../schemas'
 import { EnterColourForm } from './enterColours'
 import { EnterDesignForm } from './enterDesigns'
 import { EnterCategorynameForm } from './enterName'
-import { EnterSizesForm } from './enterSizesform'
+import { EnterSubCategoriesForm } from './enterSubcategories'
 import { EnterSubProductForm } from './enterSubProducts'
+import { AddCategoryFormSchema } from './schema'
 import './style.scss'
 
 type CreateCategoryFormProps = {
@@ -36,14 +36,14 @@ export const CreateCategoryForm = ({
   const initialvalues = {
     name: editing ? categoryData?.name : '',
     hasModel: editing ? categoryData?.hasModel : false,
-    hasSize: editing ? categoryData?.hasSize : false,
     hasColor: editing ? categoryData?.hasColor : false,
     hasDesign: editing ? categoryData?.hasDesign : false,
     hasSubProducts: editing ? categoryData?.hasSubProducts : false,
-    sizes: editing ? categoryData?.formatedListOfSizes : '',
     subProducts: editing ? categoryData?.formatedListOfSubproducts : [],
     colors: editing ? categoryData?.formatedListOfColors : '',
-    designs: editing ? categoryData?.formatedListOfDesigns : ''
+    designs: editing ? categoryData?.formatedListOfDesigns : '',
+    subcategories: editing ? categoryData?.subcategories : '',
+    hasSubcategories: editing ? categoryData?.hasSubcategories : false
   }
 
   const onSubmit = async (values) => {
@@ -98,15 +98,15 @@ export const CreateCategoryForm = ({
         />
       )}
 
-      {/* has sizes starts */}
+      {/* has subcategories starts */}
       {formSteps === 2 && (
-        <EnterSizesForm
+        <EnterSubCategoriesForm
           // @ts-expect-error: expect undefined value
           defaultValues={values}
           setFormSteps={setFormSteps}
           handleChange={(formData) => {
-            setFieldValue('hasSize', formData.hasSize)
-            setFieldValue('sizes', formData.sizes)
+            setFieldValue('hasSubcategories', formData.hasSubcategories)
+            setFieldValue('subcategories', formData.subcategories)
           }}
         />
       )}
@@ -116,6 +116,7 @@ export const CreateCategoryForm = ({
         <EnterSubProductForm
           // @ts-expect-error: expect undefined value
           defaultValues={values}
+          isEditing={editing}
           setFormSteps={setFormSteps}
           handleChange={(formData) => {
             setFieldValue('hasSubProducts', formData.hasSubProducts)

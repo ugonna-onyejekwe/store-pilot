@@ -3,22 +3,22 @@ import Button from '@renderer/components/ui/Button'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { EnterSizesSchema } from '../schemas'
+import { EnterSubCategories } from './schema'
 
-type EnterSizesFormType = {
+type EnterSubCategoriesFormProps = {
   defaultValues: CreateCategoryFormInitialvalues
   handleChange: (values: CreateCategoryFormInitialvalues) => void
   setFormSteps: (value: number) => void
 }
 
-export const EnterSizesForm = ({
+export const EnterSubCategoriesForm = ({
   defaultValues,
   handleChange: setValues,
   setFormSteps
-}: EnterSizesFormType) => {
+}: EnterSubCategoriesFormProps) => {
   const initialValues = {
-    sizes: defaultValues.sizes,
-    hasSize: defaultValues.hasSize
+    subcategories: defaultValues.subcategories,
+    hasSubcategories: defaultValues.hasSubcategories
   }
 
   const onSubmit = (values) => {
@@ -28,7 +28,7 @@ export const EnterSizesForm = ({
 
   const { values, touched, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues,
-    validationSchema: EnterSizesSchema,
+    validationSchema: EnterSubCategories,
     onSubmit
   })
 
@@ -37,20 +37,20 @@ export const EnterSizesForm = ({
       <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <BooleanInput
-            label="Does this category have sizes?"
-            value={values.hasSize}
+            label="Does this category have sub-categories?"
+            value={values.hasSubcategories}
             onChange={setFieldValue}
-            name="hasSize"
+            name="hasSubcategories"
           />
 
-          {values.hasSize && (
+          {values.hasSubcategories && (
             <Input
-              label="Enter category sizes separating each with a comma(',')."
-              placeholder="Size 1, Size 2, Size 3,...."
-              value={values.sizes}
-              onChange={handleChange('sizes')}
-              touched={touched.sizes}
-              errorMsg={errors.sizes}
+              label="Enter sub-categories separating each with a comma(',')."
+              placeholder="sub cat 1, sub cat 2 ..."
+              value={values.subcategories}
+              onChange={handleChange('subcategories')}
+              touched={touched.subcategories}
+              errorMsg={errors.subcategories}
             />
           )}
         </div>

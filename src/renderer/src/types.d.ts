@@ -45,19 +45,24 @@ type BooleanInputProps = {
 
 type CreateCategoryFormInitialvalues = {
   name: string
-  hasSize: boolean
   hasColor: boolean
   hasDesign: boolean
   hasSubProducts: boolean
-  sizes: string
   subProducts: {
     name: string
     defaultQuantity: number
     id?: string
+    subProducts?: {
+      name: string
+      defaultQuantity: number
+      id?: string
+    }[]
   }[]
   colors: string
   designs: string
   hasModel: boolean
+  subcategories: string
+  hasSubcategories: boolean
 }
 
 type AddProductDefaultValueTypes = {

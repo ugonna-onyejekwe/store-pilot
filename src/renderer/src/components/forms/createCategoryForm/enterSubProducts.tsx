@@ -6,18 +6,21 @@ import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import { useEffect } from 'react'
+import { boolean } from 'yup'
 import { EnterSubProductSchema } from '../schemas'
 
 type EnterVariationFormTypes = {
   defaultValues: CreateCategoryFormInitialvalues
   handleChange: (values: CreateCategoryFormInitialvalues) => void
   setFormSteps: (value: number) => void
+  isEditing: boolean
 }
 
 export const EnterSubProductForm = ({
   defaultValues,
   setFormSteps,
-  handleChange: setValues
+  handleChange: setValues,
+  isEditing
 }: EnterVariationFormTypes) => {
   // InitialValues
   const initialValues = {
@@ -27,6 +30,24 @@ export const EnterSubProductForm = ({
 
   // on submit function
   const onSubmit = (values) => {
+    if (defaultValues.hasSubcategories && values.hasSubProducts) {
+      const emptyInputs = values.subProducts.filter((i) => {
+        const filledInputs = i.subProducts.filter((product) => product.name !== '')
+
+        if (filledInputs.length === 0) {
+          toastUI.error('Pls add sub product for each section')
+          return i
+        }
+      })
+
+      if (emptyInputs.length === 0) {
+        setValues(values)
+        setFormSteps(4)
+        return
+      }
+      return
+    }
+
     if (values.hasSubProducts && values.subProducts.length === 0) {
       toastUI.error('List of sub-products and their default quantity is required')
       return
@@ -51,14 +72,60 @@ export const EnterSubProductForm = ({
     onSubmit
   })
 
+  // Intailizing input fields if has subcategories
+  useEffect(() => {
+    if (!isEditing && defaultValues.hasSubcategories === true) {
+      const subcategories = defaultValues.subcategories.split(',').filter(boolean)
+
+      const subproductList = subcategories.map((i) => ({
+        name: i.trim(),
+        subProducts: [{ name: '', defaultQuantity: 1 }]
+      }))
+
+      setFieldValue('subProducts', subproductList)
+    }
+  }, [])
+
   // Function to add field
-  const addField = () => {
+  const addField = (subCateName?: string) => {
+    if (defaultValues.hasSubcategories) {
+      values.subProducts.map((i) => {
+        if (subCateName === i.name) {
+          i.subProducts?.push({ name: '', defaultQuantity: 1 })
+
+          return i
+        } else {
+          return i
+        }
+      })
+
+      setFieldValue('subProducts', values.subProducts)
+
+      return
+    }
+
     values.subProducts.push({ name: '', defaultQuantity: 1 })
     setFieldValue('subProducts', values.subProducts)
   }
 
   // Fucntion to remove field
-  const removeField = (key: number) => {
+  const removeField = (key: number, subCateName?: string) => {
+    if (defaultValues.hasSubcategories) {
+      values.subProducts.map((i) => {
+        if (subCateName === i.name) {
+          i.subProducts = i.subProducts?.filter((_, index) => index !== key)
+
+          return i
+        } else {
+          return i
+        }
+      })
+
+      setFieldValue('subProducts', values.subProducts)
+
+      return
+    }
+
     values.subProducts = values.subProducts.filter((_, index) => index !== key)
     setFieldValue('subProducts', values.subProducts)
   }
@@ -71,7 +138,42 @@ export const EnterSubProductForm = ({
   }, [values])
 
   // Function to set custum field values
-  const onFieldChange = (value, key, name) => {
+  const onFieldChange = (value: any, key: number, name: string, subCateName?: string) => {
+    // When there is subcategories
+    if (defaultValues.hasSubcategories) {
+      values.subProducts.map((i) => {
+        if (subCateName === i.name) {
+          if (name === 'name') {
+            i.subProducts?.map((i, index) => {
+              if (index === key) {
+                i.name = value
+                return i
+              }
+              return i
+            })
+          }
+          if (name === 'defaultQuantity') {
+            i.subProducts?.map((i, index) => {
+              if (index === key) {
+                i.defaultQuantity = value
+                return i
+              }
+              return i
+            })
+          }
+
+          return i
+        } else {
+          return i
+        }
+      })
+
+      setFieldValue('subProducts', values.subProducts)
+
+      return
+    }
+
+    // When there is no subcategories
     if (name === 'name') {
       values.subProducts[key].name = value
       setFieldValue('subProducts', values.subProducts)
@@ -94,41 +196,100 @@ export const EnterSubProductForm = ({
           />
 
           {values.hasSubProducts && (
-            <div className="sub_product_field_wrapper">
-              <h3>Enter sub-products name and their default quantities.</h3>
+            <>
+              <div className="sub_product_field_wrapper">
+                {defaultValues.hasSubcategories ? (
+                  <h3>
+                    Enter sub-products name and their default quantities for each subcategory.
+                  </h3>
+                ) : (
+                  <h3>Enter sub-products name and their default quantities.</h3>
+                )}
 
-              <div className="sub_product_input_con">
-                {values.subProducts.map((i, key) => (
-                  <div key={key} className="box_con">
-                    <div className="input_wrapper">
-                      <Input
-                        label="Name"
-                        placeholder="Eg: Clock"
-                        value={i.name}
-                        onChange={(e) => onFieldChange(e.target.value, key, 'name')}
-                      />
+                {defaultValues.hasSubcategories === true ? (
+                  <>
+                    {values.subProducts.map((category, key) => (
+                      <div key={key} className="SubCategories_products">
+                        <h4>{category.name}</h4>
 
-                      <Input
-                        label="Default quantity"
-                        placeholder="Default quantity"
-                        value={i.defaultQuantity}
-                        onChange={(e) => onFieldChange(e.target.value, key, 'defaultQuantity')}
-                      />
+                        {category.subProducts?.map((i, key) => (
+                          <div className="box_con" key={key}>
+                            <div className="input_wrapper">
+                              <Input
+                                label="Name"
+                                placeholder="Eg: Clock"
+                                value={i.name}
+                                onChange={(e) =>
+                                  onFieldChange(e.target.value, key, 'name', category.name)
+                                }
+                              />
+
+                              <Input
+                                label="Default quantity"
+                                placeholder="Default quantity"
+                                value={i.defaultQuantity}
+                                onChange={(e) =>
+                                  onFieldChange(
+                                    e.target.value,
+                                    key,
+                                    'defaultQuantity',
+                                    category.name
+                                  )
+                                }
+                                type="number"
+                              />
+                            </div>
+
+                            <span className="close" onClick={() => removeField(key, category.name)}>
+                              <Icons.CloseIcon className="close_icon" />
+                            </span>
+                          </div>
+                        ))}
+
+                        <div className="add_field_btn">
+                          <button onClick={() => addField(category.name)} type="button">
+                            Add field
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <div className="sub_product_input_con">
+                    {values.subProducts.map((i, key) => (
+                      <div key={key} className="box_con">
+                        <div className="input_wrapper">
+                          <Input
+                            label="Name"
+                            placeholder="Eg: Clock"
+                            value={i.name}
+                            onChange={(e) => onFieldChange(e.target.value, key, 'name')}
+                          />
+
+                          <Input
+                            label="Default quantity"
+                            placeholder="Default quantity"
+                            value={i.defaultQuantity}
+                            onChange={(e) => onFieldChange(e.target.value, key, 'defaultQuantity')}
+                            type="number"
+                          />
+                        </div>
+
+                        <span className="close" onClick={() => removeField(key)}>
+                          <Icons.CloseIcon className="close_icon" />
+                        </span>
+                      </div>
+                    ))}
+
+                    <div className="add_field_btn">
+                      <button onClick={() => addField()} type="button">
+                        Add field
+                      </button>
                     </div>
-
-                    <span className="close" onClick={() => removeField(key)}>
-                      <Icons.CloseIcon className="close_icon" />
-                    </span>
                   </div>
-                ))}
-
-                <div className="add_field_btn">
-                  <button onClick={addField} type="button">
-                    Add field
-                  </button>
-                </div>
+                )}
               </div>
-            </div>
+            </>
           )}
         </div>
 

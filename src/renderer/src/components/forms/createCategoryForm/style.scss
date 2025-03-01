@@ -41,57 +41,64 @@
       font-size: 15px;
     }
 
+    .add_field_btn {
+      display: flex;
+      justify-content: right;
+
+      button {
+        padding: 10px 20px;
+        color: white;
+        background: black;
+        cursor: pointer;
+      }
+    }
+
+    .box_con {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .close {
+        height: 45px;
+        width: 45px;
+        border-radius: 5px;
+        background: rgba(255, 0, 0, 0.051);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: variables.$light_text_color;
+        cursor: pointer;
+        margin-top: 25px;
+
+        &:hover {
+          color: variables.$dark_text_color;
+        }
+      }
+
+      .input_wrapper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex: 1;
+
+        .input_con {
+          flex: 1;
+        }
+      }
+    }
+
+    .SubCategories_products {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
     .sub_product_input_con {
       margin-top: 10px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-
-      .box_con {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        .close {
-          height: 45px;
-          width: 45px;
-          border-radius: 5px;
-          background: rgba(255, 0, 0, 0.051);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: variables.$light_text_color;
-          cursor: pointer;
-          margin-top: 25px;
-
-          &:hover {
-            color: variables.$dark_text_color;
-          }
-        }
-
-        .input_wrapper {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          flex: 1;
-
-          .input_con {
-            flex: 1;
-          }
-        }
-      }
-
-      .add_field_btn {
-        display: flex;
-        justify-content: right;
-
-        button {
-          padding: 10px 20px;
-          color: white;
-          background: black;
-          cursor: pointer;
-        }
-      }
     }
   }
 }

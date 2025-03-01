@@ -6,7 +6,7 @@ import { animateY, getError } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import { useParams } from 'react-router-dom'
-import { EnterNameSchema } from '../schemas'
+import { EnterNameSchema } from './schema'
 
 type EnterCategorynameFormType = {
   defaultValues: CreateCategoryFormInitialvalues

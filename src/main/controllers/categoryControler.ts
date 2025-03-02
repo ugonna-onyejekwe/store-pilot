@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import db from '..'
 
@@ -11,54 +11,66 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
       hasColor,
       hasSubProducts,
       subProducts,
-      colors,
-      designs,
       subcategories,
       hasSubcategories
-    } = req.body
+    }: CreateCategoryRequestBody = req.body
 
-    if (!name) {
-      return res.status(401).json({
-        message: 'Enter category name'
-      })
-    }
+    let formatedListOfSubCategories: { name: string; id: string }[] = []
 
-    let formatedListOfsubCategories: { name: string; id: string }[] = []
-    let formatedListOfSubproducts: { name: string; defaultQuantity: number; id?: string }[] = []
-    let formatedListOfColors: { name: string; id: string }[] = []
-    let formatedListOfDesigns: { name: string; id: string }[] = []
+    let formatedListOfSubproducts: {
+      subCategoryName?: string
+      // subCategoryId?: string
+      name?: string
+      defaultQuantity?: number
+      // id?: string
+      subProducts?: {
+        name: string
+        defaultQuantity: number
+        // id: string
+      }[]
+    }[] = []
 
     // Formating values values to return arrays
-    const listOfSizes = sizes ? sizes.split(',') : []
-    const listOfColors = colors ? colors.split(',') : []
-    const listOfDesigns = designs ? designs.split(',') : []
+    formatedListOfSubCategories = hasSubcategories
+      ? subcategories
+          .split(',')
+          .filter(Boolean)
+          .map((i) => ({ name: i.trim(), id: uuidv4() }))
+      : []
 
     // Formating values to return id with each value
-    formatedListOfsubCategories = listOfSizes.map((i) => ({
-      name: i,
-      id: uuidv4()
-    }))
+    formatedListOfSubproducts = hasSubcategories
+      ? subProducts.map((subproduct) => {
+          return formatedListOfSubCategories.map((subcate) => {
+            if (subproduct.subCategoryName?.toLowerCase() === subcate.name.toLowerCase()) {
+              // Adding id to individual subproducts if the don't exist
+              subproduct.subProducts = subproduct.subProducts?.map((i) =>
+                i.id ? i : { ...i, id: uuidv4() }
+              )
 
-    formatedListOfSubproducts = subProducts
-
-    formatedListOfColors = listOfColors.map((i) => ({
-      name: i,
-      id: uuidv4()
-    }))
-
-    formatedListOfDesigns = listOfDesigns.map((i) => ({
-      name: i,
-      id: uuidv4()
-    }))
+              return {
+                ...subproduct,
+                subCategoryId: subcate.id
+              }
+            } else {
+              // Adding id to individual subproducts if the don't exist
+              subproduct.subProducts = subproduct.subProducts?.map((i) =>
+                i.id ? i : { ...i, id: uuidv4() }
+              )
+              return subproduct
+            }
+          })
+        })
+      : subProducts.map((i) => ({ ...i, id: uuidv4() }))
 
     req.formatedData = {
       name,
       hasModel,
       hasColor,
       hasSubProducts,
-      formatedListOfSubproducts,
-      formatedListOfColors,
-      formatedListOfDesigns
+      subProducts: formatedListOfSubproducts,
+      subcategories: formatedListOfSubCategories,
+      hasSubcategories
     }
 
     return next()
@@ -70,25 +82,13 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
 // CREATING CATEGORY
 export const createCategory = async (req: Request, res: Response) => {
   try {
-    const id = uuidv4()
-
-    const allCategory = req.doc.category
-    const { name, formatedListOfSubproducts } = req.formatedData
-
-    // check if new category already exist
-    const categoryAlreadyExist = allCategory?.filter((i) => i.name === name)
-
-    if (categoryAlreadyExist.length > 0)
-      return res.status(401).json({ message: `Category with name: '${name}' already exist` })
-
-    // Add id to subproducts
-    const upDatedSubProducts = formatedListOfSubproducts.map((i) => ({ ...i, id: uuidv4() }))
+    const allCategory = req.doc.categories
+    const { formatedData } = req
 
     // create new category
     const newCategoryData = {
-      ...req.formatedData,
-      formatedListOfSubproducts: upDatedSubProducts,
-      id
+      ...formatedData,
+      id: uuidv4()
     }
 
     // geting and updating store data
@@ -100,7 +100,7 @@ export const createCategory = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Failed to create category' })
       }
 
-      return res.status(201).json({ message: 'Category created' })
+      return res.status(201).json({ message: 'Category created', data: newCategoryData })
     })
   } catch (error) {
     console.log(error)
@@ -110,87 +110,77 @@ export const createCategory = async (req: Request, res: Response) => {
 
 // GETTING ALL CATEGORY
 export const getAllCategories = async (req: Request, res: Response) => {
-  try {
-    const allCategory = req.doc.category
-
-    res.status(200).json(allCategory)
-  } catch (error) {
-    console.log(error)
-    res.status(500).json(error)
-  }
+  //   try {
+  //     const allCategory = req.doc.categories
+  //     res.status(200).json(allCategory)
+  //   } catch (error) {
+  //     console.log(error)
+  //     res.status(500).json(error)
+  //   }
 }
 
 // GETTING SINGLE CATEGORY
 export const getSingleCategory = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const allCategory = req.doc.category
-
-    const filteredCategory = allCategory.filter((i) => i.id === id)[0]
-
-    const { formatedListOfSizes, formatedListOfColors, formatedListOfDesigns } = filteredCategory
-
-    // Formating values to return value
-    filteredCategory.formatedListOfSizes = formatedListOfSizes
-      .map((i) => i.name)
-      .filter(Boolean)
-      .join(',')
-
-    filteredCategory.formatedListOfColors = formatedListOfColors
-      .map((i) => i.name)
-      .filter(Boolean)
-      .join(',')
-
-    filteredCategory.formatedListOfDesigns = formatedListOfDesigns
-      .map((i) => i.name)
-      .filter(Boolean)
-      .join(',')
-
-    res.status(200).json(filteredCategory)
-  } catch (error) {
-    res.status(500).send(error)
-  }
+  //   try {
+  //     const { id } = req.params
+  //     const allCategory = req.doc.categories
+  //     const filteredCategory = allCategory.filter((i) => i.id === id)[0]
+  //     const { formatedListOfSizes, formatedListOfColors, formatedListOfDesigns } = filteredCategory
+  //     // Formating values to return value
+  //     filteredCategory.formatedListOfSizes = formatedListOfSizes
+  //       .map((i) => i.name)
+  //       .filter(Boolean)
+  //       .join(',')
+  //     filteredCategory.formatedListOfColors = formatedListOfColors
+  //       .map((i) => i.name)
+  //       .filter(Boolean)
+  //       .join(',')
+  //     filteredCategory.formatedListOfDesigns = formatedListOfDesigns
+  //       .map((i) => i.name)
+  //       .filter(Boolean)
+  //       .join(',')
+  //     res.status(200).json(filteredCategory)
+  //   } catch (error) {
+  //     res.status(500).send(error)
+  //   }
 }
 
 // Edit category
-export const editCategory: RequestHandler = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    delete req.body.id
-    const allCategory = req.doc.category
-
-    const updatedCategories = allCategory.map((i) =>
-      i.id === id
-        ? {
-            ...i,
-            ...req.formatedData
-          }
-        : i
-    )
-
-    return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to update category' })
-      }
-
-      return res.status(200).json({ message: 'Category updated' })
-    })
-  } catch (error) {
-    res.status(500).send(error)
-  }
+export const editCategory = async (req: Request, res: Response) => {
+  //   try {
+  //     const { id } = req.params
+  //     delete req.body.id
+  //     const allCategory = req.doc.category
+  //     const updatedCategories = allCategory.map((i) =>
+  //       i.id === id
+  //         ? {
+  //             ...i,
+  //             ...req.formatedData
+  //           }
+  //         : i
+  //     )
+  //     return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+  //       if (err) {
+  //         return res.status(500).json({ error: 'Failed to update category' })
+  //       }
+  //       return res.status(200).json({ message: 'Category updated' })
+  //     })
+  //   } catch (error) {
+  //     res.status(500).send(error)
+  //   }
 }
 
 // VERIFY IF CATEGORY NAME ALREADY EXIST
 export const verifyCategoryName = async (req: Request, res: Response) => {
   try {
-    const allCategories = req.doc.category
+    const allCategories = req.doc.categories
     const { categoryName } = req.body
 
-    const categoryAlreadyExist = allCategories?.filter(
+    const categoryAlreadyExist = allCategories?.find(
       (i) => i.name.toLowerCase() === categoryName.toLowerCase()
     )
 
-    if (categoryAlreadyExist.length > 0) {
+    if (categoryAlreadyExist) {
       res.status(400).json({ message: `Category with name: '${categoryName}' already exist` })
       return
     }
@@ -203,28 +193,23 @@ export const verifyCategoryName = async (req: Request, res: Response) => {
 
 // DELETE CATEGORY
 export const deleteCategory = async (req: Request, res: Response) => {
-  try {
-    const { categoryId } = req.params
-    const allCategory = req.doc.category
-    const productList = req.doc.products
-
-    const productStillExist = productList.find((i) => i.category.id === categoryId)
-
-    if (productStillExist)
-      return res
-        .status(400)
-        .json({ message: "Can't delete this category. Product still exist under this category" })
-
-    const updatedCategories = allCategory.filter((i) => i.id !== categoryId)
-
-    return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to delete category' })
-      }
-
-      return res.status(200).json({ message: 'Category deleted' })
-    })
-  } catch (error) {
-    res.status(500).send(error)
-  }
+  //   try {
+  //     const { categoryId } = req.params
+  //     const allCategory = req.doc.category
+  //     const productList = req.doc.products
+  //     const productStillExist = productList.find((i) => i.category.id === categoryId)
+  //     if (productStillExist)
+  //       return res
+  //         .status(400)
+  //         .json({ message: "Can't delete this category. Product still exist under this category" })
+  //     const updatedCategories = allCategory.filter((i) => i.id !== categoryId)
+  //     return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+  //       if (err) {
+  //         return res.status(500).json({ error: 'Failed to delete category' })
+  //       }
+  //       return res.status(200).json({ message: 'Category deleted' })
+  //     })
+  //   } catch (error) {
+  //     res.status(500).send(error)
+  //   }
 }

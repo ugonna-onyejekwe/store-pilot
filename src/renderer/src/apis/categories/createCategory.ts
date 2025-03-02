@@ -6,21 +6,18 @@ import { useMutation } from '@tanstack/react-query'
 
 type payload = {
   name: string
+  hasModel: boolean
   hasColor: boolean
   hasSubProducts: boolean
   subProducts: {
-    name: string
-    defaultQuantity: number
-    id?: string
+    subCategoryName?: string
+    name?: string
+    defaultQuantity?: number
     subProducts?: {
       name: string
       defaultQuantity: number
-      id?: string
     }[]
   }[]
-  colors: string
-  designs: string
-  hasModel: boolean
   subcategories: string
   hasSubcategories: boolean
 }

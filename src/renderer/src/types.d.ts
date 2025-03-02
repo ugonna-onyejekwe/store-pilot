@@ -48,6 +48,7 @@ type CreateCategoryFormInitialvalues = {
   hasColor: boolean
   hasSubProducts: boolean
   subProducts: {
+    subCategoryName?: string
     name: string
     defaultQuantity: number
     id?: string
@@ -57,8 +58,6 @@ type CreateCategoryFormInitialvalues = {
       id?: string
     }[]
   }[]
-  colors: string
-  designs: string
   hasModel: boolean
   subcategories: string
   hasSubcategories: boolean

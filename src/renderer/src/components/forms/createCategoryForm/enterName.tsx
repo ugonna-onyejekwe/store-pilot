@@ -5,7 +5,6 @@ import { toastUI } from '@renderer/components/ui/toast'
 import { animateY, getError } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { useParams } from 'react-router-dom'
 import { EnterNameSchema } from './schema'
 
 type EnterCategorynameFormType = {
@@ -20,16 +19,15 @@ export const EnterCategorynameForm = ({
   handleChange: setValues
 }: EnterCategorynameFormType) => {
   const { mutateAsync: verifyCategoryName, isPending } = useVerifyCategoryName()
-  const { actionType } = useParams()
-  const editing = actionType === 'edit' ? true : false
   const initialValues = {
     name: defaultValues.name,
-    hasModel: defaultValues.hasModel
+    hasModel: defaultValues.hasModel,
+    hasColor: defaultValues.hasColor
   }
 
   const onSubmit = (values) => {
     try {
-      if (editing && values.name === defaultValues.name) {
+      if (values.name === defaultValues.name) {
         setFormSteps(2)
         setValues(values)
 
@@ -70,6 +68,13 @@ export const EnterCategorynameForm = ({
             value={values.hasModel}
             onChange={setFieldValue}
             name="hasModel"
+          />
+
+          <BooleanInput
+            label="Does this category have colours?"
+            value={values.hasColor}
+            onChange={setFieldValue}
+            name="hasColor"
           />
         </div>
 

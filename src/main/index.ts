@@ -39,10 +39,10 @@ async function initializeDatabase() {
           // If the database is empty
           const initialData = {
             products: [],
-            history: [],
+            histories: [],
             returnedGoods: [],
-            category: [],
-            warehouses: [],
+            categories: [],
+            stores: [],
             authCredentials: {
               developerName: 'ugonna',
               developerPhoneNumber: '08101330834',

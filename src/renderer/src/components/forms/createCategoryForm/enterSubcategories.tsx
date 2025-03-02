@@ -1,5 +1,6 @@
 import { BooleanInput, Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
+import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
@@ -22,6 +23,32 @@ export const EnterSubCategoriesForm = ({
   }
 
   const onSubmit = (values) => {
+    const subCategories = values.subcategories
+      .split(',')
+      .filter(Boolean)
+      .map((i) => i.trim().toLowerCase())
+
+    if (values.hasSubcategories) {
+      const duplicatedValues = subCategories.find((firstLvlCat, firstkey) => {
+        return subCategories.find((SecondLvlCat, secondKey) => {
+          if (SecondLvlCat === firstLvlCat && firstkey !== secondKey) {
+            return firstLvlCat
+          }
+
+          return null
+        })
+      })
+
+      if (!duplicatedValues) {
+        setValues(values)
+        setFormSteps(3)
+        return
+      }
+
+      toastUI.error("Can't have two subcategory with same name")
+      return
+    }
+
     setValues(values)
     setFormSteps(3)
   }

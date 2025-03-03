@@ -1,34 +1,49 @@
 import { useGetCategories } from '@renderer/apis/categories/getCategories'
-import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
-import { SelecInput } from '@renderer/components/inputs'
+import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import Button from '@renderer/components/ui/Button'
+import { SelecInput } from '@renderer/components/ui/inputs'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 import { addPro_selectCategorySchema } from '../schemas'
 
 type SelectCategoryType = {
   defaultValues: AddProductDefaultValueTypes
-  handleProceed: (values: AddProductDefaultValueTypes) => void
-  isLoading: boolean
-  data: SingleCategoryResponse
+  setDefaultValues: (values: AddProductDefaultValueTypes) => void
+  nextformFn: () => void
 }
 
 export const SelectCategory = ({
-  handleProceed,
-  data,
   defaultValues,
-  isLoading
+  setDefaultValues,
+  nextformFn
 }: SelectCategoryType) => {
-  const { CategoriesData, isPending: getCategories } = useGetCategories()
+  const { CategoriesData, isPending: gettingCategories } = useGetCategories()
+
+  const {
+    mutateAsync: getCategoryData,
+    data: categoryData,
+    isPending: isLoadingCategoryData
+  } = useReturnSingleCategory()
 
   const initialValues = {
     category: defaultValues.category
   }
 
-  const onSubmit = (values) => {
-    handleProceed(values)
+  const onSubmit = async (values) => {
+    await getCategoryData({
+      id: values.category
+    })
   }
+
+  useEffect(() => {
+    if (categoryData) {
+      defaultValues.categoryData = categoryData
+      setDefaultValues({ ...defaultValues })
+      nextformFn()
+    }
+  }, [categoryData])
 
   const { touched, errors, handleSubmit, setFieldValue } = useFormik({
     initialValues,
@@ -45,7 +60,7 @@ export const SelectCategory = ({
             defaultValue={defaultValues.category}
             onChange={setFieldValue}
             options={CategoriesData!}
-            isLoading={getCategories}
+            isLoading={gettingCategories}
             name="category"
             id="category"
             label="Select product category"
@@ -56,9 +71,10 @@ export const SelectCategory = ({
 
         <div className="btn btn_single">
           <Button
-            text={!data ? 'process category' : 'Proceed'}
+            // text={!data ? 'Process category' : 'Proceed'}
+            text={'Proceed'}
             type="submit"
-            isLoading={isLoading}
+            isLoading={isLoadingCategoryData}
           />
         </div>
       </form>

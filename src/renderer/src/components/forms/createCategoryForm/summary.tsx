@@ -96,6 +96,34 @@ const Summary = ({
         </div>
       )}
 
+      {defaultValues.hasColor && (
+        <div className="colors_con">
+          <h5>List of colors</h5>
+          <p>
+            {defaultValues.colors
+              .split(',')
+              .filter(Boolean)
+              .map((i, key) => (
+                <span key={key}>• {i.trim()}</span>
+              ))}
+          </p>
+        </div>
+      )}
+
+      {defaultValues.hasColor && (
+        <div className="design_con">
+          <h5>List of designs</h5>
+          <p>
+            {defaultValues.designs
+              .split(',')
+              .filter(Boolean)
+              .map((i, key) => (
+                <span key={key}>• {i.trim()}</span>
+              ))}
+          </p>
+        </div>
+      )}
+
       <div className="btn btn_multi">
         <Button text="Edit" onClick={() => setFormSteps(4)} varient="outline" />
 

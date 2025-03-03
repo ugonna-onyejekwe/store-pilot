@@ -60,7 +60,7 @@ const Admin = () => {
             <AdminLinkBox
               link={'/returned-goods'}
               label="Returned product"
-              subLabel="Do you want to restock returned product?</"
+              subLabel="Do you want to restock returned product?"
               icon={<Icons.ReturnedGoods className="icon" />}
             />
 

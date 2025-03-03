@@ -4,6 +4,7 @@ import { getError } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { EnterColourForm } from './enterColours'
 import { EnterCategorynameForm } from './enterName'
 import { EnterSubCategoriesForm } from './enterSubcategories'
 import { EnterSubProductForm } from './enterSubProducts'
@@ -23,7 +24,9 @@ export const CreateCategoryForm = () => {
     hasSubProducts: false,
     subProducts: [],
     subcategories: '',
-    hasSubcategories: false
+    hasSubcategories: false,
+    colors: '',
+    designs: ''
   }
 
   const onSubmit = async (values) => {
@@ -55,7 +58,6 @@ export const CreateCategoryForm = () => {
           handleChange={(formData) => {
             setFieldValue('name', formData.name)
             setFieldValue('hasModel', formData.hasModel)
-            setFieldValue('hasColor', formData.hasColor)
           }}
         />
       )}
@@ -84,8 +86,20 @@ export const CreateCategoryForm = () => {
         />
       )}
 
-      {/* summary */}
       {formSteps === 4 && (
+        <EnterColourForm
+          defaultValues={values}
+          setFormSteps={setFormSteps}
+          handleChange={(formData) => {
+            setFieldValue('hasColor', formData.hasColor)
+            setFieldValue('colors', formData.colors)
+            setFieldValue('designs', formData.designs)
+          }}
+        />
+      )}
+
+      {/* summary */}
+      {formSteps === 5 && (
         <Summary
           defaultValues={values}
           setFormSteps={setFormSteps}

@@ -18,6 +18,8 @@ type CreateCategoryRequestBody = {
   }[]
   subcategories: string
   hasSubcategories: boolean
+  designs: string
+  colors: string
 }
 
 type Checkout__ProductList = {
@@ -59,6 +61,7 @@ declare namespace Express {
           name: string
           id: string
         }
+        subCategoryName: string
         lastPrice: number
         totalQuantity: number
         cartoonsPerProduct: number
@@ -175,6 +178,8 @@ declare namespace Express {
       hasModel: boolean
       hasColor: boolean
       hasSubProducts: boolean
+      colors: string[]
+      designs: string[]
       subProducts: {
         subCategoryName?: string
         subCategoryId?: string

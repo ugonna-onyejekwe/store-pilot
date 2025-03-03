@@ -220,6 +220,46 @@
       }
     }
 
+    .colors_con {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+
+      h5 {
+        font-size: 15px;
+      }
+      p {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        span {
+          font-size: 15px;
+          color: variables.$primary_color;
+        }
+      }
+    }
+
+    .design_con {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+
+      h5 {
+        font-size: 15px;
+      }
+      p {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        span {
+          font-size: 15px;
+          color: variables.$primary_color;
+        }
+      }
+    }
+
     .btn_multi {
       display: flex;
       align-items: center;

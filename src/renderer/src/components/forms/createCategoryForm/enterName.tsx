@@ -1,6 +1,6 @@
 import { useVerifyCategoryName } from '@renderer/apis/categories/verifyname'
-import { BooleanInput, Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
+import { BooleanInput, Input } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
 import { animateY, getError } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
@@ -21,8 +21,7 @@ export const EnterCategorynameForm = ({
   const { mutateAsync: verifyCategoryName, isPending } = useVerifyCategoryName()
   const initialValues = {
     name: defaultValues.name,
-    hasModel: defaultValues.hasModel,
-    hasColor: defaultValues.hasColor
+    hasModel: defaultValues.hasModel
   }
 
   const onSubmit = (values) => {
@@ -68,13 +67,6 @@ export const EnterCategorynameForm = ({
             value={values.hasModel}
             onChange={setFieldValue}
             name="hasModel"
-          />
-
-          <BooleanInput
-            label="Does this category have colours?"
-            value={values.hasColor}
-            onChange={setFieldValue}
-            name="hasColor"
           />
         </div>
 

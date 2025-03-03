@@ -1,6 +1,6 @@
-import { Input } from '@renderer/components/inputs'
 import Navbar from '@renderer/components/Navbar'
 import Button from '@renderer/components/ui/Button'
+import { Input } from '@renderer/components/ui/inputs'
 import { DataTable } from '@renderer/components/ui/table'
 import { History_column } from '@renderer/components/ui/table/columns/hsitoryColumn'
 import { convertAmount } from '@renderer/lib/utils'

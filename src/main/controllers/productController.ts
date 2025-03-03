@@ -122,7 +122,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const { productInfo } = req
     const { categoryId } = req.body
 
-    const allCategory = req.doc.category
+    const allCategory = req.doc.categories
 
     const productCategory = allCategory.find((i) => i.id === categoryId)
 
@@ -163,7 +163,11 @@ export const createProduct = async (req: Request, res: Response) => {
 // GET ALL PRODUCTS || GET FILTERED PRODUCT
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const { categoryId, model } = req.query as { categoryId: string; model: string }
+    const { categoryId, model, subCategoryName } = req.query as {
+      categoryId: string
+      model: string
+      subCategoryName: string
+    }
 
     const productList = req.doc.products
 
@@ -175,7 +179,13 @@ export const getAllProducts = async (req: Request, res: Response) => {
     }
 
     if (categoryId) {
-      const filteredList = productList.filter((i) => i.category.id === categoryId)
+      let filteredList = productList.filter((i) => i.category.id === categoryId)
+
+      if (subCategoryName) {
+        filteredList = filteredList.filter(
+          (i) => i.subCategoryName.toLowerCase() === subCategoryName.toLowerCase()
+        )
+      }
 
       res.status(200).json(filteredList)
 

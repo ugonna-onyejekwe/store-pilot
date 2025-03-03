@@ -1,8 +1,8 @@
 import { useEditSupplyStatus } from '@renderer/apis/history/editSupplyStatus'
 import { useFormik } from 'formik'
-import { SelecInput } from '../inputs'
 import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
+import { SelecInput } from '../ui/inputs'
 import { toastUI } from '../ui/toast'
 import './styles.scss'
 

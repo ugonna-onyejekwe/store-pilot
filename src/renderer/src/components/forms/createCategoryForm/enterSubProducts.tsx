@@ -1,6 +1,6 @@
-import { BooleanInput, Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
+import { BooleanInput, Input } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'

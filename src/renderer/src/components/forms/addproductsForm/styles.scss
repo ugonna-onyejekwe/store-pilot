@@ -132,6 +132,192 @@
       }
     }
   }
+
+  // enter color quantiy style
+  .enter_color_form {
+    .input_box_con {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .box {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        .close_btn {
+          height: 45px;
+          width: 45px;
+          background: rgba(255, 0, 0, 0.141);
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 20px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  // Enter designs form
+  .enter_design_form {
+    h3 {
+      font-size: 18px;
+    }
+
+    .box_wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .box_con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        h4 {
+          font-size: 15px;
+          color: variables.$primary_color;
+        }
+
+        .input_boxes {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+
+          .input_col {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .close_btn {
+              height: 45px;
+              width: 45px;
+              background: rgba(255, 0, 0, 0.141);
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-top: 20px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // add field btn
+  .add_field_btn_con {
+    display: flex;
+    justify-content: right;
+
+    button {
+      padding: 10px 20px;
+      color: white;
+      background: black;
+      cursor: pointer;
+    }
+  }
+
+  // Add new field
+  .add_field_Modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  // Summary
+  .summary_con {
+    background: variables.$bg_color;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .info_con {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        color: variables.$light_text_color2;
+
+        span {
+          color: variables.$secondary_color;
+        }
+      }
+    }
+
+    .subproducts {
+      h3 {
+        font-size: 15px;
+      }
+
+      .box_con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+
+        p {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-weight: 500;
+          color: variables.$light_text_color2;
+
+          .check_icon {
+            height: 20px;
+            width: 20px;
+            color: variables.$primary_color;
+            line-height: 0;
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+
+    .colors_design_con {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      h3 {
+        font-size: 15px;
+
+        span {
+          color: variables.$secondary_color;
+        }
+      }
+
+      .list_con {
+        margin-top: 5px;
+        flex-direction: column;
+        display: flex;
+        gap: 5px;
+        font-weight: 500;
+        color: variables.$light_text_color2;
+      }
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        width: fit-content;
+      }
+    }
+  }
 }
 
 // Choose action type modal

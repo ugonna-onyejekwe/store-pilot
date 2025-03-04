@@ -101,7 +101,20 @@ type AddProductDefaultValueTypes = {
     defaultQuantity: number
     id: string
     name: string
-    available?: boolean
+    available: boolean
+  }[]
+  totalAvailableProduct: number
+  cartoonsPerSet: number
+  colours: {
+    name: string
+    availableQuantity: number
+  }[]
+  designs: {
+    colorName: string
+    designs: {
+      name: string
+      availableQuantity: number
+    }[]
   }[]
 }
 

@@ -15,3 +15,12 @@ export const EnterModelSchema = yup.object().shape({
 export const EnterSubproductsSchema = yup.object().shape({
   subProducts: yup.array().required('Model is required')
 })
+
+export const EnterQuantitySchema = yup.object().shape({
+  totalAvailableProduct: yup.number().required('This is required'),
+  cartoonsPerSet: yup.number().required('This is required ')
+})
+
+export const AddFieldSchema = yup.object().shape({
+  fieldName: yup.string().required('This is required')
+})

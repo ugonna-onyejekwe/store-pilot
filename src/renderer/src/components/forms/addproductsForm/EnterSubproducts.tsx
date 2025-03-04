@@ -21,31 +21,33 @@ const EnterSubproducts = ({
   }
 
   const { values, handleSubmit, setFieldValue } = useFormik({
-    initialValues: { subProducts: [] },
+    initialValues: { subProducts: defaultValues.subProducts },
     validationSchema: EnterSubproductsSchema,
     onSubmit
   })
 
   useEffect(() => {
-    if (defaultValues?.categoryData?.hasSubcategories) {
-      const filteredSubproducts = defaultValues.categoryData.subProducts.filter(
-        (i) => i.subCategoryName === defaultValues.subcategory
-      )
+    if (defaultValues.subProducts.length === 0) {
+      if (defaultValues?.categoryData?.hasSubcategories) {
+        const filteredSubproducts = defaultValues.categoryData.subProducts.filter(
+          (i) => i.subCategoryName === defaultValues.subcategory
+        )
 
-      const subproducts = filteredSubproducts.map((i) => i.subProducts)
+        const subproducts = filteredSubproducts.map((i) => i.subProducts)
+
+        setFieldValue(
+          'subProducts',
+          subproducts?.[0]?.map((i) => ({ ...i, available: true }))
+        )
+
+        return
+      }
 
       setFieldValue(
         'subProducts',
-        subproducts?.[0]?.map((i) => ({ ...i, available: true }))
+        defaultValues.categoryData?.subProducts.map((i) => ({ ...i, available: true }))
       )
-
-      return
     }
-
-    setFieldValue(
-      'subProducts',
-      defaultValues.categoryData?.subProducts.map((i) => ({ ...i, available: true }))
-    )
   }, [])
 
   return (

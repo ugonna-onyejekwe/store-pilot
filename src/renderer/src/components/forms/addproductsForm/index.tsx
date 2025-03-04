@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import Entercolours from './Entercolours'
 import EnterDesign from './EnterDesign'
 import EnterModel from './EnterModel'
+import EnterQuantity from './EnterQuantity'
 import EnterSubproducts from './EnterSubproducts'
 import { SelectCategory } from './selectCategory'
 import SelectSubcategory from './SelectSubcategory'
@@ -29,7 +30,11 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
     subcategory: '',
     categoryData: undefined,
     model: '',
-    subProducts: []
+    subProducts: [],
+    totalAvailableProduct: 0,
+    cartoonsPerSet: 1,
+    colours: [],
+    designs: []
   }
 
   const [defaultValues, setDefaultValues] = useState<AddProductDefaultValueTypes>({
@@ -91,7 +96,7 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
   const goToPrevForm = () => {
     const { categoryData } = defaultValues
 
-    const { hasSubcategories, hasModel, hasSubProducts, hasColor } = categoryData
+    const { hasSubcategories, hasModel, hasSubProducts, hasColor } = categoryData!
 
     if (formSteps === 2) return setFormSteps(1)
 
@@ -137,28 +142,30 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
 
   const onSubmit = async () => {
     const {
-      category,
-      model,
-      sizes,
-      subProducts,
-      cartoonQuantity,
-      colors,
-      designs,
-      totalQuantity,
-      lastPrice
-    } = defaultValues
+      id: categoryId,
+      name: categoryName,
+      hasModel,
+      hasColor,
+      hasSubProducts,
+      hasSubcategories
+    } = defaultValues.categoryData!
 
     // if creating new product
     createProduct({
-      categoryId: category,
-      model,
-      totalQuantity,
-      cartoonsPerProduct: cartoonQuantity,
-      sizes,
-      subProducts,
-      colors,
-      designs,
-      lastPrice
+      categoryId: categoryId,
+      categoryName: categoryName,
+      hasModel: hasModel,
+      hasColors: hasColor,
+      hasSubProducts: hasSubProducts,
+      hasSubCategory: hasSubcategories,
+      totalQuantity: defaultValues.totalAvailableProduct,
+      cartoonsPerSet: defaultValues.cartoonsPerSet,
+      subProducts: defaultValues.subProducts,
+      subCategory: defaultValues.subcategory,
+      colors: defaultValues.colours,
+      designs: defaultValues.designs,
+      actionType: defaultValues.actionType,
+      model: defaultValues.model
     })
       .then(() => {
         toastUI.success('Product add successfully')
@@ -210,6 +217,20 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
           />
         )}
 
+        {/* Enter quantity */}
+        {formSteps === 4 && (
+          <EnterQuantity
+            defaultValues={defaultValues}
+            handleProceed={(formData) => {
+              defaultValues.totalAvailableProduct = formData.totalAvailableProduct
+              defaultValues.cartoonsPerSet = formData.cartoonsPerSet
+              setDefaultValues({ ...defaultValues })
+              fnSetFormStep()
+            }}
+            previousFormFn={goToPrevForm}
+          />
+        )}
+
         {/* enter subproducts */}
         {formSteps === 4 && (
           <EnterSubproducts
@@ -224,13 +245,43 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
         )}
 
         {/* enter colors */}
-        {formSteps === 5 && <Entercolours />}
+        {formSteps === 5 && (
+          <Entercolours
+            defaultValues={defaultValues}
+            handleProceed={(formData) => {
+              defaultValues.colours = formData.colours
+              setDefaultValues({ ...defaultValues })
+              console.log(formData, 'hdjd', defaultValues.colours)
+
+              fnSetFormStep()
+            }}
+            previousFormFn={goToPrevForm}
+          />
+        )}
 
         {/* enter design */}
-        {formSteps === 6 && <EnterDesign />}
+        {formSteps === 6 && (
+          <EnterDesign
+            defaultValues={defaultValues}
+            handleProceed={(formData) => {
+              defaultValues.designs = formData.designs
+              setDefaultValues({ ...defaultValues })
+              fnSetFormStep()
+            }}
+            previousFormFn={goToPrevForm}
+          />
+        )}
 
         {/* enter design */}
-        {formSteps === 7 && <Summary />}
+        {formSteps === 7 && (
+          <Summary
+            defaultValues={defaultValues}
+            handleProceed={() => {
+              onSubmit()
+            }}
+            previousFormFn={goToPrevForm}
+          />
+        )}
       </div>
 
       {/* Modal for action type */}

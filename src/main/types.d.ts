@@ -53,30 +53,69 @@ declare interface CheckoutInfo {
   amountPaid: number
 }
 
+type CreateProductRequestBody = {
+  categoryName: string
+  categoryId: string
+  subCategory: string
+  model: string
+  actionType: string
+  hasModel: boolean
+  hasSubProducts: boolean
+  hasSubCategory: boolean
+  hasColors: boolean
+  totalQuantity: number
+  cartoonsPerSet: number
+  subProducts: {
+    defaultQuantity: number
+    id: string
+    name: string
+    available: boolean
+  }[]
+  colors: {
+    name: string
+    availableQuantity: number
+  }[]
+  designs: {
+    colorName: string
+    designs: {
+      name: string
+      availableQuantity: number
+    }[]
+  }[]
+  productId?: string
+}
+
 declare namespace Express {
   export interface Request {
     doc: {
       products: {
-        category: {
-          name: string
-          id: string
-        }
-        subCategoryName: string
-        lastPrice: number
-        totalQuantity: number
-        cartoonsPerProduct: number
+        categoryName: string
+        categoryId: string
+        subCategory: string
         model: string
-        sizes: { name: string; id: string; quantity: number }[]
+        hasModel: boolean
+        hasSubProducts: boolean
+        hasSubCategory: boolean
+        hasColors: boolean
+        totalQuantity: number
+        cartoonsPerSet: number
         subProducts: {
-          name: string
-          id: string
-          quantity: number
-          available: boolean
           defaultQuantity: number
-          left: number
+          id: string
+          name: string
+          available: boolean
         }[]
-        colors: { name: string; id: string; quantity: number }[]
-        designs: { name: string; id: string; quantity: number }[]
+        colors: {
+          name: string
+          availableQuantity: number
+        }[]
+        designs: {
+          colorName: string
+          designs: {
+            name: string
+            availableQuantity: number
+          }[]
+        }[]
         productId: string
         leftOver?: {
           category: {

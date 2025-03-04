@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 
 type payload = {
   categoryId?: string
+  subCategoryName?: string
   model?: string
 }
 
@@ -50,7 +51,7 @@ type ProductResponse = {
   }[]
 }[]
 
-const getAllProducts = (payload) => {
+const getAllProducts = (payload: payload) => {
   return getRequest<payload, ProductResponse>({
     url: ApiEndPoints.getProducts,
     payload: payload

@@ -1,10 +1,11 @@
 import AuthModal from '@renderer/components/AdminAuthmodal'
 import { EditModal } from '@renderer/components/adminEditModal'
+import AdminLinkBox from '@renderer/components/adminLinkBox'
 import Bot from '@renderer/components/bot'
 import { ConfigStoreModal } from '@renderer/components/ConfigStoreModal'
+import Navbar from '@renderer/components/Navbar'
 import { Icons } from '@renderer/components/ui/icons'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import './styles.scss'
 
 const Admin = () => {
@@ -14,6 +15,9 @@ const Admin = () => {
   const [openAuth, setOpenAuth] = useState(false)
   return (
     <>
+      {/* navbar */}
+      <Navbar currentPage="Admin" isSearchable={false} />
+
       <div className="admin_wrapper container">
         <div className="admin_container">
           <div className="bot">
@@ -26,106 +30,71 @@ const Admin = () => {
 
           <div className="box_con">
             {/* add category */}
-            <Link to={'/create-category'}>
-              <div className="box">
-                <div className="icon_con">
-                  <Icons.AddCategory className="icon" />
-                </div>
-
-                <h4>Create category</h4>
-                <p className="txt">Do you want to create new category to the store?</p>
-              </div>
-            </Link>
+            <AdminLinkBox
+              link={'/create-category'}
+              label="Create category"
+              subLabel="Do you want to create new category to the store?"
+              icon={<Icons.AddCategory className="icon" />}
+            />
 
             {/* add product */}
-            <Link to={'/add-product'}>
-              <div className="box">
-                <div className="icon_con">
-                  <Icons.AddProductIcon className="icon" />
-                </div>
-
-                <h4>Stock product</h4>
-                <p className="txt">Do you want to add new product to the store?</p>
-              </div>
-            </Link>
+            <AdminLinkBox
+              link={'/add-product'}
+              label="Stock product"
+              subLabel="Do you want to add new product to the store?"
+              icon={<Icons.AddProductIcon className="icon" />}
+            />
 
             {/* edit category */}
-            <div
-              onClick={() => {
+            <AdminLinkBox
+              handleClick={() => {
                 setOpenEditModal(true)
                 setActionType('edit')
               }}
-            >
-              <div className="box">
-                <div className="icon_con">
-                  <Icons.EditGoods className="icon" />
-                </div>
-
-                <h4>Edit product/category</h4>
-                <p className="txt">Do you want to edit a category or product?</p>
-              </div>
-            </div>
+              label="Edit product/category"
+              subLabel="Do you want to edit a category or product?"
+              icon={<Icons.EditGoods className="icon" />}
+            />
 
             {/* return product */}
-            <Link to={'/returned-goods'}>
-              <div className="box">
-                <div className="icon_con">
-                  <Icons.ReturnedGoods className="icon" />
-                </div>
-
-                <h4>Returned product</h4>
-                <p className="txt">Do you want to restock returned product?</p>
-              </div>
-            </Link>
+            <AdminLinkBox
+              link={'/returned-goods'}
+              label="Returned product"
+              subLabel="Do you want to restock returned product?"
+              icon={<Icons.ReturnedGoods className="icon" />}
+            />
 
             {/*  warehouse */}
-            <div
-              onClick={() => {
+            <AdminLinkBox
+              handleClick={() => {
                 setOpenStoreConfigModel(true)
               }}
-            >
-              <div className="box ">
-                <div className="icon_con">
-                  <Icons.LocationIcon className="icon" />
-                </div>
-
-                <h4>Configure stores</h4>
-                <p className="txt">Do you want to add or delete store?</p>
-              </div>
-            </div>
+              label="Configure stores"
+              subLabel="Do you want to add or delete store?"
+              icon={<Icons.LocationIcon className="icon" />}
+            />
 
             {/*  auth settings */}
-            <div
-              onClick={() => {
+            <AdminLinkBox
+              handleClick={() => {
                 setOpenAuth(true)
               }}
-            >
-              <div className="box ">
-                <div className="icon_con">
-                  <Icons.KeyIcon className="icon" />
-                </div>
-
-                <h4>Auth settings</h4>
-                <p className="txt">Do you want to change Admin password?</p>
-              </div>
-            </div>
+              label="Auth settings"
+              subLabel="Do you want to change Admin password?"
+              icon={<Icons.KeyIcon className="icon" />}
+            />
 
             {/* Delete product/category */}
-            <div
-              onClick={() => {
+            <AdminLinkBox
+              handleClick={() => {
                 setOpenEditModal(true)
                 setActionType('delete')
               }}
-            >
-              <div className="box danger_zone">
-                <div className="icon_con">
-                  <Icons.DeleteIcon className="icon" />
-                </div>
-
-                <h4>Delete product/category</h4>
-                <p className="txt">Do you want to delete a category or product?</p>
-              </div>
-            </div>
+              label="Delete product/category"
+              subLabel="Do you want to delete a category or product?"
+              icon={<Icons.DeleteIcon className="icon" />}
+              className="danger_zone"
+            />
           </div>
         </div>
       </div>

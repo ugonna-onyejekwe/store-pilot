@@ -1,3 +1,27 @@
+// the type of body a request will have while creating category
+type CreateCategoryRequestBody = {
+  name: string
+  hasModel: boolean
+  hasColor: boolean
+  hasSubProducts: boolean
+  subProducts: {
+    subCategoryName?: string
+    subCategoryId?: string
+    name?: string
+    defaultQuantity?: number
+    id?: string
+    subProducts?: {
+      name: string
+      defaultQuantity: number
+      id: string
+    }[]
+  }[]
+  subcategories: string
+  hasSubcategories: boolean
+  designs: string
+  colors: string
+}
+
 type Checkout__ProductList = {
   category: {
     id: string
@@ -29,29 +53,69 @@ declare interface CheckoutInfo {
   amountPaid: number
 }
 
+type CreateProductRequestBody = {
+  categoryName: string
+  categoryId: string
+  subCategory: string
+  model: string
+  actionType: string
+  hasModel: boolean
+  hasSubProducts: boolean
+  hasSubCategory: boolean
+  hasColors: boolean
+  totalQuantity: number
+  cartoonsPerSet: number
+  subProducts: {
+    defaultQuantity: number
+    id: string
+    name: string
+    available: boolean
+  }[]
+  colors: {
+    name: string
+    availableQuantity: number
+  }[]
+  designs: {
+    colorName: string
+    designs: {
+      name: string
+      availableQuantity: number
+    }[]
+  }[]
+  productId?: string
+}
+
 declare namespace Express {
   export interface Request {
     doc: {
       products: {
-        category: {
-          name: string
-          id: string
-        }
-        lastPrice: number
-        totalQuantity: number
-        cartoonsPerProduct: number
+        categoryName: string
+        categoryId: string
+        subCategory: string
         model: string
-        sizes: { name: string; id: string; quantity: number }[]
+        hasModel: boolean
+        hasSubProducts: boolean
+        hasSubCategory: boolean
+        hasColors: boolean
+        totalQuantity: number
+        cartoonsPerSet: number
         subProducts: {
-          name: string
-          id: string
-          quantity: number
-          available: boolean
           defaultQuantity: number
-          left: number
+          id: string
+          name: string
+          available: boolean
         }[]
-        colors: { name: string; id: string; quantity: number }[]
-        designs: { name: string; id: string; quantity: number }[]
+        colors: {
+          name: string
+          availableQuantity: number
+        }[]
+        designs: {
+          colorName: string
+          designs: {
+            name: string
+            availableQuantity: number
+          }[]
+        }[]
         productId: string
         leftOver?: {
           category: {
@@ -72,7 +136,8 @@ declare namespace Express {
           }[]
         }[]
       }[]
-      history: {
+
+      histories: {
         listOfProducts: {
           category: {
             id: string
@@ -109,24 +174,36 @@ declare namespace Express {
           checkoutId: string
         }
       }[]
+
       returnedGoods: []
-      category: {
-        formatedListOfColors: { name: string; id: string }[] | any
-        formatedListOfDesigns: { name: string; id: string }[] | any
-        formatedListOfSizes: { name: string; id: string }[] | any
-        formatedListOfSubproducts: { name: string; defaultQuantity: number; id: string }[]
-        hasColor: boolean
-        hasDesign: boolean
-        hasSize: boolean
-        hasSubProducts: boolean
+
+      categories: {
         name: string
         hasModel: boolean
+        hasColor: boolean
+        hasSubProducts: boolean
+        subProducts: {
+          subCategoryName?: string
+          subCategoryId?: string
+          name?: string
+          defaultQuantity?: number
+          id?: string
+          subProducts?: {
+            name: string
+            defaultQuantity: number
+            id: string
+          }[]
+        }[]
+        subcategories: { name: string; id: string }[]
+        hasSubcategories: boolean
         id: string
       }[]
-      warehouses: {
+
+      stores: {
         name: string
         id: string
       }[]
+
       authCredentials: {
         developerName: string
         developerPhoneNumber: string
@@ -134,17 +211,28 @@ declare namespace Express {
       }
     }
 
+    // this formatedData is attach to the request header after category data have been formated
     formatedData: {
       name: string
       hasModel: boolean
-      hasSize: boolean
       hasColor: boolean
-      hasDesign: boolean
       hasSubProducts: boolean
-      formatedListOfColors: { name: string; id: string }[]
-      formatedListOfDesigns: { name: string; id: string }[]
-      formatedListOfSizes: { name: string; id: string }[]
-      formatedListOfSubproducts: { name: string; defaultQuantity: number }[]
+      colors: string[]
+      designs: string[]
+      subProducts: {
+        subCategoryName?: string
+        subCategoryId?: string
+        name?: string
+        defaultQuantity?: number
+        id?: string
+        subProducts?: {
+          name: string
+          defaultQuantity: number
+          id: string
+        }[]
+      }[]
+      subcategories: { name: string; id: string }[]
+      hasSubcategories: boolean
     }
 
     productInfo: {

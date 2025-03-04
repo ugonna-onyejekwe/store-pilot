@@ -1,42 +1,112 @@
 @use '../../../lib/variables';
 
-.form,
-.summary_con {
-  width: 100%;
+.add_product_form {
+  .form {
+    width: 100%;
+    background: variables.$bg_color;
+    padding: 20px;
+    border-radius: 10px;
 
-  .form_container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+    .form_container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 10px;
+    }
 
-  .btn {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
+    .btn {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
 
-    button {
-      width: fit-content;
+      button {
+        width: fit-content;
+      }
+    }
+
+    .btn_single {
+      display: flex;
+      justify-content: right;
+      width: 100%;
+    }
+
+    .btn_multi {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    //   SUB PRODUCT FORM  CUSTUM STYLE
+    .sub_product_field_wrapper {
+      h3 {
+        font-size: 15px;
+      }
+
+      .add_field_btn {
+        display: flex;
+        justify-content: right;
+
+        button {
+          padding: 10px 20px;
+          color: white;
+          background: black;
+          cursor: pointer;
+        }
+      }
+
+      .box_con {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .close {
+          height: 45px;
+          width: 45px;
+          border-radius: 5px;
+          background: rgba(255, 0, 0, 0.051);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: variables.$light_text_color;
+          cursor: pointer;
+          margin-top: 25px;
+
+          &:hover {
+            color: variables.$dark_text_color;
+          }
+        }
+
+        .input_wrapper {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          flex: 1;
+
+          .input_con {
+            flex: 1;
+          }
+        }
+      }
+
+      .SubCategories_products {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .sub_product_input_con {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
     }
   }
 
-  .btn_single {
-    display: flex;
-    justify-content: right;
-    width: 100%;
-  }
-
-  .btn_multi {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  // SUB PRODUCT FORM STYLE
-  .subproduct_form {
+  .subproduct_form_con {
     h3 {
       font-size: 17px;
-      color: variables.$dark_text_color;
     }
 
     .box_con {
@@ -48,34 +118,37 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        font-size: 16px;
+
+        .checkInput {
+          height: 20px;
+          width: 20px;
+          accent-color: variables.$secondary_color;
+        }
+        label {
+          font-size: 15px;
+          font-weight: 500;
+          color: variables.$light_text_color;
+        }
       }
     }
   }
 
-  // COLOR QUANTITY  FORM
-  .color_form,
-  .size_form {
-    h3 {
-      font-size: 17px;
-      color: variables.$dark_text_color;
-    }
-
-    .box_con {
+  // enter color quantiy style
+  .enter_color_form {
+    .input_box_con {
       display: flex;
-      gap: 10px;
       flex-direction: column;
       gap: 10px;
 
-      .box_wrapper {
+      .box {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 5px;
 
         .close_btn {
-          height: 40px;
-          width: 40px;
-          background: rgba(255, 0, 0, 0.059);
+          height: 45px;
+          width: 45px;
+          background: rgba(255, 0, 0, 0.141);
           border-radius: 5px;
           display: flex;
           align-items: center;
@@ -83,143 +156,186 @@
           margin-top: 20px;
           cursor: pointer;
         }
+      }
+    }
+  }
 
-        .box {
+  // Enter designs form
+  .enter_design_form {
+    h3 {
+      font-size: 18px;
+    }
+
+    .box_wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .box_con {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        h4 {
+          font-size: 15px;
+          color: variables.$primary_color;
+        }
+
+        .input_boxes {
           display: flex;
           flex-direction: column;
-          gap: 3px;
+          gap: 10px;
+
+          .input_col {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .close_btn {
+              height: 45px;
+              width: 45px;
+              background: rgba(255, 0, 0, 0.141);
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-top: 20px;
+              cursor: pointer;
+            }
+          }
         }
       }
     }
+  }
 
-    .add_field {
-      width: fit-content;
+  // add field btn
+  .add_field_btn_con {
+    display: flex;
+    justify-content: right;
+
+    button {
       padding: 10px 20px;
-      background: black;
       color: white;
+      background: black;
       cursor: pointer;
     }
   }
-}
 
-// Enter new color modal
-.enter_new_color_modal {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 30px;
-}
-
-// Summary con syle
-.summary_con {
-  background: variables.$bg_color;
-  border-radius: 10px;
-  padding: 20px;
-
-  .summary_header {
-    h3 {
-      text-align: center;
-    }
-
-    p {
-      text-align: center;
-      font-size: 15px;
-      color: variables.$light_text_color;
-    }
-  }
-  .info_con {
+  // Add new field
+  .add_field_Modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     margin-top: 20px;
+  }
+
+  // Summary
+  .summary_con {
+    background: variables.$bg_color;
+    padding: 20px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     gap: 30px;
 
-    .general_info_con {
+    .info_con {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
 
       p {
-        font-weight: 600;
-        font-size: 16px;
         display: flex;
         align-items: center;
         gap: 10px;
+        font-weight: 500;
         color: variables.$light_text_color2;
 
         span {
-          font-weight: 600;
           color: variables.$secondary_color;
         }
       }
     }
 
-    .sizes_con {
+    .subproducts {
       h3 {
-        font-size: 16px;
-        padding-bottom: 10px;
+        font-size: 15px;
       }
 
-      .err_msg {
-        margin-top: 10px;
-        font-size: 14px;
-        color: rgb(224, 59, 59);
-      }
-
-      .con {
+      .box_con {
         display: flex;
         flex-direction: column;
         gap: 10px;
-        font-size: 15px;
+        margin-top: 10px;
 
         p {
-          font-weight: 600;
           display: flex;
           align-items: center;
           gap: 10px;
+          font-weight: 500;
           color: variables.$light_text_color2;
 
-          span {
-            color: variables.$secondary_color;
+          .check_icon {
+            height: 20px;
+            width: 20px;
+            color: variables.$primary_color;
+            line-height: 0;
+            margin-top: 5px;
           }
         }
       }
     }
 
-    .subproduct_con {
+    .colors_design_con {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
       h3 {
-        font-size: 16px;
-        padding-bottom: 10px;
-      }
-
-      .err_msg {
-        margin-top: 10px;
-        font-size: 14px;
-        color: rgb(224, 59, 59);
-      }
-
-      .con {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
         font-size: 15px;
 
-        p {
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: variables.$light_text_color;
-
-          span {
-            color: variables.$secondary_color;
-            line-height: 0;
-            .check_icon {
-              width: 15px;
-              height: 15px;
-            }
-          }
+        span {
+          color: variables.$secondary_color;
         }
       }
+
+      .list_con {
+        margin-top: 5px;
+        flex-direction: column;
+        display: flex;
+        gap: 5px;
+        font-weight: 500;
+        color: variables.$light_text_color2;
+      }
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        width: fit-content;
+      }
+    }
+  }
+}
+
+// Choose action type modal
+.Addproduct__ActionModal {
+  h3 {
+    font-size: 16px;
+    padding-bottom: 5px;
+  }
+
+  .btns {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+
+    button {
+      width: fit-content;
+      margin-top: 30px;
     }
   }
 }

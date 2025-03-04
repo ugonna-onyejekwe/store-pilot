@@ -1,5 +1,5 @@
-import { SelecInput } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
+import { SelecInput } from '@renderer/components/ui/inputs'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'

@@ -1,8 +1,8 @@
 import { addTocart } from '@renderer/store/cartSlice'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Input } from '../inputs'
 import Button from '../ui/Button'
+import { Input } from '../ui/inputs'
 import SideSheet from '../ui/sideSheet'
 import { toastUI } from '../ui/toast'
 

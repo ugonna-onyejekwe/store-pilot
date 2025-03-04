@@ -5,110 +5,6 @@ import db from '..'
 // FORMATE PRODUCT iNFO
 export const formateProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {
-      categoryId,
-      model,
-      totalQuantity,
-      cartoonsPerProduct,
-      sizes,
-      subProducts,
-      colors,
-      designs,
-      lastPrice
-    } = req.body
-
-    const allCategory = req.doc.category
-
-    const productCategory = allCategory.find((i) => i.id === categoryId)
-
-    if (!productCategory) {
-      res.status(404).json({ message: 'Product category not found' })
-      return
-    }
-
-    const { hasSize, hasColor, hasDesign, hasSubProducts } = productCategory!
-
-    let productInfo = {
-      totalQuantity,
-      cartoonsPerProduct,
-      model,
-      sizes,
-      subProducts,
-      colors,
-      designs,
-      lastPrice
-    }
-
-    //  Adding ID to each size
-    if (hasSize) {
-      const formatedSizes = sizes.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, sizes: formatedSizes }
-    }
-
-    //  Adding ID to each color
-    if (hasColor) {
-      const formatedColors = colors.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, colors: formatedColors }
-    }
-
-    //  Adding ID to each designs
-    if (hasDesign) {
-      const formatedDesigns = designs.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, designs: formatedDesigns }
-    }
-
-    // Adding ID to each designs
-    if (hasSubProducts) {
-      const formatedSubProducts = subProducts.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, subProducts: formatedSubProducts }
-    }
-
-    req.productInfo = productInfo
-
     return next()
   } catch (error) {
     console.log(error)
@@ -119,32 +15,49 @@ export const formateProduct = async (req: Request, res: Response, next: NextFunc
 // CREATE PRODUCTS
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { productInfo } = req
-    const { categoryId } = req.body
+    const {
+      categoryName,
+      categoryId,
+      subCategory,
+      model,
+      actionType,
+      hasModel,
+      hasSubProducts,
+      hasSubCategory,
+      hasColors,
+      totalQuantity,
+      cartoonsPerSet,
+      subProducts,
+      colors,
+      designs
+    }: CreateProductRequestBody = req.body
 
-    const allCategory = req.doc.category
+    const allCategories = req.doc.categories
+    const allProducts = req.doc.products
 
-    const productCategory = allCategory.find((i) => i.id === categoryId)
+    // updateProductFn
+    const updateProductListFn = async (updatedProductsList, newProduct) => {
+      return await db.update(
+        {},
+        { $set: { products: updatedProductsList } },
+        {},
+        (updateErr, _) => {
+          if (updateErr) {
+            console.error('Error updating product list', updateErr)
+            res.status(500).json({ error: 'Failed to update product list' })
+            return
+          }
 
-    if (!productCategory) {
-      res.status(404).json({ message: 'product category not found' })
-      return
+          res.status(201).json({ message: 'Product list updated  successfully', data: newProduct })
+        }
+      )
     }
 
-    const { name: categoryName } = productCategory!
-
     const newProduct = {
-      category: {
-        name: categoryName,
-        id: categoryId
-      },
-      ...productInfo,
       productId: uuidv4()
     }
 
-    const allProduct = req.doc.products
-
-    const updatedProductsList = [newProduct, ...allProduct]
+    const updatedProductsList = [...allProducts, newProduct]
 
     return await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
       if (updateErr) {
@@ -163,7 +76,11 @@ export const createProduct = async (req: Request, res: Response) => {
 // GET ALL PRODUCTS || GET FILTERED PRODUCT
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const { categoryId, model } = req.query as { categoryId: string; model: string }
+    const { categoryId, model, subCategoryName } = req.query as {
+      categoryId: string
+      model: string
+      subCategoryName: string
+    }
 
     const productList = req.doc.products
 
@@ -175,7 +92,13 @@ export const getAllProducts = async (req: Request, res: Response) => {
     }
 
     if (categoryId) {
-      const filteredList = productList.filter((i) => i.category.id === categoryId)
+      let filteredList = productList.filter((i) => i.category.id === categoryId)
+
+      if (subCategoryName) {
+        filteredList = filteredList.filter(
+          (i) => i.subCategoryName.toLowerCase() === subCategoryName.toLowerCase()
+        )
+      }
 
       res.status(200).json(filteredList)
 

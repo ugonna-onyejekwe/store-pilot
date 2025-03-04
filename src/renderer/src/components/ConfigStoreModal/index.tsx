@@ -4,9 +4,9 @@ import { useReturnAllWarehouses } from '@renderer/apis/warehouses/getAllWarehous
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
 import { ConfigStoreSchema } from '../forms/schemas'
-import { Input, SelecInput } from '../inputs'
 import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
+import { Input, SelecInput } from '../ui/inputs'
 import { toastUI } from '../ui/toast'
 import './styles.scss'
 

@@ -1,0 +1,52 @@
+@use '../../lib/variables';
+
+.dashboardLinkBox {
+  width: 100%;
+  background: variables.$bg_color;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  transition: 0.4s ease;
+
+  .icon_box {
+    height: 65px;
+    width: 60px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .icon {
+      color: variables.$dark_text_color;
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  &:hover {
+    p {
+      color: variables.$secondary_color;
+    }
+
+    .forward_icon {
+      transform: scale(1.1);
+      color: variables.$secondary_color;
+    }
+  }
+
+  p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: variables.$light_text_color;
+    font-weight: 500;
+  }
+
+  .forward_icon {
+    height: 20px;
+    width: 20px;
+    color: variables.$light_text_color;
+    transition: 0.4s ease;
+  }
+}

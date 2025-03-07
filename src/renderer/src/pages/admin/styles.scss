@@ -48,65 +48,6 @@
         display: grid;
         grid-template-columns: 1fr;
       }
-
-      .box {
-        background: variables.$bg_alt_color;
-        border-radius: 10px;
-        padding: 20px;
-        border: 2px solid transparent;
-        transition: 0.4s ease;
-        cursor: pointer;
-        height: 200px;
-        flex: 1;
-        width: 350px;
-        max-width: 350px;
-
-        @media (max-width: 800px) {
-          width: 100%;
-          max-width: 100%;
-        }
-
-        &.danger_zone {
-        }
-
-        .icon_con {
-          height: 70px;
-          width: 70px;
-          background: variables.$bg_color;
-          margin: 0 auto;
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: variables.$dark_text_color;
-
-          .icon {
-            height: 22px;
-            width: 22px;
-          }
-        }
-
-        &:hover {
-          border-color: variables.$primary_color;
-          background: #007bff0e;
-
-          &.danger_zone {
-            border-color: rgb(216, 61, 61);
-            background: rgba(255, 0, 0, 0.036);
-          }
-        }
-
-        h4 {
-          text-align: center;
-          font-size: 17px;
-          margin-top: 20px;
-          color: variables.$dark_text_color;
-        }
-        p {
-          text-align: center;
-          padding-top: 4px;
-        }
-      }
     }
   }
 }

@@ -1,22 +1,10 @@
-import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import Bot from '@renderer/components/bot'
 import { CreateCategoryForm } from '@renderer/components/forms/createCategoryForm'
 import { Icons } from '@renderer/components/ui/icons'
-import { useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './styles.scss'
 
 const AddCategory = () => {
-  const { actionType, id } = useParams()
-  const { data: categoryData, isPending, mutate: getCategoryData } = useReturnSingleCategory()
-  const editing = actionType && actionType === 'edit' ? true : false
-
-  if (editing) {
-    useEffect(() => {
-      getCategoryData({ id: id! })
-    }, [])
-  }
-
   return (
     <>
       {/* back to admin arrow */}
@@ -35,19 +23,11 @@ const AddCategory = () => {
             <div className="bot">
               <Bot />
             </div>
-            <h2>{editing ? 'Edit product category' : 'Create new product category'}</h2>
-            <p className="subheader txt">
-              {editing ? 'Edit' : 'Enter'} category details to get your store ready!
-            </p>
+            <h2>Create new product category</h2>
+            <p className="subheader txt">Enter category details to get your store ready!</p>
           </div>
 
-          {isPending || (
-            <CreateCategoryForm
-              actionType={actionType ? 'edit' : undefined}
-              categoryId={id!}
-              categoryData={categoryData!}
-            />
-          )}
+          {<CreateCategoryForm />}
         </div>
       </div>
     </>

@@ -1,9 +1,9 @@
 import { useAdminResetPassword } from '@renderer/apis/auth/adminResetPass'
 import { useFormik } from 'formik'
 import { AdminAuthValidationSchema } from '../forms/schemas'
-import { Input } from '../inputs'
 import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
+import { Input } from '../ui/inputs'
 import { toastUI } from '../ui/toast'
 import './styles.scss'
 

@@ -5,110 +5,6 @@ import db from '..'
 // FORMATE PRODUCT iNFO
 export const formateProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {
-      categoryId,
-      model,
-      totalQuantity,
-      cartoonsPerProduct,
-      sizes,
-      subProducts,
-      colors,
-      designs,
-      lastPrice
-    } = req.body
-
-    const allCategory = req.doc.category
-
-    const productCategory = allCategory.find((i) => i.id === categoryId)
-
-    if (!productCategory) {
-      res.status(404).json({ message: 'Product category not found' })
-      return
-    }
-
-    const { hasSize, hasColor, hasDesign, hasSubProducts } = productCategory!
-
-    let productInfo = {
-      totalQuantity,
-      cartoonsPerProduct,
-      model,
-      sizes,
-      subProducts,
-      colors,
-      designs,
-      lastPrice
-    }
-
-    //  Adding ID to each size
-    if (hasSize) {
-      const formatedSizes = sizes.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, sizes: formatedSizes }
-    }
-
-    //  Adding ID to each color
-    if (hasColor) {
-      const formatedColors = colors.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, colors: formatedColors }
-    }
-
-    //  Adding ID to each designs
-    if (hasDesign) {
-      const formatedDesigns = designs.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, designs: formatedDesigns }
-    }
-
-    // Adding ID to each designs
-    if (hasSubProducts) {
-      const formatedSubProducts = subProducts.map((i) => {
-        if (i.id)
-          return {
-            ...i
-          }
-
-        return {
-          ...i,
-          id: uuidv4()
-        }
-      })
-
-      productInfo = { ...productInfo, subProducts: formatedSubProducts }
-    }
-
-    req.productInfo = productInfo
-
     return next()
   } catch (error) {
     console.log(error)
@@ -119,43 +15,183 @@ export const formateProduct = async (req: Request, res: Response, next: NextFunc
 // CREATE PRODUCTS
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { productInfo } = req
-    const { categoryId } = req.body
+    const {
+      categoryName,
+      categoryId,
+      subCategory,
+      model,
+      actionType,
+      hasModel,
+      hasSubProducts,
+      hasSubCategory,
+      hasColors,
+      totalQuantity,
+      cartoonsPerSet,
+      subProducts,
+      colors,
+      designs,
+      productId
+    }: CreateProductRequestBody = req.body
 
-    const allCategory = req.doc.category
+    const allProducts = req.doc.products
 
-    const productCategory = allCategory.find((i) => i.id === categoryId)
+    // updateProductFn
+    const updateProductListFn = async (updatedProductsList, newProduct) => {
+      return await db.update(
+        {},
+        { $set: { products: updatedProductsList } },
+        {},
+        (updateErr, _) => {
+          if (updateErr) {
+            console.error('Error updating product list', updateErr)
+            res.status(500).json({ error: 'Failed to update product list' })
+            return
+          }
 
-    if (!productCategory) {
-      res.status(404).json({ message: 'product category not found' })
-      return
+          return res
+            .status(201)
+            .json({ message: 'Product list updated  successfully', data: newProduct })
+        }
+      )
     }
 
-    const { name: categoryName } = productCategory!
+    if (!model || model === '') {
+      // checking if product already exist in the category without modal
+      const parentProduct = allProducts.find(
+        (i) => i.categoryId === categoryId && i.isParentProduct
+      )
 
-    const newProduct = {
-      category: {
-        name: categoryName,
-        id: categoryId
-      },
-      ...productInfo,
-      productId: uuidv4()
+      // if not: asign new product
+      if (!parentProduct) {
+        const newProduct = {
+          categoryName,
+          categoryId,
+          subCategory,
+          model,
+          hasModel,
+          hasSubProducts,
+          hasSubCategory,
+          hasColors,
+          totalQuantity,
+          cartoonsPerSet,
+          subProducts,
+          colors,
+          designs,
+          productId: uuidv4(),
+          isParentProduct: true
+        }
+
+        const updatedProductsList = [...allProducts, newProduct]
+
+        return updateProductListFn(updatedProductsList, newProduct)
+      } else {
+        const updatedList = allProducts.map((i) => {
+          if (i.categoryId === categoryId && i.isParentProduct) {
+            i.totalQuantity = Number(i.totalQuantity) + Number(totalQuantity)
+
+            i.cartoonsPerSet = actionType === 'new' ? cartoonsPerSet : i.cartoonsPerSet
+
+            return i
+          }
+
+          return i
+        })
+
+        return updateProductListFn(updatedList, updatedList)
+      }
     }
 
-    const allProduct = req.doc.products
+    if (actionType === 'new') {
+      const newProduct = {
+        productId: uuidv4(),
+        categoryId,
+        subCategory,
+        model,
+        actionType,
+        hasModel,
+        hasSubProducts,
+        hasSubCategory,
+        hasColors,
+        totalQuantity,
+        cartoonsPerSet,
+        subProducts,
+        colors,
+        designs
+      }
 
-    const updatedProductsList = [newProduct, ...allProduct]
+      const updatedProductsList = [...allProducts, newProduct]
 
-    return await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error updating product list', updateErr)
-        res.status(500).json({ error: 'Failed to create product' })
+      return updateProductListFn(updatedProductsList, newProduct)
+    } else if (actionType === 'update') {
+      const product = allProducts.find((i) => i.productId === productId)
+
+      if (!product) {
+        res.send(404).json({ message: 'Product does not exist' })
         return
       }
 
-      res.status(201).json({ message: 'Product created successfly', data: newProduct })
-    })
+      // updating total quantity available
+      product.totalQuantity = Number(product.totalQuantity) + Number(totalQuantity)
+
+      // updating colors available
+      const UpdatedColors = colors.map((i) => {
+        return product.colors.find((color) => {
+          if (color.name.toLowerCase() === i.name.toLowerCase()) {
+            return {
+              name: color.name,
+              availableQuantity: Number(i.availableQuantity) + Number(color.availableQuantity)
+            }
+          } else {
+            return i
+          }
+        })
+      })
+
+      // updating designs available
+      const updatedDesigns = designs.map((i) => {
+        return product.designs.map((design) => {
+          if (design.colorName.toLowerCase() === i.colorName.toLowerCase()) {
+            i.designs.map((secondLvlDesign) => {
+              console.log(design.designs, design)
+              return design.designs.map((thirdLvlDesign) => {
+                if (secondLvlDesign.name.toLowerCase() === thirdLvlDesign.name.toLowerCase()) {
+                  return {
+                    name: secondLvlDesign.name,
+                    availableQuantity:
+                      Number(secondLvlDesign.availableQuantity) +
+                      Number(thirdLvlDesign.availableQuantity)
+                  }
+                }
+
+                return secondLvlDesign
+              })
+            })
+          }
+
+          return design
+        })
+      })
+
+      console.log(updatedDesigns, UpdatedColors)
+
+      const formatedDesign = updatedDesigns[0].map((i) => {
+        i.designs = i.designs[0]
+      })
+
+      // assigning values
+      product.colors = UpdatedColors
+      product.designs = updatedDesigns[0]
+
+      const updatedProductList = allProducts.map((i) =>
+        i.productId === product.productId ? product : i
+      )
+
+      return updateProductListFn(updatedProductList, product)
+    } else {
+      res.status(403).send('Action type was not specified')
+    }
   } catch (error) {
+    console.log(error)
     res.status(500).json(error)
   }
 }
@@ -163,7 +199,11 @@ export const createProduct = async (req: Request, res: Response) => {
 // GET ALL PRODUCTS || GET FILTERED PRODUCT
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const { categoryId, model } = req.query as { categoryId: string; model: string }
+    const { categoryId, model, subCategoryName } = req.query as {
+      categoryId: string
+      model: string
+      subCategoryName: string
+    }
 
     const productList = req.doc.products
 
@@ -175,7 +215,13 @@ export const getAllProducts = async (req: Request, res: Response) => {
     }
 
     if (categoryId) {
-      const filteredList = productList.filter((i) => i.category.id === categoryId)
+      let filteredList = productList.filter((i) => i.category.id === categoryId)
+
+      if (subCategoryName) {
+        filteredList = filteredList.filter(
+          (i) => i.subCategoryName.toLowerCase() === subCategoryName.toLowerCase()
+        )
+      }
 
       res.status(200).json(filteredList)
 

@@ -1,3 +1,5 @@
+// import { SingleCategoryResponse } from './apis/categories/getSingleCategory'
+
 type InputProps = {
   label?: string
   placeholder: string
@@ -29,6 +31,9 @@ type SelecInputProps = {
 type NavbarProps = {
   currentPage: string
   isDashboard?: boolean
+  isSearchable?: boolean
+  prevPageLink?: string | null
+  openSearch?: (value: boolean) => void
 }
 
 type BooleanInputProps = {
@@ -42,38 +47,75 @@ type BooleanInputProps = {
 
 type CreateCategoryFormInitialvalues = {
   name: string
-  hasSize: boolean
   hasColor: boolean
-  hasDesign: boolean
   hasSubProducts: boolean
-  sizes: string
   subProducts: {
+    subCategoryName?: string
     name: string
     defaultQuantity: number
     id?: string
+    subProducts?: {
+      name: string
+      defaultQuantity: number
+      id?: string
+    }[]
   }[]
+  hasModel: boolean
+  subcategories: string
+  hasSubcategories: boolean
   colors: string
   designs: string
+}
+
+type SingleCategoryResponse = {
+  id: string
+  name: string
   hasModel: boolean
+  hasColor: boolean
+  hasSubProducts: boolean
+  colors: string[]
+  designs: string[]
+  subProducts: {
+    subCategoryName?: string
+    subCategoryId?: string
+    name?: string
+    defaultQuantity?: number
+    id?: string
+    subProducts?: {
+      name: string
+      defaultQuantity: number
+      id: string
+    }[]
+  }[]
+  subcategories: { name: string; id: string }[]
+  hasSubcategories: boolean
 }
 
 type AddProductDefaultValueTypes = {
   category: string
+  actionType: string
+  subcategory: string
+  categoryData: SingleCategoryResponse | undefined
   model: string
-  cartoonQuantity: number
-  sizes: { name: string; quantity: number }[]
   subProducts: {
-    name: string
     defaultQuantity: number
+    id: string
+    name: string
     available: boolean
   }[]
-  colors: { name: string; quantity: number }[]
-  designs: { name: string; quantity: number }[]
-  colorCustomInputsIndex: number[]
-  designCustomInputsIndex: number[]
-  sizesCustomInputsIndex: number[]
-  totalQuantity: number
-  lastPrice: number
+  totalAvailableProduct: number
+  cartoonsPerSet: number
+  colours: {
+    name: string
+    availableQuantity: number
+  }[]
+  designs: {
+    colorName: string
+    designs: {
+      name: string
+      availableQuantity: number
+    }[]
+  }[]
 }
 
 type SellProductFormValues = {

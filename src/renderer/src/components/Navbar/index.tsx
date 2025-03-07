@@ -1,32 +1,24 @@
 import { deleteCookies } from '@renderer/lib/utils'
 import { RootState } from '@renderer/store'
 import { removeCookie } from '@renderer/store/authSlice'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
 import { Icons } from '../ui/icons'
 import './styles.scss'
 
-const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
+const Navbar = ({
+  currentPage,
+  isDashboard = false,
+  isSearchable = true,
+  prevPageLink = null,
+  openSearch
+}: NavbarProps) => {
   const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const [openLogout, setOpenLogout] = useState(false)
   const authCookie = useSelector((state: RootState) => state.authReducer.cookie)
-  const [searchValue, setSearchValue] = useState('')
-  const [_, setSearchParams] = useSearchParams()
-
-  const handleInputKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      setSearchParams({ seacrhValue: searchValue })
-    }
-  }
-
-  useEffect(() => {
-    if (searchValue === '') {
-      setSearchParams({ seacrhValue: '' })
-    }
-  }, [searchValue])
 
   return (
     <>
@@ -34,7 +26,7 @@ const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
         <div className="container">
           <div className="page_name">
             {!isDashboard && (
-              <Link to={'/'} className="back_btn">
+              <Link to={prevPageLink ?? '/'} className="back_btn">
                 <Icons.BackArrow className="back_icon" />
               </Link>
             )}
@@ -44,17 +36,13 @@ const Navbar = ({ currentPage, isDashboard = false }: NavbarProps) => {
 
           <div className="sec2">
             {/* Search section */}
-            <div className="search_con">
-              <Icons.SearchIcon className="search_icon" />
+            {isSearchable && (
+              <div className="search_con" onClick={() => openSearch && openSearch(true)}>
+                <Icons.SearchIcon className="search_icon" />
 
-              <input
-                type="search"
-                placeholder="Search product by name..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={handleInputKeyDown}
-              />
-            </div>
+                <input type="search" placeholder="Search product by name..." />
+              </div>
+            )}
 
             {/* Shopping cart */}
             <Link to="/cart" className="shopping_cart">

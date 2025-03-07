@@ -9,17 +9,27 @@ type payload = {
 }
 
 export type SingleCategoryResponse = {
-  formatedListOfColors: string
-  formatedListOfDesigns: string
-  formatedListOfSizes: string
-  formatedListOfSubproducts: { name: string; defaultQuantity: number; id: string }[]
-  hasColor: boolean
-  hasDesign: boolean
-  hasSize: boolean
-  hasSubProducts: boolean
+  id: string
   name: string
   hasModel: boolean
-  id: string
+  hasColor: boolean
+  hasSubProducts: boolean
+  colors: string[]
+  designs: string[]
+  subProducts: {
+    subCategoryName?: string
+    subCategoryId?: string
+    name?: string
+    defaultQuantity?: number
+    id?: string
+    subProducts?: {
+      name: string
+      defaultQuantity: number
+      id: string
+    }[]
+  }[]
+  subcategories: { name: string; id: string }[]
+  hasSubcategories: boolean
 }
 
 const getCategory = (payload: payload) => {

@@ -1,5 +1,5 @@
-import { Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
+import { Input } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'

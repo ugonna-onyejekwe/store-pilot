@@ -1,72 +1,37 @@
 import { useCreateCategory } from '@renderer/apis/categories/createCategory'
-import { useEditCategory } from '@renderer/apis/categories/editCategory'
-import { useReturnAllCategories } from '@renderer/apis/categories/getCategories'
-import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
 import { toastUI } from '@renderer/components/ui/toast'
 import { getError } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AddCategoryFormSchema } from '../schemas'
 import { EnterColourForm } from './enterColours'
-import { EnterDesignForm } from './enterDesigns'
 import { EnterCategorynameForm } from './enterName'
-import { EnterSizesForm } from './enterSizesform'
+import { EnterSubCategoriesForm } from './enterSubcategories'
 import { EnterSubProductForm } from './enterSubProducts'
+import { AddCategoryFormSchema } from './schema'
 import './style.scss'
+import Summary from './summary'
 
-type CreateCategoryFormProps = {
-  actionType?: 'edit'
-  categoryId?: string
-  categoryData?: SingleCategoryResponse
-}
-
-export const CreateCategoryForm = ({
-  categoryId,
-  actionType,
-  categoryData
-}: CreateCategoryFormProps) => {
-  const { mutate: refetchCategories } = useReturnAllCategories()
-  const { mutateAsync: EditCategory, isPending: editingCategory } = useEditCategory()
+export const CreateCategoryForm = () => {
   const { mutateAsync: createCategory, isPending: creatingCategory } = useCreateCategory()
-  const editing = actionType && actionType === 'edit' ? true : false
   const navigate = useNavigate()
   const [formSteps, setFormSteps] = useState(1)
 
   const initialvalues = {
-    name: editing ? categoryData?.name : '',
-    hasModel: editing ? categoryData?.hasModel : false,
-    hasSize: editing ? categoryData?.hasSize : false,
-    hasColor: editing ? categoryData?.hasColor : false,
-    hasDesign: editing ? categoryData?.hasDesign : false,
-    hasSubProducts: editing ? categoryData?.hasSubProducts : false,
-    sizes: editing ? categoryData?.formatedListOfSizes : '',
-    subProducts: editing ? categoryData?.formatedListOfSubproducts : [],
-    colors: editing ? categoryData?.formatedListOfColors : '',
-    designs: editing ? categoryData?.formatedListOfDesigns : ''
+    name: '',
+    hasModel: false,
+    hasColor: false,
+    hasSubProducts: false,
+    subProducts: [],
+    subcategories: '',
+    hasSubcategories: false,
+    colors: '',
+    designs: ''
   }
 
   const onSubmit = async (values) => {
     try {
-      if (editing) {
-        EditCategory({ ...values, id: categoryId })
-          .then(() => refetchCategories)
-
-          .then(() => {
-            resetForm()
-            toastUI.success('Category edited successfully')
-            setFormSteps(1)
-            values = initialvalues
-          })
-          .then(() => navigate('/admin'))
-          .then(() => {
-            window.location.reload()
-          })
-        return
-      }
-
       createCategory(values)
-        .then(() => refetchCategories)
         .then(() => {
           resetForm()
           setFormSteps(1)
@@ -85,10 +50,9 @@ export const CreateCategoryForm = ({
   })
 
   return (
-    <div>
+    <div className="create_category_form">
       {formSteps === 1 && (
         <EnterCategorynameForm
-          // @ts-expect-error: expect undefined value
           defaultValues={values}
           setFormSteps={setFormSteps}
           handleChange={(formData) => {
@@ -98,15 +62,14 @@ export const CreateCategoryForm = ({
         />
       )}
 
-      {/* has sizes starts */}
+      {/* has subcategories starts */}
       {formSteps === 2 && (
-        <EnterSizesForm
-          // @ts-expect-error: expect undefined value
+        <EnterSubCategoriesForm
           defaultValues={values}
           setFormSteps={setFormSteps}
           handleChange={(formData) => {
-            setFieldValue('hasSize', formData.hasSize)
-            setFieldValue('sizes', formData.sizes)
+            setFieldValue('hasSubcategories', formData.hasSubcategories)
+            setFieldValue('subcategories', formData.subcategories)
           }}
         />
       )}
@@ -114,7 +77,6 @@ export const CreateCategoryForm = ({
       {/* has subproducts starts */}
       {formSteps === 3 && (
         <EnterSubProductForm
-          // @ts-expect-error: expect undefined value
           defaultValues={values}
           setFormSteps={setFormSteps}
           handleChange={(formData) => {
@@ -124,28 +86,24 @@ export const CreateCategoryForm = ({
         />
       )}
 
-      {/* has colour */}
       {formSteps === 4 && (
         <EnterColourForm
-          // @ts-expect-error: expect undefined value
           defaultValues={values}
           setFormSteps={setFormSteps}
           handleChange={(formData) => {
             setFieldValue('hasColor', formData.hasColor)
             setFieldValue('colors', formData.colors)
+            setFieldValue('designs', formData.designs)
           }}
         />
       )}
 
-      {/* has design */}
+      {/* summary */}
       {formSteps === 5 && (
-        <EnterDesignForm
-          // @ts-expect-error: expect undefined value
+        <Summary
           defaultValues={values}
           setFormSteps={setFormSteps}
-          handleChange={async (formData) => {
-            await setFieldValue('hasDesign', formData.hasDesign)
-            await setFieldValue('designs', formData.designs)
+          handleChange={() => {
             handleSubmit()
             if (touched && errors) {
               for (const field in errors) {
@@ -153,8 +111,8 @@ export const CreateCategoryForm = ({
               }
             }
           }}
-          isLoading={editing ? editingCategory : creatingCategory}
-          buttonText={editing ? 'Edit category' : 'Create category'}
+          isLoading={creatingCategory}
+          buttonText={'Create category'}
         />
       )}
     </div>

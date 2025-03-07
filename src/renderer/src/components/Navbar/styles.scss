@@ -69,6 +69,7 @@
         max-width: 350px;
         width: 100%;
         min-width: 350px;
+        cursor: pointer;
 
         @media (max-width: 768px) {
           min-width: 0;
@@ -89,6 +90,7 @@
           border: none;
           outline: none;
           flex: 1;
+          pointer-events: none;
 
           &::placeholder {
             color: rgb(158, 157, 157);

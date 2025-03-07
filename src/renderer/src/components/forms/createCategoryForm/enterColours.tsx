@@ -1,11 +1,11 @@
-import { BooleanInput, Input } from '@renderer/components/inputs'
 import Button from '@renderer/components/ui/Button'
+import { BooleanInput, Input } from '@renderer/components/ui/inputs'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { EnterColorsSchema } from '../schemas'
+import { EnterColorsSchema } from './schema'
 
-type EnterVariationFormTypes = {
+type EnterColourFormProps = {
   defaultValues: CreateCategoryFormInitialvalues
   handleChange: (values: CreateCategoryFormInitialvalues) => void
   setFormSteps: (value: number) => void
@@ -15,10 +15,11 @@ export const EnterColourForm = ({
   defaultValues,
   handleChange: setValues,
   setFormSteps
-}: EnterVariationFormTypes) => {
+}: EnterColourFormProps) => {
   const initialValues = {
     hasColor: defaultValues.hasColor,
-    colors: defaultValues.colors
+    colors: defaultValues.colors,
+    designs: defaultValues.designs
   }
 
   const onSubmit = (values) => {
@@ -50,6 +51,17 @@ export const EnterColourForm = ({
               onChange={handleChange('colors')}
               touched={touched.colors}
               errorMsg={errors.colors}
+            />
+          )}
+
+          {values.hasColor && (
+            <Input
+              label="Enter category designs separating each with a comma(',')."
+              placeholder="Design 1, Design 2, Design 3,...."
+              value={values.designs}
+              onChange={handleChange('designs')}
+              touched={touched.designs}
+              errorMsg={errors.designs}
             />
           )}
         </div>

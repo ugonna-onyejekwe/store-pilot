@@ -1,6 +1,7 @@
 import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
 import { Input } from '@renderer/components/ui/inputs'
+import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
@@ -16,6 +17,18 @@ type EntercoloursProps = {
 const Entercolours = ({ defaultValues, handleProceed, previousFormFn }: EntercoloursProps) => {
   const [openAddField, setAddField] = useState(false)
   const onSubmit = (values) => {
+    const cumQuantity = values.colours.reduce(
+      (accumulator, colour) => Number(accumulator) + Number(colour.availableQuantity),
+      0
+    )
+    if (cumQuantity !== defaultValues.totalAvailableProduct) {
+      toastUI.error(
+        `Total quantity of colours not equal to total available good (${defaultValues.totalAvailableProduct}) `
+      )
+
+      return
+    }
+
     handleProceed(values)
   }
 

@@ -305,6 +305,13 @@
         gap: 5px;
         font-weight: 500;
         color: variables.$light_text_color2;
+
+        P {
+          font-size: 15px;
+          span {
+            color: variables.$primary_color;
+          }
+        }
       }
     }
 

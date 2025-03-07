@@ -17,8 +17,8 @@ export const EnterSubproductsSchema = yup.object().shape({
 })
 
 export const EnterQuantitySchema = yup.object().shape({
-  totalAvailableProduct: yup.number().required('This is required'),
-  cartoonsPerSet: yup.number().required('This is required ')
+  totalAvailableProduct: yup.number().required('This is required').min(1),
+  cartoonsPerSet: yup.number().required('This is required ').min(1)
 })
 
 export const AddFieldSchema = yup.object().shape({

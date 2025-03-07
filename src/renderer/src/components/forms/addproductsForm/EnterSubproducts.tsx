@@ -1,4 +1,5 @@
 import Button from '@renderer/components/ui/Button'
+import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
@@ -17,6 +18,13 @@ const EnterSubproducts = ({
   previousFormFn
 }: EnterSubProductProps) => {
   const onSubmit = (values) => {
+    const productAvailable = values.subProducts.find((i) => i.available === true)
+
+    if (!productAvailable) {
+      toastUI.error('Atleast one sub product sub be available')
+      return
+    }
+
     handleProceed(values)
   }
 

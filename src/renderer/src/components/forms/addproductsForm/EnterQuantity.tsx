@@ -37,15 +37,17 @@ const EnterQuantity = ({ defaultValues, handleProceed, previousFormFn }: EnterQu
             type="number"
           />
 
-          <Input
-            label={'How many cartoons makes up one set of this product?'}
-            placeholder="Enter quantity"
-            onChange={handleChange('cartoonsPerSet')}
-            value={values.cartoonsPerSet}
-            errorMsg={errors.cartoonsPerSet}
-            touched={touched.cartoonsPerSet}
-            type="number"
-          />
+          {defaultValues.actionType === 'new' && (
+            <Input
+              label={'How many cartoons makes up one set of this product?'}
+              placeholder="Enter quantity"
+              onChange={handleChange('cartoonsPerSet')}
+              value={values.cartoonsPerSet}
+              errorMsg={errors.cartoonsPerSet}
+              touched={touched.cartoonsPerSet}
+              type="number"
+            />
+          )}
         </div>
 
         <div className="btn btn_multi">

@@ -1,6 +1,7 @@
 import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
 import { Input } from '@renderer/components/ui/inputs'
+import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
@@ -19,7 +20,29 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
   const [color, setColor] = useState()
 
   const onSubmit = (values) => {
-    handleProceed(values)
+    let err = false
+    defaultValues.colours.map((i) => {
+      values.designs.map((design) => {
+        if (design.colorName === i.name) {
+          const cumQuantity = design.designs.reduce(
+            (accumulator, item) => Number(accumulator) + Number(item.availableQuantity),
+            0
+          )
+
+          if (cumQuantity !== Number(i.availableQuantity)) {
+            toastUI.error(
+              `Quantity of designs under ${i.name} doesn't tally: ${i.name}-${i.availableQuantity}`
+            )
+            err = true
+            return
+          }
+        }
+      })
+    })
+
+    if (!err) {
+      handleProceed(values)
+    }
   }
 
   const { values, handleSubmit, setFieldValue } = useFormik({
@@ -38,6 +61,24 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
           availableQuantity: 0
         }))
       }))
+
+      setFieldValue('designs', designs)
+    } else {
+      const designs = defaultValues.colours.map((color) => {
+        const existedDesign = defaultValues.designs.find((i) => i.colorName === color.name)
+
+        if (!existedDesign) {
+          return {
+            colorName: color.name,
+            designs: defaultValues.categoryData?.designs.map((i) => ({
+              name: i,
+              availableQuantity: 0
+            }))
+          }
+        }
+
+        return existedDesign
+      })
 
       setFieldValue('designs', designs)
     }
@@ -98,7 +139,9 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
                       <button
                         className="add_field_btn"
                         onClick={() => {
+                          // @ts-expect-error:undefined
                           setColor(colour.colorName)
+                          // @ts-expect-error:undefined
                           setpreviosDesigns(colour.designs)
                           setAddField(true)
                         }}
@@ -128,6 +171,7 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
         handleProceed={(formData) => {
           values.designs = values.designs.map((i) => {
             if (i.colorName === color) {
+              // @ts-expect-error:undefined
               i.design = i.designs.push({
                 name: formData.fieldName,
                 availableQuantity: 1
@@ -141,6 +185,7 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
 
           setFieldValue('designs', values.designs)
         }}
+        // @ts-expect-error:undefined
         previousValues={previousDesigns?.map((i) => i.name)}
       />
     </>

@@ -12,12 +12,14 @@ type SelectCategoryType = {
   defaultValues: AddProductDefaultValueTypes
   setDefaultValues: (values: AddProductDefaultValueTypes) => void
   nextformFn: () => void
+  setFormSteps: (number) => void
 }
 
 export const SelectCategory = ({
   defaultValues,
   setDefaultValues,
-  nextformFn
+  nextformFn,
+  setFormSteps
 }: SelectCategoryType) => {
   const { CategoriesData, isPending: gettingCategories } = useGetCategories()
 
@@ -41,6 +43,12 @@ export const SelectCategory = ({
     if (categoryData) {
       defaultValues.categoryData = categoryData
       setDefaultValues({ ...defaultValues })
+
+      if (categoryData.hasModel === false) {
+        setFormSteps(4)
+        return
+      }
+
       nextformFn()
     }
   }, [categoryData])

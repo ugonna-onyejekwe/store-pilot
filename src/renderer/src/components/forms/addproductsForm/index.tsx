@@ -80,7 +80,11 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
     }
 
     if (formSteps === 4) {
-      return categoryData?.hasColor ? setFormSteps(5) : setFormSteps(7)
+      return defaultValues.categoryData?.hasModel === false
+        ? setFormSteps(8)
+        : categoryData?.hasColor
+          ? setFormSteps(5)
+          : setFormSteps(7)
     }
 
     if (formSteps === 5) {
@@ -89,6 +93,10 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
 
     if (formSteps === 6) {
       return setFormSteps(7)
+    }
+
+    if (formSteps === 7) {
+      return setFormSteps(8)
     }
   }
 
@@ -103,40 +111,34 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
     if (formSteps === 3) return hasSubcategories ? setFormSteps(2) : setFormSteps(1)
 
     if (formSteps === 4)
-      return hasModel ? setFormSteps(3) : hasSubcategories ? setFormSteps(2) : setFormSteps(1)
-
-    if (formSteps === 5) {
-      return hasSubProducts
-        ? setFormSteps(4)
+      return defaultValues.categoryData?.hasModel === false
+        ? setFormSteps(1)
         : hasModel
           ? setFormSteps(3)
           : hasSubcategories
             ? setFormSteps(2)
             : setFormSteps(1)
+
+    if (formSteps === 5) {
+      return setFormSteps(4)
     }
 
     if (formSteps === 6) {
-      return hasColor
-        ? setFormSteps(5)
-        : hasSubProducts
-          ? setFormSteps(4)
-          : hasModel
-            ? setFormSteps(3)
-            : hasSubcategories
-              ? setFormSteps(2)
-              : setFormSteps(1)
+      return hasColor ? setFormSteps(5) : setFormSteps(4)
     }
 
     if (formSteps === 7) {
-      return hasColor
-        ? setFormSteps(6)
-        : hasSubProducts
-          ? setFormSteps(4)
-          : hasModel
-            ? setFormSteps(3)
-            : hasSubcategories
-              ? setFormSteps(2)
-              : setFormSteps(1)
+      return hasColor ? setFormSteps(6) : hasSubProducts ? setFormSteps(5) : setFormSteps(4)
+    }
+
+    if (formSteps === 8) {
+      return defaultValues.categoryData?.hasModel === false
+        ? setFormSteps(4)
+        : hasColor
+          ? setFormSteps(7)
+          : hasSubProducts
+            ? setFormSteps(5)
+            : setFormSteps(4)
     }
   }
 
@@ -165,7 +167,8 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
       colors: defaultValues.colours,
       designs: defaultValues.designs,
       actionType: defaultValues.actionType,
-      model: defaultValues.model
+      model: defaultValues.model,
+      productId: defaultValues.model
     })
       .then(() => {
         toastUI.success('Product add successfully')
@@ -187,6 +190,7 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
             setDefaultValues={setDefaultValues}
             defaultValues={defaultValues}
             nextformFn={fnSetFormStep}
+            setFormSteps={setFormSteps}
           />
         )}
 
@@ -232,11 +236,11 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
         )}
 
         {/* enter subproducts */}
-        {formSteps === 4 && (
+        {formSteps === 5 && (
           <EnterSubproducts
             defaultValues={defaultValues}
             handleProceed={(formData) => {
-              defaultValues.subProducts = formData.subProducts
+              defaultValues.subProducts = formData.subProducts.filter((i) => i.available == true)
               setDefaultValues({ ...defaultValues })
               fnSetFormStep()
             }}
@@ -245,27 +249,13 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
         )}
 
         {/* enter colors */}
-        {formSteps === 5 && (
+        {formSteps === 6 && (
           <Entercolours
             defaultValues={defaultValues}
             handleProceed={(formData) => {
-              defaultValues.colours = formData.colours
+              defaultValues.colours = formData.colours.filter((i) => i.availableQuantity > 1)
               setDefaultValues({ ...defaultValues })
-              console.log(formData, 'hdjd', defaultValues.colours)
 
-              fnSetFormStep()
-            }}
-            previousFormFn={goToPrevForm}
-          />
-        )}
-
-        {/* enter design */}
-        {formSteps === 6 && (
-          <EnterDesign
-            defaultValues={defaultValues}
-            handleProceed={(formData) => {
-              defaultValues.designs = formData.designs
-              setDefaultValues({ ...defaultValues })
               fnSetFormStep()
             }}
             previousFormFn={goToPrevForm}
@@ -274,8 +264,26 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
 
         {/* enter design */}
         {formSteps === 7 && (
+          <EnterDesign
+            defaultValues={defaultValues}
+            handleProceed={(formData) => {
+              defaultValues.designs = formData.designs.map((i) => {
+                i.designs = i.designs.filter((design) => Number(design.availableQuantity) > 1)
+
+                return i
+              })
+              setDefaultValues({ ...defaultValues })
+              fnSetFormStep()
+            }}
+            previousFormFn={goToPrevForm}
+          />
+        )}
+
+        {/* enter design */}
+        {formSteps === 8 && (
           <Summary
             defaultValues={defaultValues}
+            isLoading={creatingProduct}
             handleProceed={() => {
               onSubmit()
             }}

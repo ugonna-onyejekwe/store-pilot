@@ -1,0 +1,125 @@
+@use '.././../lib/variables';
+
+.product_box {
+  background: variables.$bg_color;
+  border-radius: 5px;
+  padding: 20px;
+  flex: 1;
+  position: relative;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    small {
+      padding: 5px 10px;
+      background: #007bff0b;
+      border: 1px solid variables.$primary_color;
+      color: variables.$primary_color;
+      font-size: 11px;
+      text-transform: capitalize;
+      border-radius: 30px;
+    }
+
+    .dropdown_con {
+      position: relative;
+
+      .dot_menu {
+        height: 15px;
+        width: 15px;
+        cursor: pointer;
+      }
+
+      .dropDown {
+        background: variables.$bg_color;
+        box-shadow: 0 0 5px rgba(128, 128, 128, 0.333);
+        border-radius: 3px;
+        position: absolute;
+        width: fit-content;
+        transform: scale(0);
+        transition: 0.4s ease;
+        right: 0;
+
+        li {
+          white-space: nowrap;
+          font-size: 15px;
+          padding: 5px 10px;
+          cursor: pointer;
+          transition: 0.4s ease;
+          color: variables.$light_text_color;
+
+          &:hover {
+            background: variables.$bg_alt_color;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid rgba(156, 155, 155, 0.227);
+          }
+        }
+
+        &.active {
+          transform: scale(1);
+        }
+      }
+    }
+  }
+
+  .modal_con {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+
+    span {
+      background: variables.$bg_alt_color;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 17px;
+      font-weight: 900;
+      color: variables.$light_text_color;
+    }
+
+    font-size: 17px;
+    font-weight: 900;
+    color: variables.$secondary_color;
+  }
+
+  .color_con,
+  .designs_con {
+    margin-top: 10px;
+    h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: variables.$dark_text_color;
+    }
+
+    .box_con {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 2px;
+
+      span {
+        font-size: 14px;
+        color: variables.$light_text_color;
+      }
+    }
+  }
+
+  .sell_btn {
+    background: rgb(22, 22, 22);
+    font-size: 15px;
+    color: white;
+    padding: 8px 20px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    cursor: pointer;
+    transition: 0.4s ease;
+
+    &:hover {
+      background: black !important;
+    }
+  }
+}

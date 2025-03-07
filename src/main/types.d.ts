@@ -58,7 +58,7 @@ type CreateProductRequestBody = {
   categoryId: string
   subCategory: string
   model: string
-  actionType: string
+  actionType: 'new' | 'update'
   hasModel: boolean
   hasSubProducts: boolean
   hasSubCategory: boolean
@@ -99,6 +99,7 @@ declare namespace Express {
         hasColors: boolean
         totalQuantity: number
         cartoonsPerSet: number
+        isParentProduct?: boolean
         subProducts: {
           defaultQuantity: number
           id: string

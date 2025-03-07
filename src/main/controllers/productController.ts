@@ -29,10 +29,10 @@ export const createProduct = async (req: Request, res: Response) => {
       cartoonsPerSet,
       subProducts,
       colors,
-      designs
+      designs,
+      productId
     }: CreateProductRequestBody = req.body
 
-    const allCategories = req.doc.categories
     const allProducts = req.doc.products
 
     // updateProductFn
@@ -48,27 +48,150 @@ export const createProduct = async (req: Request, res: Response) => {
             return
           }
 
-          res.status(201).json({ message: 'Product list updated  successfully', data: newProduct })
+          return res
+            .status(201)
+            .json({ message: 'Product list updated  successfully', data: newProduct })
         }
       )
     }
 
-    const newProduct = {
-      productId: uuidv4()
+    if (!model || model === '') {
+      // checking if product already exist in the category without modal
+      const parentProduct = allProducts.find(
+        (i) => i.categoryId === categoryId && i.isParentProduct
+      )
+
+      // if not: asign new product
+      if (!parentProduct) {
+        const newProduct = {
+          categoryName,
+          categoryId,
+          subCategory,
+          model,
+          hasModel,
+          hasSubProducts,
+          hasSubCategory,
+          hasColors,
+          totalQuantity,
+          cartoonsPerSet,
+          subProducts,
+          colors,
+          designs,
+          productId: uuidv4(),
+          isParentProduct: true
+        }
+
+        const updatedProductsList = [...allProducts, newProduct]
+
+        return updateProductListFn(updatedProductsList, newProduct)
+      } else {
+        const updatedList = allProducts.map((i) => {
+          if (i.categoryId === categoryId && i.isParentProduct) {
+            i.totalQuantity = Number(i.totalQuantity) + Number(totalQuantity)
+
+            i.cartoonsPerSet = actionType === 'new' ? cartoonsPerSet : i.cartoonsPerSet
+
+            return i
+          }
+
+          return i
+        })
+
+        return updateProductListFn(updatedList, updatedList)
+      }
     }
 
-    const updatedProductsList = [...allProducts, newProduct]
+    if (actionType === 'new') {
+      const newProduct = {
+        productId: uuidv4(),
+        categoryId,
+        subCategory,
+        model,
+        actionType,
+        hasModel,
+        hasSubProducts,
+        hasSubCategory,
+        hasColors,
+        totalQuantity,
+        cartoonsPerSet,
+        subProducts,
+        colors,
+        designs
+      }
 
-    return await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error updating product list', updateErr)
-        res.status(500).json({ error: 'Failed to create product' })
+      const updatedProductsList = [...allProducts, newProduct]
+
+      return updateProductListFn(updatedProductsList, newProduct)
+    } else if (actionType === 'update') {
+      const product = allProducts.find((i) => i.productId === productId)
+
+      if (!product) {
+        res.send(404).json({ message: 'Product does not exist' })
         return
       }
 
-      res.status(201).json({ message: 'Product created successfly', data: newProduct })
-    })
+      // updating total quantity available
+      product.totalQuantity = Number(product.totalQuantity) + Number(totalQuantity)
+
+      // updating colors available
+      const UpdatedColors = colors.map((i) => {
+        return product.colors.find((color) => {
+          if (color.name.toLowerCase() === i.name.toLowerCase()) {
+            return {
+              name: color.name,
+              availableQuantity: Number(i.availableQuantity) + Number(color.availableQuantity)
+            }
+          } else {
+            return i
+          }
+        })
+      })
+
+      // updating designs available
+      const updatedDesigns = designs.map((i) => {
+        return product.designs.map((design) => {
+          if (design.colorName.toLowerCase() === i.colorName.toLowerCase()) {
+            i.designs.map((secondLvlDesign) => {
+              console.log(design.designs, design)
+              return design.designs.map((thirdLvlDesign) => {
+                if (secondLvlDesign.name.toLowerCase() === thirdLvlDesign.name.toLowerCase()) {
+                  return {
+                    name: secondLvlDesign.name,
+                    availableQuantity:
+                      Number(secondLvlDesign.availableQuantity) +
+                      Number(thirdLvlDesign.availableQuantity)
+                  }
+                }
+
+                return secondLvlDesign
+              })
+            })
+          }
+
+          return design
+        })
+      })
+
+      console.log(updatedDesigns, UpdatedColors)
+
+      const formatedDesign = updatedDesigns[0].map((i) => {
+        i.designs = i.designs[0]
+      })
+
+      // assigning values
+      product.colors = UpdatedColors
+      product.designs = updatedDesigns[0]
+
+      const updatedProductList = allProducts.map((i) =>
+        i.productId === product.productId ? product : i
+      )
+
+      return updateProductListFn(updatedProductList, product)
+    } else {
+      res.status(403).send('Action type was not specified')
+    }
   } catch (error) {
+    console.log(error)
     res.status(500).json(error)
   }
 }

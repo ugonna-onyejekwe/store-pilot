@@ -1,0 +1,58 @@
+@use '../../lib/variables';
+
+.category_sidebar {
+  background: variables.$bg_color;
+  width: 300px !important;
+  max-width: 300px !important;
+  height: 100vh;
+  padding: 20px;
+  box-shadow: 0 0 5px rgb(211, 210, 210);
+  transform: translateX(-110%) !important;
+  left: 0;
+
+  &.active {
+    transform: translateX(0) !important;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  .list_con {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    gap: 20px;
+
+    p {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: variables.$light_text_color2;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.4s ease;
+      text-transform: capitalize;
+
+      &:hover {
+        color: variables.$dark_text_color;
+      }
+
+      &.active {
+        color: variables.$secondary_color;
+      }
+
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .bullet {
+          height: 15px;
+          width: 15px;
+        }
+      }
+    }
+  }
+}

@@ -12,21 +12,20 @@ type SelectModelTypes = {
   setFormData: (values: ReturnedProductType) => void
   handleProceed: (values) => void
   prevStep: () => void
-  isLoading: boolean
 }
 
 export const SelectModel = ({
   formData,
   setFormData,
   handleProceed,
-  prevStep,
-  isLoading
+  prevStep
 }: SelectModelTypes) => {
   const {
     mutateAsync: getProductData,
     data: productData,
     isPending: isGettingProduct
   } = useReturnAllProducts()
+
   useEffect(() => {
     getProductData({ categoryId: formData.category })
       .then(() => {
@@ -72,7 +71,7 @@ export const SelectModel = ({
         <div className="btn btn_multi">
           <Button text={'Back'} varient="outline" onClick={prevStep} />
 
-          <Button text={'Proceed'} type="submit" isLoading={isLoading} />
+          <Button text={'Proceed'} type="submit" />
         </div>
       </form>
     </motion.div>

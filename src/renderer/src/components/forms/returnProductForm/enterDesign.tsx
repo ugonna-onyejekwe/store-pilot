@@ -1,4 +1,3 @@
-import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
 import Button from '@renderer/components/ui/Button'
 import { SelecInput } from '@renderer/components/ui/inputs'
 import { animateY } from '@renderer/lib/utils'
@@ -10,8 +9,7 @@ type SelectDesignTypes = {
   setFormData: (values: ReturnedProductType) => void
   nextStep: () => void
   prevStep: () => void
-  productData: ProductResponse
-  isLoading: boolean
+  categoryData: SingleCategoryResponse
 }
 
 export const SelectDesign = ({
@@ -19,8 +17,7 @@ export const SelectDesign = ({
   setFormData,
   nextStep,
   prevStep,
-  isLoading,
-  productData
+  categoryData
 }: SelectDesignTypes) => {
   const initialValues = {
     design: formData.design
@@ -39,30 +36,28 @@ export const SelectDesign = ({
 
   return (
     <>
-      {!isLoading && (
-        <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
-          <form onSubmit={handleSubmit} className="form">
-            <div className="form_container">
-              <SelecInput
-                placeholder="Select product design"
-                onChange={setFieldValue}
-                options={productData.designs.map((i) => ({ label: i.name, value: i.id }))}
-                name="design"
-                id="design"
-                label="Select product design"
-                touched={touched.design}
-                errorMsg={errors.design}
-              />
-            </div>
+      <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
+        <form onSubmit={handleSubmit} className="form">
+          <div className="form_container">
+            <SelecInput
+              placeholder="Select product design"
+              onChange={setFieldValue}
+              options={categoryData.designs.map((i) => ({ label: i, value: i }))}
+              name="design"
+              id="design"
+              label="Select product design"
+              touched={touched.design}
+              errorMsg={errors.design}
+            />
+          </div>
 
-            <div className="btn btn_multi">
-              <Button text={'Back'} varient="outline" onClick={prevStep} />
+          <div className="btn btn_multi">
+            <Button text={'Back'} varient="outline" onClick={prevStep} />
 
-              <Button text={'Proceed'} type="submit" />
-            </div>
-          </form>
-        </motion.div>
-      )}
+            <Button text={'Proceed'} type="submit" />
+          </div>
+        </form>
+      </motion.div>
     </>
   )
 }

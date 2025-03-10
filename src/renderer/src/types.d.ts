@@ -174,7 +174,7 @@ declare type TableProps = {
 type ReturnedProductType = {
   category: string
   productId: string
-  size: string
+  subcategory: string
   color: string
   design: string
   subproducts: {
@@ -185,4 +185,5 @@ type ReturnedProductType = {
   }[]
   returnDisposition: string
   quantity: number
+  categoryData: SingleCategoryResponse | undefined
 }

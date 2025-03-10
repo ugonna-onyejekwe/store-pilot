@@ -1,5 +1,4 @@
 import { SingleCategoryResponse } from '@renderer/apis/categories/getSingleCategory'
-import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
 import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 
@@ -7,22 +6,16 @@ type SummaryTypes = {
   formData: ReturnedProductType
   nextStep: () => void
   handleSubmit: () => void
-  productData: ProductResponse
   categoryData: SingleCategoryResponse
 }
 
 export const Summary = ({
   formData,
   // nextStep,
-  productData,
   // handleSubmit,
   categoryData
 }: SummaryTypes) => {
-  const color = productData.colors.find((i) => i.id === formData.color)
-  const size = productData.sizes.find((i) => i.id === formData.size)
-  const design = productData.designs.find((i) => i.id === formData.design)
-
-  const { hasColor, hasDesign, hasModel, hasSize, hasSubProducts } = categoryData
+  const { hasColor, hasModel, hasSubcategories, hasSubProducts } = categoryData
 
   return (
     <>
@@ -35,12 +28,12 @@ export const Summary = ({
 
           <div className="info_con">
             <p>
-              Product category: <span>{productData.category.name}</span>
+              Product category: <span>{formData.categoryData?.name}</span>
             </p>
 
             {hasModel && (
               <p>
-                Product model: <span>{productData.model}</span>
+                Product model: <span>{formData.productId}</span>
               </p>
             )}
 
@@ -50,21 +43,21 @@ export const Summary = ({
               </p>
             )}
 
-            {hasSize && (
+            {hasSubcategories && (
               <p>
-                Size: <span>{size?.name}</span>
+                Sub-category: <span>{formData.subcategory}</span>
               </p>
             )}
 
             {hasColor && (
               <p>
-                Colour: <span>{color?.name}</span>
+                Colour: <span>{formData.color}</span>
               </p>
             )}
 
-            {hasDesign && (
+            {hasColor && (
               <p>
-                Design: <span>{design?.name}</span>
+                Design: <span>{formData.design}</span>
               </p>
             )}
 
@@ -72,7 +65,7 @@ export const Summary = ({
               Product status: <span>{formData.returnDisposition.toUpperCase()}</span>
             </p>
 
-            {hasSubProducts && (
+            {/* {hasSubProducts && (
               <div className="subproduct">
                 <h3>List of Sub-products</h3>
 
@@ -82,7 +75,7 @@ export const Summary = ({
                   </p>
                 ))}
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="btn btn_multi">

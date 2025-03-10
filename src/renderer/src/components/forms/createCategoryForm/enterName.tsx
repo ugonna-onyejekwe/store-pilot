@@ -27,14 +27,14 @@ export const EnterCategorynameForm = ({
   const onSubmit = (values) => {
     try {
       if (values.name === defaultValues.name) {
-        setFormSteps(2)
+        values.hasModel === false ? setFormSteps(5) : setFormSteps(2)
         setValues(values)
 
         return
       }
 
       verifyCategoryName({ categoryName: values.name }).then(() => {
-        setFormSteps(2)
+        values.hasModel === false ? setFormSteps(5) : setFormSteps(2)
         setValues(values)
       })
     } catch (error) {

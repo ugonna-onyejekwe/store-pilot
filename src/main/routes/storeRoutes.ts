@@ -1,6 +1,6 @@
 import express, { RequestHandler, Router } from 'express'
 
-import { addWarehouse, deletewarehouse, getAllWarehouses } from '../controllers/warehouseController'
+import { addWarehouse, deletewarehouse, getAllWarehouses } from '../controllers/storeController'
 import { getDocs } from '../middlewares/findDocs'
 
 const router: Router = express.Router()

@@ -55,6 +55,7 @@ export const createProduct = async (req: Request, res: Response) => {
       )
     }
 
+    // If product does not have model
     if (!model || model === '') {
       // checking if product already exist in the category without modal
       const parentProduct = allProducts.find(
@@ -101,6 +102,7 @@ export const createProduct = async (req: Request, res: Response) => {
       }
     }
 
+    //if product has model
     if (actionType === 'new') {
       const newProduct = {
         productId: uuidv4(),
@@ -133,54 +135,50 @@ export const createProduct = async (req: Request, res: Response) => {
       // updating total quantity available
       product.totalQuantity = Number(product.totalQuantity) + Number(totalQuantity)
 
-      // updating colors available
-      const UpdatedColors = colors.map((i) => {
-        return product.colors.find((color) => {
-          if (color.name.toLowerCase() === i.name.toLowerCase()) {
-            return {
-              name: color.name,
-              availableQuantity: Number(i.availableQuantity) + Number(color.availableQuantity)
+      if (product.hasColors) {
+        // updating colors available
+        const UpdatedColors = colors.map((i) => {
+          return product.colors.map((color) => {
+            if (color.name.toLowerCase() === i.name.toLowerCase()) {
+              return {
+                ...color,
+                availableQuantity: Number(i.availableQuantity) + Number(color.availableQuantity)
+              }
+            } else {
+              return i
             }
-          } else {
-            return i
-          }
+          })[0]
         })
-      })
 
-      // updating designs available
-      const updatedDesigns = designs.map((i) => {
-        return product.designs.map((design) => {
-          if (design.colorName.toLowerCase() === i.colorName.toLowerCase()) {
-            i.designs.map((secondLvlDesign) => {
-              console.log(design.designs, design)
-              return design.designs.map((thirdLvlDesign) => {
-                if (secondLvlDesign.name.toLowerCase() === thirdLvlDesign.name.toLowerCase()) {
-                  return {
-                    name: secondLvlDesign.name,
-                    availableQuantity:
-                      Number(secondLvlDesign.availableQuantity) +
-                      Number(thirdLvlDesign.availableQuantity)
+        // updating designs availables
+        const updatedDesigns = designs.map((i) => {
+          return product.designs.find((design) => {
+            if (design.colorName.toLowerCase() === i.colorName.toLowerCase()) {
+              i.designs.map((secondLvlDesign) => {
+                design.designs = design.designs.map((thirdLvlDesign) => {
+                  if (secondLvlDesign.name.toLowerCase() === thirdLvlDesign.name.toLowerCase()) {
+                    return {
+                      ...thirdLvlDesign,
+                      availableQuantity:
+                        Number(secondLvlDesign.availableQuantity) +
+                        Number(thirdLvlDesign.availableQuantity)
+                    }
                   }
-                }
 
-                return secondLvlDesign
+                  return secondLvlDesign
+                })
               })
-            })
-          }
+            }
 
-          return design
+            return design
+          })
         })
-      })
 
-      console.log(updatedDesigns, UpdatedColors)
-
-      const formatedDesign = updatedDesigns[0].map((i) => {
-        i.designs = i.designs[0]
-      })
-
-      // assigning values
-      product.colors = UpdatedColors
-      product.designs = updatedDesigns[0]
+        // assigning values
+        product.colors = UpdatedColors
+        // @ts-expect-error:undefined value
+        product.designs = updatedDesigns
+      }
 
       const updatedProductList = allProducts.map((i) =>
         i.productId === product.productId ? product : i
@@ -215,11 +213,11 @@ export const getAllProducts = async (req: Request, res: Response) => {
     }
 
     if (categoryId) {
-      let filteredList = productList.filter((i) => i.category.id === categoryId)
+      let filteredList = productList.filter((i) => i.categoryId === categoryId)
 
       if (subCategoryName) {
         filteredList = filteredList.filter(
-          (i) => i.subCategoryName.toLowerCase() === subCategoryName.toLowerCase()
+          (i) => i.subCategory.toLowerCase() === subCategoryName.toLowerCase()
         )
       }
 

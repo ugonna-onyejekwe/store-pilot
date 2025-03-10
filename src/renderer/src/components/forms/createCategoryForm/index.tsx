@@ -8,7 +8,6 @@ import { EnterColourForm } from './enterColours'
 import { EnterCategorynameForm } from './enterName'
 import { EnterSubCategoriesForm } from './enterSubcategories'
 import { EnterSubProductForm } from './enterSubProducts'
-import { AddCategoryFormSchema } from './schema'
 import './style.scss'
 import Summary from './summary'
 
@@ -45,7 +44,6 @@ export const CreateCategoryForm = () => {
 
   const { errors, touched, handleSubmit, resetForm, values, setFieldValue } = useFormik({
     initialValues: { ...initialvalues },
-    validationSchema: AddCategoryFormSchema,
     onSubmit
   })
 

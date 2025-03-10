@@ -199,7 +199,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
     const allCategory = req.doc.categories
     const productList = req.doc.products
 
-    const productStillExist = productList.find((i) => i.category.id === categoryId)
+    const productStillExist = productList.find((i) => i.categoryId === categoryId)
 
     if (productStillExist)
       return res
@@ -212,6 +212,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
       if (err) {
         return res.status(500).json({ error: 'Failed to delete category' })
       }
+
       return res.status(200).json({ message: 'Category deleted' })
     })
   } catch (error) {

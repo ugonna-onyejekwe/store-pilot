@@ -11,7 +11,7 @@ import authRoutes from './routes/authRoutes'
 import categoryRoutes from './routes/categoryRoutes'
 import historyRoutes from './routes/historyRoutes'
 import productsRoutes from './routes/productsRoutes'
-import warehouseRoutes from './routes/warehouseRoutes'
+import storeRoutes from './routes/storeRoutes'
 
 dotenv.config({ path: path.join(__dirname, '.env') })
 
@@ -84,7 +84,7 @@ function startExpressServer() {
   expressApp.use('/api/products', productsRoutes)
   expressApp.use('/api/history', historyRoutes)
   expressApp.use('/api/auth', authRoutes)
-  expressApp.use('/api/warehouses', warehouseRoutes)
+  expressApp.use('/api/warehouses', storeRoutes)
 
   const server = expressApp.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`)

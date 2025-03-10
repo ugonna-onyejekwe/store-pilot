@@ -12,7 +12,7 @@ import EnterSubproducts from './EnterSubproducts'
 import { SelectCategory } from './selectCategory'
 import SelectSubcategory from './SelectSubcategory'
 import './styles.scss'
-import Summary from './Summary'
+import Summary from './summary'
 
 type AddProductFormProps = {
   gettingSingleProduct: boolean

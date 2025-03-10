@@ -39,9 +39,16 @@ export const SelectCategory = ({
     })
   }
 
+  const { values, touched, errors, handleSubmit, setFieldValue } = useFormik({
+    initialValues,
+    validationSchema: addPro_selectCategorySchema,
+    onSubmit
+  })
+
   useEffect(() => {
     if (categoryData) {
       defaultValues.categoryData = categoryData
+      defaultValues.category = values.category
       setDefaultValues({ ...defaultValues })
 
       if (categoryData.hasModel === false) {
@@ -52,12 +59,6 @@ export const SelectCategory = ({
       nextformFn()
     }
   }, [categoryData])
-
-  const { touched, errors, handleSubmit, setFieldValue } = useFormik({
-    initialValues,
-    validationSchema: addPro_selectCategorySchema,
-    onSubmit
-  })
 
   return (
     <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
@@ -78,12 +79,7 @@ export const SelectCategory = ({
         </div>
 
         <div className="btn btn_single">
-          <Button
-            // text={!data ? 'Process category' : 'Proceed'}
-            text={'Proceed'}
-            type="submit"
-            isLoading={isLoadingCategoryData}
-          />
+          <Button text={'Proceed'} type="submit" isLoading={isLoadingCategoryData} />
         </div>
       </form>
     </motion.div>

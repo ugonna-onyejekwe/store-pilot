@@ -105,11 +105,11 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
   // useEffect to fetch categoryData
   useEffect(() => {
-    if (values.categoryId) {
-      getSingleCategory({ id: values.categoryId })
-    }
-
     const init = async () => {
+      if (values.categoryId) {
+        getSingleCategory({ id: values.categoryId })
+      }
+
       if (categoryData) {
         await setFieldValue('hasSubCategory', categoryData.hasSubcategories ? true : false)
         await setFieldValue('hasModel', categoryData.hasModel ? true : false)
@@ -162,30 +162,30 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
   }, [values.color])
 
   useEffect(() => {
-    const init = async () => {
+    const init = () => {
+      let listOfSubProducts
+
       if (categoryData && categoryData.hasSubcategories && values.subcategory) {
-        const listOfSubProducts = categoryData.subProducts
+        listOfSubProducts = categoryData.subProducts
           .find((i) => i.subCategoryName === values.subcategory)
           ?.subProducts?.map((i) => ({ ...i, sellQuantity: i.defaultQuantity }))
-
-        await setFieldValue('subproducts', listOfSubProducts)
       }
 
       if (categoryData && categoryData.hasSubcategories === false) {
-        const listOfSubProducts = categoryData.subProducts.map((i) => ({
+        listOfSubProducts = categoryData.subProducts.map((i) => ({
           ...i,
           sellQuantity: i.defaultQuantity
         }))
-
-        await setFieldValue('subproducts', listOfSubProducts)
       }
+
+      setFieldValue('subproducts', listOfSubProducts)
     }
 
     init()
-  }, [values, categoryData])
+  }, [values.subcategory, categoryData])
 
   return (
-    <>
+    <div className="out_going_goods_form">
       {formStep === 1 && (
         <form onSubmit={handleSubmit}>
           <div className="form_con">
@@ -233,34 +233,38 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                 />
               )}
 
-              {categoryData?.hasColor && (
-                <SelecInput
-                  label="Select  colour "
-                  placeholder="Select ..."
-                  isLoading={isGettingProduct}
-                  options={productData?.colors.map((i) => ({ label: i.name, value: i.name })) ?? []}
-                  id="color"
-                  name="color"
-                  onChange={setFieldValue}
-                  errorMsg={errors.color}
-                  touched={touched.color}
-                  defaultValue={values.color}
-                />
-              )}
+              <div className="input_row_con">
+                {categoryData?.hasColor && (
+                  <SelecInput
+                    label="Select  colour "
+                    placeholder="Select ..."
+                    isLoading={isGettingProduct}
+                    options={
+                      productData?.colors.map((i) => ({ label: i.name, value: i.name })) ?? []
+                    }
+                    id="color"
+                    name="color"
+                    onChange={setFieldValue}
+                    errorMsg={errors.color}
+                    touched={touched.color}
+                    defaultValue={values.color}
+                  />
+                )}
 
-              {categoryData?.hasColor && (
-                <SelecInput
-                  label="Select  design"
-                  placeholder="Select ..."
-                  options={data.listOfDesigns}
-                  id="design"
-                  name="design"
-                  isLoading={isGettingProduct}
-                  onChange={setFieldValue}
-                  errorMsg={errors.design}
-                  touched={touched.design}
-                />
-              )}
+                {categoryData?.hasColor && (
+                  <SelecInput
+                    label="Select  design"
+                    placeholder="Select ..."
+                    options={data.listOfDesigns}
+                    id="design"
+                    name="design"
+                    isLoading={isGettingProduct}
+                    onChange={setFieldValue}
+                    errorMsg={errors.design}
+                    touched={touched.design}
+                  />
+                )}
+              </div>
 
               {categoryData?.hasModel && categoryData.hasSubProducts && (
                 <SelecInput
@@ -371,7 +375,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
           <CheckoutForm setFormStep={setFormStep} />
         </>
       )}
-    </>
+    </div>
   )
 }
 

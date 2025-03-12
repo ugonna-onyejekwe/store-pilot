@@ -39,3 +39,17 @@ export const sellGoodsSchema = yup.object().shape({
   }),
   quantity: yup.number()
 })
+
+export const checkoutFormSchma = yup.object().shape({
+  paymentType: yup.string(),
+  amountPaid: yup.number().test('', 'This field is required', function (value) {
+    const { paymentType } = this.parent
+    return paymentType !== 'half' || !!value
+  }),
+  amountToPay: yup.number().test('', 'This field is required', function (value) {
+    const { paymentType } = this.parent
+    return !(paymentType === 'half' || paymentType === 'credit') || !!value
+  }),
+  customerName: yup.string().required('This field is required'),
+  locationSold: yup.string().required('This field is required')
+})

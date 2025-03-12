@@ -4,21 +4,5 @@
   width: 100%;
   height: fit-content;
 
-  .form_con {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 20px;
-  }
-
-  .btns {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 30px;
-
-    button {
-      width: fit-content;
-    }
-  }
+ 
 }

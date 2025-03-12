@@ -184,7 +184,7 @@ export const EnterSubProductForm = ({
 
       return
     }
-  }, [values])
+  }, [])
 
   // Function to set custum field values
   const onFieldChange = (value: any, key: number, name: string, subCateName?: string) => {

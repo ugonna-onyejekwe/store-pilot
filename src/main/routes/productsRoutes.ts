@@ -4,9 +4,9 @@ import {
   createProduct,
   deleteProduct,
   editProduct,
-  formateProduct,
   getAllProducts,
   getSingleProduct,
+  returnProduct,
   verifyModel
 } from '../controllers/productController'
 import { getDocs } from '../middlewares/findDocs'
@@ -18,12 +18,13 @@ router.get('/:productId/:categoryId', getDocs as RequestHandler, getSingleProduc
 router.post(
   '/create',
   getDocs as RequestHandler,
-  formateProduct as RequestHandler,
+
   createProduct as RequestHandler
 )
 router.post('/verify-model-name', getDocs as RequestHandler, verifyModel as RequestHandler)
 router.post('/checkout', getDocs as RequestHandler, checkout as RequestHandler)
-router.patch('/edit', getDocs as RequestHandler, formateProduct as RequestHandler, editProduct)
+router.post('/return-product', getDocs as RequestHandler, returnProduct as RequestHandler)
+router.patch('/edit', getDocs as RequestHandler, editProduct)
 router.delete('/delete/:productId', getDocs as RequestHandler, deleteProduct)
 
 export default router

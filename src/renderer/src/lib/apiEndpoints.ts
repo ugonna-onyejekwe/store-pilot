@@ -13,6 +13,7 @@ export const ApiEndPoints = {
   editProduct: '/products/edit',
   deleteProduct: '/products/delete',
   checkout: '/products/checkout',
+  returnProduct: '/products/return-product',
 
   // history
   getAllHistory: '/history',

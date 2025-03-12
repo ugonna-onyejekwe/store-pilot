@@ -1,0 +1,55 @@
+@use '../../../lib/variables';
+
+.form_con {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.sub_products_con {
+  background: variables.$primary_color_alpha;
+  padding: 20px;
+
+  h3 {
+    font-size: 15px;
+  }
+
+  .box_con {
+    padding-top: 20px;
+
+    .con {
+      position: relative;
+      width: fit-content;
+
+      &:not(:last-child) {
+        padding-bottom: 15px;
+      }
+
+      input {
+        width: fit-content;
+      }
+
+      small {
+        position: absolute;
+        top: 40px;
+        right: 10px;
+        background: variables.$primary_color_alpha;
+        padding: 5px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+
+  button {
+    width: fit-content;
+  }
+}

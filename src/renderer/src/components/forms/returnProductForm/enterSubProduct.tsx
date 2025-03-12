@@ -3,6 +3,7 @@ import { Input } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
 import { animateY } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 
 type SubProductQuantitiesProps = {
   formData: ReturnedProductType
@@ -17,6 +18,24 @@ export const SubProductQuantities = ({
   nextStep,
   prevStep
 }: SubProductQuantitiesProps) => {
+  useEffect(() => {
+    if (formData.categoryData?.hasSubcategories) {
+      // @ts-expect-error:not compactible
+      formData.subproducts = formData.categoryData?.subProducts.find(
+        (i) => i.subCategoryName === formData.subcategory
+      )?.subProducts
+
+      setFormData({ ...formData })
+
+      return
+    }
+
+    // @ts-expect-error:not compactible
+    formData.subproducts = formData.categoryData?.subProducts
+
+    setFormData({ ...formData })
+  }, [])
+
   const onSubmit = (e) => {
     e.preventDefault()
 
@@ -41,7 +60,7 @@ export const SubProductQuantities = ({
           <h3>Enter quantity for each sub product</h3>
 
           <div className="form_con">
-            {formData.subproducts.map((i, key) => (
+            {formData.subproducts?.map((i, key) => (
               <div className="box_con" key={key}>
                 <Input
                   label={i.name}

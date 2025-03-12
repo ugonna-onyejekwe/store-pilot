@@ -1,5 +1,5 @@
-import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
-import { useEffect, useState } from 'react'
+import { useReturnProduct } from '@renderer/apis/products/returnProduct'
+import { useState } from 'react'
 import { SelectCategory } from './enterCategory'
 import { SelectColor } from './enterColor'
 import { SelectDesign } from './enterDesign'
@@ -13,13 +13,6 @@ import { Summary } from './summary'
 const ReturnProductForm = () => {
   const [formSteps, setFormSteps] = useState<number>(1)
 
-  const {
-    mutateAsync: getProducts,
-    data: productData,
-    isPending: isGettingProducts
-  } = useReturnAllProducts()
-
-  // const [categoryData, setCategoryData] = useState<SingleCategoryResponse>()
   const [formData, setFormData] = useState<ReturnedProductType>({
     category: '',
     productId: '',
@@ -32,14 +25,19 @@ const ReturnProductForm = () => {
     categoryData: undefined
   })
 
-  useEffect(() => {
-    getProducts({
-      categoryId: formData.category,
-      subCategoryName: formData.subcategory
-    })
-  }, [formData.category, formData.subcategory])
+  const { isPending, mutateAsync: returnProduct } = useReturnProduct()
 
-  const onSubmit = () => {}
+  const onSubmit = () => {
+    returnProduct({
+      categoryId: formData.category,
+      productId: formData.productId,
+      subcategory: formData.subcategory,
+      design: formData.design,
+      color: formData.color,
+      subproducts: formData.subproducts,
+      returnDisposition: formData.returnDisposition as 'restock' | 'discard'
+    })
+  }
 
   // fn:Go to next form
   const fnSetFormStep = () => {
@@ -54,7 +52,12 @@ const ReturnProductForm = () => {
 
     if (formSteps === 2) return categoryData?.hasModel ? setFormSteps(3) : setFormSteps(7)
 
-    if (formSteps === 3) return categoryData?.hasSubProducts ? setFormSteps(4) : setFormSteps(7)
+    if (formSteps === 3)
+      return categoryData?.hasSubProducts
+        ? setFormSteps(4)
+        : categoryData?.hasColor
+          ? setFormSteps(5)
+          : setFormSteps(7)
 
     if (formSteps === 4) return categoryData?.hasColor ? setFormSteps(5) : setFormSteps(7)
 
@@ -96,7 +99,16 @@ const ReturnProductForm = () => {
               ? setFormSteps(2)
               : setFormSteps(1)
 
-    if (formSteps === 7) return setFormSteps(6)
+    if (formSteps === 7)
+      return hasColor
+        ? setFormSteps(6)
+        : hasSubProducts
+          ? setFormSteps(4)
+          : hasModel
+            ? setFormSteps(3)
+            : hasSubcategories
+              ? setFormSteps(2)
+              : setFormSteps(1)
 
     if (formSteps === 8) return setFormSteps(7)
   }
@@ -180,6 +192,9 @@ const ReturnProductForm = () => {
           nextStep={fnSetFormStep}
           handleSubmit={onSubmit}
           categoryData={formData.categoryData!}
+          proceed={onSubmit}
+          prevStep={goToPrevForm}
+          isLoading={isPending}
         />
       )}
     </div>

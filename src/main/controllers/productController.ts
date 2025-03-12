@@ -1,16 +1,6 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import db from '..'
-
-// FORMATE PRODUCT iNFO
-export const formateProduct = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    return next()
-  } catch (error) {
-    console.log(error)
-    res.status(500).json(error)
-  }
-}
 
 // CREATE PRODUCTS
 export const createProduct = async (req: Request, res: Response) => {
@@ -562,6 +552,71 @@ export const checkout = async (req: Request, res: Response) => {
 
       return
     })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
+  }
+}
+
+// RETURNED PRODUCT
+export const returnProduct = async (req: Request, res: Response) => {
+  try {
+    const {
+      categoryId,
+      productId,
+      subcategory,
+      design,
+      color,
+      subproducts,
+      returnDisposition
+    }: returnProductRequestBody = req.body
+
+    const allProducts = req.doc.products
+    const allCategories = req.doc.categories
+
+    const category = allCategories.find((i) => i.id === categoryId)
+
+    const product = allProducts.find((i) => i.productId === productId)
+
+    if (!product) {
+      res.status(404).json({ message: 'Product does not exist' })
+
+      return
+    }
+
+    product.totalQuantity = Number(product.totalQuantity) + 1
+
+    if (category?.hasColor) {
+      product.colors = product.colors.map((i) =>
+        i.name === color ? { ...i, availableQuantity: Number(i.availableQuantity) + 1 } : i
+      )
+    }
+
+    if (category?.hasColor) {
+      product.designs = product.designs.map((i) => {
+        if (i.colorName === color) {
+          i.designs = i.designs.map((item) =>
+            item.name === design
+              ? { ...item, availableQuantity: Number(item.availableQuantity) + 1 }
+              : item
+          )
+
+          return i
+        } else {
+          return i
+        }
+      })
+    }
+
+    if (category?.hasSubProducts && category.hasSubcategories === false) {
+      // product.subProducts = subproducts.map(i=>{
+      //   return product.subProducts.find(sub=>{
+      //     if(sub.id ==== i.id){
+      //       sub.
+      //     }
+      //   })
+      // })
+    }
   } catch (error) {
     console.log(error)
     res.status(500).json(error)

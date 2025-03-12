@@ -27,14 +27,18 @@ export const SelectModel = ({
   } = useReturnAllProducts()
 
   useEffect(() => {
-    getProductData({ categoryId: formData.category })
-      .then(() => {
-        if (productData?.length === 0) toastUI.error('There is no product under this category')
-      })
-      .catch((error) => {
+    getProductData({ categoryId: formData.category, subCategoryName: formData.subcategory }).catch(
+      (error) => {
         console.log(error)
-      })
+      }
+    )
   }, [])
+
+  useEffect(() => {
+    if (productData) {
+      if (productData?.length === 0) toastUI.error('There is no product under this category')
+    }
+  }, [productData])
 
   const initialValues = {
     productId: formData.productId

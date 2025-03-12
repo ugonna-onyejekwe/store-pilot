@@ -43,7 +43,7 @@ export const SelectSubCategory = ({
             <SelecInput
               placeholder="Select sub-category"
               onChange={setFieldValue}
-              options={categoryData?.subcategories?.map((i) => ({ label: i.name, value: i.id }))}
+              options={categoryData?.subcategories?.map((i) => ({ label: i.name, value: i.name }))}
               name="subcategory"
               id="subcategory"
               label="Select product sub-category"

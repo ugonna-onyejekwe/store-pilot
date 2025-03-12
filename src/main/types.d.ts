@@ -22,6 +22,21 @@ type CreateCategoryRequestBody = {
   colors: string
 }
 
+type returnProductRequestBody = {
+  categoryId: string
+  productId: string
+  subcategory: string
+  design: string
+  color: string
+  subproducts: {
+    name: string
+    defaultQuantity: number
+    id: string
+    inputedQuantity: number
+  }[]
+  returnDisposition: 'restock' | 'discard'
+}
+
 type Checkout__ProductList = {
   category: {
     id: string

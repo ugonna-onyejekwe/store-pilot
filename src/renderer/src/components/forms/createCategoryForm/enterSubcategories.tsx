@@ -22,33 +22,40 @@ export const EnterSubCategoriesForm = ({
     hasSubcategories: defaultValues.hasSubcategories
   }
 
-  const onSubmit = (values) => {
-    const subCategories = values.subcategories
-      .split(',')
-      .filter(Boolean)
-      .map((i) => i.trim().toLowerCase())
-
+  const onSubmit = async (values) => {
     if (values.hasSubcategories) {
-      const duplicatedValues = subCategories.find((firstLvlCat, firstkey) => {
-        return subCategories.find((SecondLvlCat, secondKey) => {
-          if (SecondLvlCat === firstLvlCat && firstkey !== secondKey) {
-            return firstLvlCat
-          }
+      const subCategories = values.subcategories
+        .split(',')
+        .filter(Boolean)
+        .map((i) => i.trim().toLowerCase())
 
-          return null
+      if (values.hasSubcategories) {
+        const duplicatedValues = subCategories.find((firstLvlCat, firstkey) => {
+          return subCategories.find((SecondLvlCat, secondKey) => {
+            if (SecondLvlCat === firstLvlCat && firstkey !== secondKey) {
+              return firstLvlCat
+            }
+
+            return null
+          })
         })
-      })
 
-      if (!duplicatedValues) {
-        setValues(values)
-        setFormSteps(3)
+        if (!duplicatedValues) {
+          setValues(values)
+          setFormSteps(3)
+          return
+        }
+
+        toastUI.error("Can't have two subcategory with same name")
         return
       }
 
-      toastUI.error("Can't have two subcategory with same name")
+      setValues(values)
+      setFormSteps(3)
       return
     }
 
+    await setFieldValue('subcategories', [])
     setValues(values)
     setFormSteps(3)
   }

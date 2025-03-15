@@ -31,7 +31,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     subcategory: '',
     model: '',
     productId: '',
-    sellType: '',
+    sellType: 'all',
     subproducts: [],
     color: '',
     design: '',
@@ -69,6 +69,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
   // Onsubmit fn
   const onSubmit = () => {
+    if (values.hasSubProducts === false) setFieldValue('sellType', 'all')
+
     // Quantity check for product without model
     if (
       categoryData?.hasModel === false &&
@@ -264,7 +266,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                 touched={touched.categoryId}
               />
 
-              {categoryData?.hasSubCategory && (
+              {values?.hasSubCategory && (
                 <SelecInput
                   label="Select product sub-category"
                   placeholder="Select..."
@@ -281,7 +283,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                 />
               )}
 
-              {categoryData?.hasModel && (
+              {values?.hasModel && (
                 <div>
                   <SelecInput
                     label="Select product model"
@@ -304,7 +306,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
               )}
 
               <div className="input_row_con">
-                {categoryData?.hasColors && (
+                {values?.hasColor && (
                   <div
                     style={{
                       flex: 1
@@ -333,7 +335,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                   </div>
                 )}
 
-                {categoryData?.hasColors && (
+                {values?.hasColor && (
                   <div
                     style={{
                       flex: 1
@@ -362,14 +364,14 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
               {values.subproducts?.length !== 0 && (
                 <>
-                  {categoryData?.hasModel && categoryData.hasSubProducts && (
+                  {values?.hasModel && values.hasSubProducts && (
                     <SelecInput
                       label="Do you want to sell all or part of the sub-product(s)?"
                       placeholder="Select option"
                       onChange={setFieldValue}
                       options={[
-                        { value: 'sell all', label: 'Sell All' },
-                        { value: 'sell part', label: 'Sell Part' }
+                        { value: 'all', label: 'Sell All' },
+                        { value: 'part', label: 'Sell Part' }
                       ]}
                       id="sellType"
                       name="sellType"
@@ -378,7 +380,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                     />
                   )}
 
-                  {categoryData?.hasSubProducts && values.sellType === 'sell part' && (
+                  {values?.hasSubProducts && values.sellType === 'part' && (
                     <div className="sub_products_con">
                       <h3>Enter quantity of sub-products</h3>
 
@@ -425,7 +427,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                 </>
               )}
 
-              {values.categoryId !== '' && values.sellType !== 'sell part' && (
+              {values.categoryId !== '' && values.sellType !== 'part' && (
                 <div>
                   <Input
                     label="Enter product quantity"
@@ -452,7 +454,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                 </div>
               )}
 
-              {values.categoryId !== '' && values.sellType === 'sell part' && (
+              {values.categoryId !== '' && values.sellType === 'part' && (
                 <Input
                   label="How many cartoons do you think would be left?"
                   placeholder="Enter quantity..."
@@ -486,7 +488,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
       {formStep === 2 && (
         <>
-          <CheckoutForm setFormStep={setFormStep} />
+          <CheckoutForm setFormStep={setFormStep} productData={values} />
         </>
       )}
     </div>

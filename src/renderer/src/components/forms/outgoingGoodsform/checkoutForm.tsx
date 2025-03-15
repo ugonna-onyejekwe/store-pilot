@@ -9,7 +9,12 @@ import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import { checkoutFormSchma } from './schema'
 
-const CheckoutForm = ({ setFormStep }: { setFormStep: (value: number) => void }) => {
+type CheckoutFormTypes = {
+  setFormStep: (value: number) => void
+  productData: sellGoodsModelInitailValueType
+}
+
+const CheckoutForm = ({ setFormStep, productData }: CheckoutFormTypes) => {
   const [openAlert, setOpenAlert] = useState(false)
 
   // get stores
@@ -28,11 +33,13 @@ const CheckoutForm = ({ setFormStep }: { setFormStep: (value: number) => void })
   const onSubmit = (values) => {
     if (values.isNewCustomer === true) {
       checkName({ customerName: values.customerName }).then(() => {
-        toastUI.success('Available')
-
         setOpenAlert(true)
       })
+
+      return
     }
+
+    handleCheckOut(false)
   }
 
   useEffect(() => {
@@ -66,7 +73,18 @@ const CheckoutForm = ({ setFormStep }: { setFormStep: (value: number) => void })
   }, [customers])
 
   // handle checkout
-  const handleCheckOut = (saveCustomerName: boolean) => {}
+  const handleCheckOut = (saveCustomerName: boolean) => {
+    if (saveCustomerName) {
+      // sell product
+      // save customer name
+      // display cartoons to be supplied
+
+      return
+    }
+
+    // sell product
+    // display cartoons to be supplied
+  }
 
   // PAYMENT TYPE OPTIONS
   const paymentTypes = [

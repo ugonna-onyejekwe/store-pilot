@@ -309,7 +309,7 @@ export const verifyModel = async (req: Request, res: Response) => {
   const productList = req.doc.products
 
   const alreadyExist = productList.find(
-    (i) => i.model.toLowerCase() === model.toLowerCase() && i.category.id === categoryId
+    (i) => i.model.toLowerCase() === model.toLowerCase() && i.categoryId === categoryId
   )
 
   if (alreadyExist) {
@@ -334,10 +334,9 @@ export const checkout = async (req: Request, res: Response) => {
       checkoutInfo: CheckoutInfo
     } = req.body
 
-    const categoriesData = req.doc.category
-    const productsData = req.doc.products
-    const historyData = req.doc.history
+    const { histories, products, customers } = req.doc
 
+    // update product list
     const updateProductFn = async (upDatedProductList) => {
       await db.update({}, { $set: { products: upDatedProductList } }, {}, (updateErr, _) => {
         if (updateErr) {
@@ -350,205 +349,168 @@ export const checkout = async (req: Request, res: Response) => {
       })
     }
 
-    listOfProducts.map((product) => {
-      if (product.typeOfSale.trim() !== 'sell leftOver') {
-        const productCategory = categoriesData.find((i) => i.id === product.category.id)
+    if (checkoutInfo.customerId) {
+      const customerProfile = customers.find((i) => i.id === checkoutInfo.customerId)
 
-        if (!productCategory) return res.status(404).json({ message: 'Product category not found' })
+      if (!customerProfile) {
+        res.send(404).json({ message: 'Customer does not exist' })
 
-        const productDetails = productsData.find((i) => i.productId === product.productId)
-
-        if (!productDetails) return res.status(404).json({ message: 'Product not found' })
-
-        const { hasColor, hasDesign, hasSize, hasSubProducts } = productCategory
-
-        // Decrease product main quantity
-        productDetails.totalQuantity =
-          Number(productDetails.totalQuantity) - Number(product.quantity)
-
-        // Decrease design qunatity if has design
-        if (hasDesign) {
-          productDetails.designs = productDetails.designs.map((i) =>
-            i.id === product.design
-              ? {
-                  ...i,
-                  quantity:
-                    Number(i.quantity) - Number(product.quantity) < 0
-                      ? 0
-                      : Number(i.quantity) - Number(product.quantity)
-                }
-              : i
-          )
-        }
-
-        // Decrease size qunatity if has size
-        if (hasSize) {
-          productDetails.sizes = productDetails.sizes.map((i) =>
-            i.id === product.size
-              ? {
-                  ...i,
-                  quantity:
-                    Number(i.quantity) - Number(product.quantity) < 0
-                      ? 0
-                      : Number(i.quantity) - Number(product.quantity)
-                }
-              : i
-          )
-        }
-
-        // Decrease color qunatity if has color
-        if (hasColor) {
-          productDetails.colors = productDetails.colors.map((i) =>
-            i.id === product.color
-              ? {
-                  ...i,
-                  quantity:
-                    Number(i.quantity) - Number(product.quantity) < 0
-                      ? 0
-                      : Number(i.quantity) - Number(product.quantity)
-                }
-              : i
-          )
-        }
-
-        // Check if only part of the product is sold
-        if (hasSubProducts && product.typeOfSale.toLowerCase().trim() === 'sell part') {
-          product.subproducts = product.subproducts.map((i) => ({
-            ...i,
-            left: Number(i.defaultQuantity) - Number(i.sellQuantity)
-          }))
-
-          // check for remaining product
-          const remainingSubproducts = product.subproducts.filter((i) => i.left !== 0)
-
-          // update product detials if there is no remaining product
-          if (remainingSubproducts.length === 0) {
-            const UpdatedProduct = productsData.map((i) =>
-              i.productId === product.productId ? productDetails : i
-            )
-            updateProductFn(UpdatedProduct)
-            return
-          }
-          // Formate list to remove sell quantity property
-          const formatedRemainingSubproducts = remainingSubproducts.map((i) => ({
-            name: i.name,
-            defaultQuantity: i.defaultQuantity,
-            id: i.id,
-            left: i.left
-          }))
-
-          // getting color
-          const color = productDetails.colors.find((i) => i.id === product.color)
-
-          // getting design
-          const design = productDetails.designs.find((i) => i.id === product.design)
-
-          // getting color
-          const size = productDetails.sizes.find((i) => i.id === product.size)
-
-          const formatedLeftOver = {
-            category: productDetails.category,
-            productId: productDetails.productId,
-            model: productDetails.model,
-            size: size?.name ?? '',
-            color: color?.name ?? '',
-            design: design?.name ?? '',
-            leftOverId: uuidv4(),
-            subproducts: [...formatedRemainingSubproducts]
-          }
-
-          const UpdatedProduct = productsData.map((i) =>
-            i.productId === product.productId
-              ? {
-                  ...productDetails,
-                  leftOver: productDetails.leftOver
-                    ? [...productDetails.leftOver, formatedLeftOver]
-                    : [formatedLeftOver]
-                }
-              : i
-          )
-
-          return updateProductFn(UpdatedProduct)
-        }
-
-        const UpdatedProduct = productsData.map((i) =>
-          i.productId === product.productId ? productDetails : i
-        )
-
-        return updateProductFn(UpdatedProduct)
-      } else if (product.typeOfSale.trim() === 'sell leftOver') {
-        const { leftOverId, productId } = product
-
-        const productDetails = productsData.find((i) => i.productId === productId)
-
-        if (!productDetails) return res.status(404).json({ message: 'Product not found' })
-
-        const leftOverList = productDetails?.leftOver?.find((i) => i.leftOverId === leftOverId)
-
-        if (!leftOverList) return res.status(404).json({ message: 'Product not found' })
-
-        product.subproducts = product.subproducts.map((i) => ({
-          ...i,
-          left: Number(i.left) - Number(i.sellQuantity)
-        }))
-
-        const availableUpdatedLeftOver = product.subproducts.filter((i) => i.left !== 0)
-
-        if (availableUpdatedLeftOver.length === 0) {
-          productDetails.leftOver = productDetails?.leftOver?.filter(
-            (i) => i.leftOverId !== leftOverId
-          )
-        } else {
-          // Formate list to remove sell quantity property
-          const formatedList = availableUpdatedLeftOver.map((i) => ({
-            name: i.name,
-            defaultQuantity: i.defaultQuantity,
-            id: i.id,
-            left: i.left
-          }))
-
-          productDetails.leftOver = productDetails?.leftOver?.map((i) =>
-            i.leftOverId === leftOverId
-              ? {
-                  ...i,
-                  subproducts: formatedList
-                }
-              : i
-          )
-        }
-
-        const UpdatedProduct = productsData.map((i) =>
-          i.productId === product.productId ? productDetails : i
-        )
-
-        return updateProductFn(UpdatedProduct)
-      } else return product
-    })
-
-    const UpdatedHistoryData = [
-      {
-        listOfProducts: listOfProducts,
-        checkoutInfo: {
-          ...checkoutInfo,
-          createdAt: Date.now(),
-          modified: false,
-          modeifedAt: '',
-          checkoutId: uuidv4()
-        }
-      },
-      ...historyData
-    ]
-
-    await db.update({}, { $set: { history: UpdatedHistoryData } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error uploading product to history', updateErr)
-        res.status(500).json({ error: 'Failed to checkout' })
         return
       }
 
-      res.status(200).json({ message: 'Checkout was successful', data: UpdatedHistoryData })
+      customerProfile.debt =
+        checkoutInfo.paymentType === 'credit'
+          ? Number(customerProfile.debt) + Number(checkoutInfo.amountToPay)
+          : checkoutInfo.paymentType === 'half'
+            ? Number(customerProfile.debt) +
+              (Number(checkoutInfo.amountToPay) - Number(checkoutInfo.amountPaid))
+            : Number(customerProfile.debt)
 
-      return
+      const updatedCustomerList = customers.map((i) =>
+        i.id === checkoutInfo.customerId ? customerProfile : i
+      )
+
+      await db.update({}, { $set: { customers: updatedCustomerList } }, {}, (updateErr, _) => {
+        if (updateErr) {
+          console.error('Error updating customer profile', updateErr)
+          res.status(500).json({ error: 'Failed to edit customer profile' })
+          return
+        }
+
+        return
+      })
+    }
+
+    listOfProducts.map((product) => {
+      const productData = products.find((i) => i.productId === product.productId)
+
+      if (!productData) {
+        res.status(404).json({ message: 'Product does not exist' })
+        return
+      }
+
+      // when selling a product in full
+      // OR
+      // when selling part of product
+      if (product.sellType !== 'leftOver') {
+        productData.totalQuantity = Number(productData?.totalQuantity) - Number(product.quantity)
+
+        if (product.hasColor) {
+          // reduce color quantity
+          productData.colors.map((i) =>
+            i.name === product.color
+              ? { ...i, availableQuantity: Number(i.availableQuantity) - Number(product.quantity) }
+              : i
+          )
+
+          // reduce design quantity
+          productData.designs.map((i) => {
+            if (i.colorName === product.color) {
+              i.designs = i.designs.map((des) =>
+                des.name === product.design
+                  ? {
+                      ...des,
+                      availableQuantity: Number(des.availableQuantity) - Number(product.quantity)
+                    }
+                  : des
+              )
+
+              return i
+            }
+
+            return i
+          })
+        }
+
+        const updatedProductList = products.map((i) =>
+          i.productId === product.productId ? productData : i
+        )
+
+        if (product.sellType === 'part') {
+          const subproductLeft = product.subproducts.filter(
+            (i) => i.defaultQuantity !== i.sellQuantity
+          )
+
+          if (subproductLeft.length !== 0) {
+            const formatedSubproductLeft = subproductLeft.map((i) => ({
+              defaultQuantity: i.defaultQuantity,
+              id: i.id,
+              name: i.name,
+              left: Number(i.defaultQuantity) - Number(i.sellQuantity)
+            }))
+
+            const newLeftOver = {
+              productId: productData.productId,
+              color: product.color,
+              design: product.design,
+              leftOverId: uuidv4(),
+              model: product.model,
+              subproducts: formatedSubproductLeft
+            }
+
+            productData.leftOver = productData.leftOver
+              ? [newLeftOver, ...productData.leftOver]
+              : [newLeftOver]
+          }
+        }
+
+        return updateProductFn(updatedProductList)
+      }
+
+      // when selling leftOvers
+      if (product.sellType === 'leftOver') {
+        const subproductLeft = product.subproducts.filter(
+          (i) => Number(i.left) !== Number(i.sellQuantity)
+        )
+
+        if (subproductLeft.length !== 0) {
+          const formatedSubproductLeft = subproductLeft.map((i) => ({
+            defaultQuantity: i.defaultQuantity,
+            id: i.id,
+            name: i.name,
+            left: Number(i.left) - Number(i.sellQuantity)
+          }))
+
+          const updatedProduct = productData.leftOver?.map((i) =>
+            i.leftOverId === product.leftOverId ? { ...i, subproducts: formatedSubproductLeft } : i
+          )
+
+          const updatedProductList = products.map((i) =>
+            i.productId === product.productId ? updatedProduct : i
+          )
+
+          return updateProductFn(updatedProductList)
+        } else {
+          // remove leftover
+          const updatedProduct = productData?.leftOver?.filter(
+            (i) => i.leftOverId !== product.leftOverId
+          )
+
+          const updatedProductList = products.map((i) =>
+            i.productId === product.productId ? updatedProduct : i
+          )
+
+          return updateProductFn(updatedProductList)
+        }
+      }
+    })
+
+    const updatedHistoryList = [
+      {
+        listOfProducts,
+        checkoutInfo
+      },
+      ...histories
+    ]
+
+    await db.update({}, { $set: { histories: updatedHistoryList } }, {}, (updateErr, _) => {
+      if (updateErr) {
+        console.error('Error checking out', updateErr)
+        res.status(500).json({ error: 'Failed to checkout while adding to history' })
+        return
+      }
+
+      res.status(200).json({ message: 'Checkout successful' })
     })
   } catch (error) {
     console.log(error)

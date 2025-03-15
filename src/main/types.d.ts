@@ -38,34 +38,37 @@ type returnProductRequestBody = {
 }
 
 type Checkout__ProductList = {
-  category: {
-    id: string
-    name: string
-  }
+  categoryId: string
+  subcategory: string
+  model: string
   productId: string
-  color: string
-  size: string
-  design: string
   subproducts: {
     name: string
-    id: string
     defaultQuantity: number
-    left: number
+    id: string
     sellQuantity: number
+    left: number
   }[]
-  typeOfSale: 'sell part' | 'sell all' | 'sell leftOver'
+  color: string
+  design: string
   quantity: number
+  hasSubCategory: boolean
+  hasModel: boolean
+  hasColor: boolean
+  hasSubProducts: boolean
+  cartoonQuantity: number
+  sellType: 'part' | 'all' | 'leftOver'
   leftOverId: string
 }[]
 
 declare interface CheckoutInfo {
-  locationSold: string
+  paymentType: 'full' | 'half' | 'credit'
+  amountPaid: string
+  amountToPay: string
   customerName: string
-  customerPhoneNumber: string
-  supplyStatus: 'supplied | not supplied'
-  paymentStatus: 'full payment' | 'half payment' | 'credit'
-  sellingPrice: number
-  amountPaid: number
+  customerId: string
+  locationSold: string
+  isNewCustomer: boolean
 }
 
 type CreateProductRequestBody = {
@@ -141,12 +144,7 @@ declare namespace Express {
         }[]
         productId: string
         leftOver?: {
-          category: {
-            name: string
-            id: string
-          }
           productId: string
-          size: string
           color: string
           design: string
           leftOverId: string

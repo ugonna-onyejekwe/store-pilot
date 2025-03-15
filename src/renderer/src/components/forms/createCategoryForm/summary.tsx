@@ -76,7 +76,7 @@ const Summary = ({
           <div className="info_con">
             {defaultValues.subProducts.map((category, key) => (
               <div key={key}>
-                <h5>Sub-products for {category.name}</h5>
+                <h5>Sub-products for {category.subCategoryName}</h5>
 
                 <div className="subproducts">
                   {category.subProducts?.map((i, key) => (

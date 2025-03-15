@@ -100,6 +100,13 @@ type CreateProductRequestBody = {
   productId?: string
 }
 
+type createNewCustomerBody = {
+  customerName: string
+  amountToPay: number
+  amountPaid: number
+  typeOfPayment: 'half' | 'full' | 'credit'
+}
+
 declare namespace Express {
   export interface Request {
     doc: {
@@ -218,6 +225,12 @@ declare namespace Express {
       stores: {
         name: string
         id: string
+      }[]
+
+      customers: {
+        name: string
+        id: string
+        debt: number
       }[]
 
       authCredentials: {

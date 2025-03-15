@@ -187,3 +187,25 @@ type ReturnedProductType = {
   quantity: number
   categoryData: SingleCategoryResponse | undefined
 }
+
+interface sellGoodsModelInitailValueType {
+  categoryId: string
+  subcategory: string
+  model: string
+  productId: string
+  sellType: string
+  subproducts: {
+    name: string
+    defaultQuantity: number
+    id: string
+    sellQuantity: number
+  }[]
+  color: string
+  design: string
+  quantity: number
+  hasSubCategory: boolean
+  hasModel: boolean
+  hasColor: boolean
+  hasSubProducts: boolean
+  cartoonQuantity: number
+}

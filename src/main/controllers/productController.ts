@@ -48,9 +48,7 @@ export const createProduct = async (req: Request, res: Response) => {
     // If product does not have model
     if (!model || model === '') {
       // checking if product already exist in the category without modal
-      const parentProduct = allProducts.find(
-        (i) => i.categoryId === categoryId && i.isParentProduct
-      )
+      const parentProduct = allProducts.find((i) => i.productId === categoryId && i.isParentProduct)
 
       // if not: asign new product
       if (!parentProduct) {
@@ -68,7 +66,7 @@ export const createProduct = async (req: Request, res: Response) => {
           subProducts,
           colors,
           designs,
-          productId: uuidv4(),
+          productId: categoryId,
           isParentProduct: true
         }
 
@@ -77,7 +75,7 @@ export const createProduct = async (req: Request, res: Response) => {
         return updateProductListFn(updatedProductsList, newProduct)
       } else {
         const updatedList = allProducts.map((i) => {
-          if (i.categoryId === categoryId && i.isParentProduct) {
+          if (i.productId === categoryId && i.isParentProduct) {
             i.totalQuantity = Number(i.totalQuantity) + Number(totalQuantity)
 
             i.cartoonsPerSet = actionType === 'new' ? cartoonsPerSet : i.cartoonsPerSet

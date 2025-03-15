@@ -30,7 +30,11 @@ export const CreateCategoryForm = () => {
 
   const onSubmit = async (values) => {
     try {
-      createCategory(values)
+      createCategory({
+        ...values,
+        hasColors: values.hasColor,
+        hasSubCategory: values.hasSubcategories
+      })
         .then(() => {
           resetForm()
           setFormSteps(1)

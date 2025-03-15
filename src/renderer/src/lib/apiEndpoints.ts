@@ -29,7 +29,11 @@ export const ApiEndPoints = {
   // warehouse
   getAllWarehouse: '/warehouses',
   addWarehouse: '/warehouses/add',
-  deleteWarehouse: '/warehouses'
+  deleteWarehouse: '/warehouses',
+
+  // customerName
+  checkCustomer: '/customers/check',
+  getCustomers: '/customers/get'
 }
 
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL

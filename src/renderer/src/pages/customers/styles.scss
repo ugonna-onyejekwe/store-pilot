@@ -160,4 +160,18 @@
       }
     }
   }
+
+  .no_customer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+
+    h1 {
+      font-style: italic;
+      opacity: 0.2;
+      font-size: 25px;
+      text-align: center;
+    }
+  }
 }

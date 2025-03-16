@@ -4,6 +4,10 @@ import { getRequest } from '@renderer/lib/helpers'
 import { getError } from '@renderer/lib/utils'
 import { useMutation } from '@tanstack/react-query'
 
+type payload = {
+  customerId?: string
+}
+
 type ResponseType = {
   name: string
   id: string
@@ -11,17 +15,18 @@ type ResponseType = {
   lastPaymentDate: string
   paymentHistory: {
     date: string
-    amountPaid: string
+    amountPaid: number
   }[]
-}[]
+}
 
-const getCustomers = () => {
-  return getRequest<null, ResponseType>({
-    url: `${ApiEndPoints.getCustomers}`
+const getCustomers = (payload: payload) => {
+  return getRequest<payload, ResponseType>({
+    url: `${ApiEndPoints.getCustomers}`,
+    payload
   })
 }
 
-export const useGetCustomers = () => {
+export const useGetSingleCustomers = () => {
   return useMutation({
     mutationFn: getCustomers,
     onError: (error) => {

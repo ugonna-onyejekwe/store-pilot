@@ -82,21 +82,146 @@
       width: 100%;
     }
 
-    .date_con {
-      max-width: 250px;
-      width: 100%;
+    .date_col {
+      display: flex;
+      align-items: center;
+      gap: 15px;
 
-      input {
-        padding: 20px;
-        border: 1px solid rgb(191, 191, 191);
-        border-radius: 10px;
-        overflow: hidden;
-        font-size: 15px;
+      .date_con {
+        max-width: 250px;
         width: 100%;
 
-        &:focus {
-          outline: 1px solid variables.$primary_color;
+        input {
+          padding: 20px;
+          border: 1px solid rgb(191, 191, 191);
+          border-radius: 10px;
+          overflow: hidden;
+          font-size: 15px;
+          width: 100%;
+
+          &:focus {
+            outline: 1px solid variables.$primary_color;
+          }
         }
+      }
+
+      .history_icon {
+        height: 55px;
+        width: 70px;
+        background: variables.$bg_color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        cursor: pointer;
+        line-height: 0;
+
+        .icon {
+          color: variables.$light_text_color2;
+          width: 20px;
+        }
+
+        &:hover {
+          .icon {
+            color: variables.$light_text_color;
+          }
+        }
+      }
+    }
+  }
+
+  .payment_history_con {
+    padding: 20px;
+
+    h2 {
+      font-size: 20px;
+    }
+
+    .no_payments {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      flex-direction: column;
+
+      .icon {
+        opacity: 0.4;
+        height: fit-content;
+        width: 30px;
+      }
+
+      p {
+        padding-top: 10px;
+        font-size: 15px;
+        color: variables.$light_text_color;
+      }
+    }
+
+    .payments {
+      margin-top: 20px;
+
+      p {
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        span {
+          &:first-child {
+            font-weight: 700;
+          }
+
+          &:last-child {
+            font-size: 15px;
+            color: variables.$light_text_color2;
+          }
+        }
+
+        &:not(:last-child) {
+          border-bottom: 1px solid rgb(233, 230, 230);
+        }
+      }
+    }
+  }
+
+  .payDebt_model {
+    width: 500px;
+
+    h2 {
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .sub_txt {
+      text-align: center;
+      font-size: 15px;
+      color: variables.$light_text_color;
+      padding-top: 5px;
+      b {
+        color: variables.$secondary_color;
+      }
+    }
+
+    .con {
+      margin-top: 10px;
+
+      small {
+        font-size: 13px;
+
+        b {
+          color: variables.$secondary_color;
+        }
+      }
+    }
+
+    .btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 30px;
+
+      button {
+        width: fit-content;
       }
     }
   }

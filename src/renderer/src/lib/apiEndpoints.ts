@@ -17,7 +17,7 @@ export const ApiEndPoints = {
 
   // history
   getAllHistory: '/history',
-  editSupplyStatus: '/history/edit-supply-status',
+  customerHistory: '/history/customer-history',
   editPayment: '/history/edit-payment',
 
   // auth
@@ -33,7 +33,8 @@ export const ApiEndPoints = {
 
   // customerName
   checkCustomer: '/customers/check',
-  getCustomers: '/customers/get'
+  getCustomers: '/customers/get',
+  saveCustomers: '/customers/create'
 }
 
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL

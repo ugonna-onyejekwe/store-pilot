@@ -14,7 +14,7 @@ type Product = {
     defaultQuantity: number
     id: string
     sellQuantity: number
-    left: number
+    left?: number
   }[]
   color: string
   design: string
@@ -24,14 +24,14 @@ type Product = {
   hasColor: boolean
   hasSubProducts: boolean
   cartoonQuantity: number
-  sellType: 'part' | 'all' | 'leftOver'
-  leftOverId: string
+  sellType: string
+  leftOverId?: string
 }
 
 type payload = {
   listOfProducts: Product[]
   checkoutInfo: {
-    paymentType: 'full' | 'half' | 'credit'
+    paymentType: string
     amountPaid: string
     amountToPay: string
     customerName: string

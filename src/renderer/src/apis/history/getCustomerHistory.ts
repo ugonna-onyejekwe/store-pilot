@@ -4,6 +4,10 @@ import { getRequest } from '@renderer/lib/helpers'
 import { getError } from '@renderer/lib/utils'
 import { useMutation } from '@tanstack/react-query'
 
+type payload = {
+  customerId: string
+}
+
 type Product = {
   categoryId: string
   subcategory: string
@@ -32,8 +36,8 @@ export type HistoryResponse = {
   listOfProducts: Product[]
   checkoutInfo: {
     paymentType: 'full' | 'half' | 'credit'
-    amountPaid: number
-    amountToPay: number
+    amountPaid: string
+    amountToPay: string
     customerName: string
     customerId: string
     locationSold: string
@@ -45,15 +49,16 @@ export type HistoryResponse = {
 
 type Response = HistoryResponse[]
 
-const getAllHistory = () => {
-  return getRequest<null, Response>({
-    url: ApiEndPoints.getAllHistory
+const getcustomerHistory = (payload: payload) => {
+  return getRequest<payload, Response>({
+    url: ApiEndPoints.customerHistory,
+    payload
   })
 }
 
-export const useReturnAllHistory = () => {
+export const useGetCustomerHistory = () => {
   return useMutation({
-    mutationFn: getAllHistory,
+    mutationFn: getcustomerHistory,
     onError: (error) => {
       toastUI.error(getError(error))
     }

@@ -63,8 +63,8 @@ type Checkout__ProductList = {
 
 declare interface CheckoutInfo {
   paymentType: 'full' | 'half' | 'credit'
-  amountPaid: string
-  amountToPay: string
+  amountPaid: number
+  amountToPay: number
   customerName: string
   customerId: string
   locationSold: string
@@ -160,39 +160,38 @@ declare namespace Express {
 
       histories: {
         listOfProducts: {
-          category: {
-            id: string
-            name: string
-          }
+          categoryId: string
+          subcategory: string
           model: string
           productId: string
-          color: string
-          size: string
-          design: string
           subproducts: {
             name: string
-            id: string
             defaultQuantity: number
-            left: number
+            id: string
             sellQuantity: number
+            left: number
           }[]
-          typeOfSale: string
+          color: string
+          design: string
           quantity: number
+          hasSubCategory: boolean
+          hasModel: boolean
+          hasColor: boolean
+          hasSubProducts: boolean
+          cartoonQuantity: number
+          sellType: 'part' | 'all' | 'leftOver'
           leftOverId: string
         }[]
         checkoutInfo: {
-          locationSold: string
-          customerName: string
-          customerPhoneNumber: string
-          supplyStatus: string
-          paymentStatus: string
-          sellingPrice: number
+          paymentType: 'full' | 'half' | 'credit'
           amountPaid: number
-          createdAt: number
-          modified: boolean
-          modeifedAt: number
-          supplyLocation: string
+          amountToPay: number
+          customerName: string
+          customerId: string
+          locationSold: string
+          isNewCustomer: boolean
           checkoutId: string
+          createdAt: string
         }
       }[]
 
@@ -229,6 +228,10 @@ declare namespace Express {
         name: string
         id: string
         debt: number
+        paymentHistory: {
+          date: string
+          amountPaid: number
+        }[]
       }[]
 
       authCredentials: {

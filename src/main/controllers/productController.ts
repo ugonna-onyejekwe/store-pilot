@@ -498,7 +498,11 @@ export const checkout = async (req: Request, res: Response) => {
     const updatedHistoryList = [
       {
         listOfProducts,
-        checkoutInfo
+        checkoutInfo: {
+          ...checkoutInfo,
+          checkoutId: uuidv4(),
+          createdAt: new Date()
+        }
       },
       ...histories
     ]

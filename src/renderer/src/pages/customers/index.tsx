@@ -1,62 +1,25 @@
+import { useGetCustomers } from '@renderer/apis/customer/getCustomers'
 import Navbar from '@renderer/components/Navbar'
 import SearchModal from '@renderer/components/searchModal'
 import { Icons } from '@renderer/components/ui/icons'
-import { convertAmount } from '@renderer/lib/utils'
-import { useState } from 'react'
+import { ScaleLoaderUI } from '@renderer/components/ui/loader'
+import { convertAmount, formatDate } from '@renderer/lib/utils'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import './styles.scss'
 
 const Customers = () => {
   const [searchValue, setSearchValue] = useState('')
   const [openSearchModal, setOpenSearchModal] = useState(false)
-  const data = [
-    {
-      name: 'ugonna onyejekwe',
-      lastPaymentDate: 'Feb, 13, 2025',
-      paymentStatus: 'outstanding',
-      amountToPay: 2000000,
-      customerId: '132'
-    },
 
-    {
-      name: 'John  Fisher',
-      lastPaymentDate: 'Feb, 13, 2025',
-      paymentStatus: 'Settled',
-      amountToPay: 2000000,
-      customerId: '132'
-    },
+  const [startPage, setStartPage] = useState(0)
+  const [endPage, setEndPage] = useState(10)
 
-    {
-      name: 'Clerk Uchendu',
-      lastPaymentDate: 'Feb, 13, 2025',
-      paymentStatus: 'outstanding',
-      amountToPay: 2000000,
-      customerId: '132'
-    },
-    {
-      name: 'ugonna onyejekwe',
-      lastPaymentDate: 'Feb, 13, 2025',
-      paymentStatus: 'outstanding',
-      amountToPay: 2000000,
-      customerId: '132'
-    },
+  const { data: customers, mutate: getcustomers, isPending: isGettingCustomers } = useGetCustomers()
 
-    {
-      name: 'John  Fisher',
-      lastPaymentDate: 'Feb, 13, 2025',
-      paymentStatus: 'Settled',
-      amountToPay: 2000000,
-      customerId: '132'
-    },
-
-    {
-      name: 'Clerk Uchendu',
-      lastPaymentDate: 'Feb, 13, 2025',
-      paymentStatus: 'outstanding',
-      amountToPay: 2000000,
-      customerId: '132'
-    }
-  ]
+  useEffect(() => {
+    getcustomers({})
+  }, [])
 
   return (
     <>
@@ -68,51 +31,84 @@ const Customers = () => {
             <h2>List of customers</h2>
             <p>Click customer to view detials</p>
           </div>
-
-          <div className="box_con">
-            {data.map((i, key) => (
-              <Link to={`/customers/${i.customerId}/${i.name}`} key={key} className="box">
-                <div className="col_1">
-                  <h3>{i.name}</h3>
-
-                  {i.paymentStatus.toLowerCase() === 'outstanding' && (
-                    <p>Last payment was on {i.lastPaymentDate}</p>
-                  )}
-                </div>
-
-                <div className="col_2">
-                  <div>
-                    <span className={`status status__${i.paymentStatus.toLowerCase()}`}>
-                      {i.paymentStatus}
-                    </span>
-                    {i.paymentStatus.toLowerCase() === 'outstanding' && (
-                      <h4>{convertAmount(i.amountToPay)}</h4>
-                    )}
-                  </div>
-
-                  <div className="arrow_forward">
-                    <Icons.ForwardArrow className="icon" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {/* PAGINATION ============ */}
-          <div className="pagination">
-            <p className="page_count">
-              Page <b>{'1'} </b> of <b>{'10'}</b>
-            </p>
-
-            <div className="action_btns">
-              <div className="back_btn btn">
-                <Icons.BackArrow className="icon" />
-              </div>
-              <div className="forword_btn btn">
-                <Icons.ForwardArrow className="icon" />
-              </div>
+          {isGettingCustomers ? (
+            <div
+              style={{
+                marginTop: 30
+              }}
+            >
+              <ScaleLoaderUI minHeight={500} />
             </div>
-          </div>
+          ) : customers?.length === 0 ? (
+            <div className="no_customer">
+              <h1>No saved customers yet</h1>
+            </div>
+          ) : (
+            <>
+              <div className="box_con">
+                {customers?.slice(startPage, endPage).map((i, key) => {
+                  const paymentStatus = i.debt > 0 ? 'outstanding' : 'settled'
+                  return (
+                    <Link to={`/customers/${i.id}/${i.name}`} key={key} className="box">
+                      <div className="col_1">
+                        <h3>{i.name}</h3>
+
+                        {i.debt > 0 && <p>Last payment was on {formatDate(i.lastPaymentDate)}</p>}
+                      </div>
+
+                      <div className="col_2">
+                        <div>
+                          <span className={`status status__${paymentStatus}`}>{paymentStatus}</span>
+
+                          {paymentStatus.toLowerCase() === 'outstanding' && (
+                            <h4>{convertAmount(i.debt)}</h4>
+                          )}
+                        </div>
+
+                        <div className="arrow_forward">
+                          <Icons.ForwardArrow className="icon" />
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+
+              {/* PAGINATION ============ */}
+              {/* @ts-expect-error:undefined */}
+              {customers?.length > 10 && (
+                <div className="pagination">
+                  <p className="page_count">
+                    Page <b>{startPage + 1} </b> of <b>{endPage}</b>
+                  </p>
+
+                  <div className="action_btns">
+                    <button
+                      className="back_btn btn"
+                      disabled={startPage <= 0}
+                      onClick={() => {
+                        setStartPage(startPage - 9)
+                        setEndPage(endPage - 10)
+                      }}
+                    >
+                      <Icons.BackArrow className="icon" />
+                    </button>
+                    <button
+                      className="forword_btn btn"
+                      /* @ts-expect-error:undefined */
+                      disabled={endPage >= customers?.length}
+                      onClick={() => {
+                        setStartPage(startPage + 9)
+                        setEndPage(endPage + 10)
+                      }}
+                    >
+                      <Icons.ForwardArrow className="icon" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -121,6 +117,19 @@ const Customers = () => {
         placeholder={'Search customer by name'}
         open={openSearchModal}
         onOpenChange={setOpenSearchModal}
+        searchData={
+          searchValue === ''
+            ? []
+            : (customers?.filter((i) =>
+                i.name.toLowerCase().startsWith(searchValue.toLowerCase())
+              ) ?? [])
+        }
+        displayTxt="name"
+        setSearchValue={setSearchValue}
+        searchValue={searchValue}
+        link="customers"
+        linkParams1="id"
+        linkParams2="name"
       />
     </>
   )

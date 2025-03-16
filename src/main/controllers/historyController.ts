@@ -1,51 +1,26 @@
 import { Request, Response } from 'express'
-import db from '..'
 
 // GET ALL HISTORY
 export const getAllHistory = async (req: Request, res: Response) => {
   try {
-    const historyData = req.doc.history
-    res.status(200).send(historyData)
+    const { histories } = req.doc
+    res.status(200).send(histories)
   } catch (error) {
     console.log(error)
     res.status(500).json(error)
   }
 }
 
-// EDIT SUPPLY
-export const editSuppyStatus = async (req: Request, res: Response) => {
+// GET CUSTOMER HISTORY
+export const customerHistory = async (req: Request, res: Response) => {
   try {
-    const { checkoutId } = req.params
-    const { status } = req.body
+    const { customerId } = req.params
 
-    const historyData = req.doc.history
+    const { histories } = req.doc
 
-    const data = historyData.find((i) => i.checkoutInfo.checkoutId === checkoutId)
+    const data = histories.filter((i) => i.checkoutInfo.customerId === customerId)
 
-    if (data) {
-      data.checkoutInfo.supplyStatus = status
-      data.checkoutInfo.modified = true
-      data.checkoutInfo.modeifedAt = Date.now()
-    } else {
-      res.status(404).json({ message: 'history not found' })
-      return
-    }
-
-    const updatedHistory = historyData.map((i) =>
-      i.checkoutInfo.checkoutId === checkoutId ? data : i
-    )
-
-    await db.update({}, { $set: { history: updatedHistory } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error editing supply status', updateErr)
-        res.status(500).json({ error: 'Failed to edit supply status' })
-        return
-      }
-
-      res.status(200).json({ message: 'Update was successful' })
-
-      return
-    })
+    res.status(200).json(data)
   } catch (error) {
     console.log(error)
     res.status(500).json(error)
@@ -58,42 +33,19 @@ export const editPayment = async (req: Request, res: Response) => {
     const { checkoutId } = req.params
     const { amountPaid } = req.body
 
-    const historyData = req.doc.history
+    const { histories } = req.doc
 
-    const data = historyData.find((i) => i.checkoutInfo.checkoutId === checkoutId)
-    if (data) {
-      data.checkoutInfo = {
-        ...data.checkoutInfo,
-        modified: true,
-        modeifedAt: Date.now(),
-        amountPaid: Number(data.checkoutInfo.amountPaid) + Number(amountPaid)
-      }
+    // await db.update({}, { $set: { history: updatedHistory } }, {}, (updateErr, _) => {
+    //   if (updateErr) {
+    //     console.error('Error editing payment status', updateErr)
+    //     res.status(500).json({ error: 'Failed to edit payment status' })
+    //     return
+    //   }
 
-      if (data.checkoutInfo.amountPaid >= data.checkoutInfo.sellingPrice) {
-        data.checkoutInfo.paymentStatus = 'Full payment'
-      } else {
-        data.checkoutInfo.paymentStatus = 'Half payment'
-      }
-    } else {
-      res.status(404).json({ message: 'history not found' })
-      return
-    }
+    //   res.status(200).json({ message: 'Update was successful' })
 
-    const updatedHistory = historyData.map((i) =>
-      i.checkoutInfo.checkoutId === checkoutId ? data : i
-    )
-
-    await db.update({}, { $set: { history: updatedHistory } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error editing payment status', updateErr)
-        res.status(500).json({ error: 'Failed to edit payment status' })
-        return
-      }
-
-      res.status(200).json({ message: 'Update was successful' })
-
-      return
-    })
+    //   return
+    // })
   } catch (error) {
     console.log(error)
     res.status(500).json(error)

@@ -2,7 +2,9 @@ import { useGetCategories } from '@renderer/apis/categories/getCategories'
 import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
 import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
+import AlertModal from '@renderer/components/ui/alertModal'
 import Button from '@renderer/components/ui/Button'
+import { Icons } from '@renderer/components/ui/icons'
 import { Input, SelecInput } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
 import { useFormik } from 'formik'
@@ -23,6 +25,12 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     colorQuantity: null,
     designQuantity: null
   })
+  const [successMsgData, setSuccessMsgData] = useState({
+    customerName: '',
+    cartoonNumber: 0
+  })
+
+  const [openSuccessCon, setOpenSuccessCon] = useState(false)
 
   const [formStep, setFormStep] = useState(1)
 
@@ -488,11 +496,67 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
       {formStep === 2 && (
         <>
-          <CheckoutForm setFormStep={setFormStep} productData={values} />
+          <CheckoutForm
+            setFormStep={setFormStep}
+            productData={values}
+            openSuccessMsg={(customerName: string) => {
+              setFormStep(3)
+              setOpenSuccessCon(true)
+              setSuccessMsgData({
+                ...successMsgData,
+                customerName,
+                cartoonNumber: Number(values.quantity) * Number(productData?.cartoonsPerSet)
+              })
+            }}
+          />
         </>
+      )}
+
+      {formStep === 3 && (
+        <SuccessMsg
+          customerData={successMsgData}
+          isOpen={openSuccessCon}
+          setOpen={setOpenSuccessCon}
+          openParentModal={openModel}
+        />
       )}
     </div>
   )
 }
 
 export default OutGoingGoodsForm
+
+const SuccessMsg = ({
+  customerData,
+  isOpen,
+  setOpen,
+  openParentModal
+}: {
+  customerData: { customerName: string; cartoonNumber: number }
+  isOpen: boolean
+  setOpen: (value: boolean) => void
+  openParentModal: (value: boolean) => void
+}) => {
+  return (
+    <AlertModal className="successMsg" open={isOpen} onOpenChange={setOpen} isCloseable={false}>
+      <div className="success_icon">
+        <Icons.CheckIcon className="icon" />
+      </div>
+      <h2>Checkout successful</h2>
+
+      <p>Approximately</p>
+
+      <h1>
+        {customerData.cartoonNumber} <span>cartoon(s)</span>
+      </h1>
+
+      <p>
+        Will be supplied to <b>{customerData.customerName}</b>
+      </p>
+
+      <div className="btn">
+        <Button text="Save" onClick={() => openParentModal(false)} />
+      </div>
+    </AlertModal>
+  )
+}

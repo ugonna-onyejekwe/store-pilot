@@ -50,8 +50,13 @@ export const checkoutFormSchma = yup.object().shape({
     const { paymentType } = this.parent
     return !(paymentType === 'half' || paymentType === 'credit') || !!value
   }),
-  customerName: yup.string().required('This field is required'),
+
   locationSold: yup.string().required('This field is required'),
   isNewCustomer: yup.boolean(),
+  customerName: yup.string().test('', 'This field is required', function (value) {
+    const { isNewCustomer } = this.parent
+    return !isNewCustomer || (isNewCustomer && value)
+  }),
+
   customerId: yup.string()
 })

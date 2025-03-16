@@ -12,7 +12,7 @@ const router: Router = express.Router()
 
 router.post('/create', getDocs as RequestHandler, createCustomer as RequestHandler)
 
-router.get('/get', getDocs as RequestHandler, getCustomers as RequestHandler)
+router.get('/get/:customerId?', getDocs as RequestHandler, getCustomers as RequestHandler)
 
 router.post('/check', getDocs as RequestHandler, checkCustomer as RequestHandler)
 

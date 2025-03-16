@@ -1,6 +1,7 @@
 import { HistoryResponse } from '@renderer/apis/history/getHistory'
 import { convertAmount, formatDate } from '@renderer/lib/utils'
 import { ColumnDef } from '@tanstack/react-table'
+import { Icons } from '../../icons'
 
 export const History_column: ColumnDef<HistoryResponse>[] = [
   {
@@ -12,21 +13,27 @@ export const History_column: ColumnDef<HistoryResponse>[] = [
     }
   },
   {
-    accessorKey: 'checkoutInfo.sellingPrice',
-    header: 'Price sold',
-    cell: ({ row }) => {
-      const data = row.original
-      return <p>{convertAmount(data.checkoutInfo.sellingPrice)}</p>
-    }
-  },
-  {
-    accessorKey: 'checkoutInfo.paymentStatus',
+    accessorKey: 'checkoutInfo.paymentType',
     header: 'Payment type',
     cell: ({ row }) => {
       const data = row.original
       return (
-        <p className={'status ' + 'status__' + data.checkoutInfo.paymentStatus.toLowerCase()}>
-          {data.checkoutInfo.paymentStatus}
+        <p className={'status ' + 'status__' + data.checkoutInfo.paymentType.toLowerCase()}>
+          {data.checkoutInfo.paymentType}
+        </p>
+      )
+    }
+  },
+  {
+    accessorKey: 'checkoutInfo.amountToPay',
+    header: 'Price sold',
+    cell: ({ row }) => {
+      const data = row.original
+      return (
+        <p>
+          {data.checkoutInfo.paymentType === 'full'
+            ? '__'
+            : convertAmount(data.checkoutInfo.amountToPay)}
         </p>
       )
     }
@@ -39,8 +46,8 @@ export const History_column: ColumnDef<HistoryResponse>[] = [
       const { checkoutInfo } = row.original
       return (
         <p>
-          {checkoutInfo.paymentStatus.toLowerCase() === 'full payment'
-            ? convertAmount(checkoutInfo.sellingPrice)
+          {checkoutInfo.paymentType.toLowerCase() === 'full'
+            ? '__'
             : convertAmount(checkoutInfo.amountPaid)}
         </p>
       )
@@ -57,19 +64,6 @@ export const History_column: ColumnDef<HistoryResponse>[] = [
   },
 
   {
-    accessorKey: 'checkoutInfo.supplyStatus',
-    header: 'Supply status',
-    cell: ({ row }) => {
-      const data = row.original
-      return (
-        <p className={'status ' + 'status__' + data.checkoutInfo.supplyStatus.toLowerCase()}>
-          {data.checkoutInfo.supplyStatus}
-        </p>
-      )
-    }
-  },
-
-  {
     accessorKey: 'checkoutInfo.createdAt',
     header: 'Created at',
     cell: ({ row }) => {
@@ -79,11 +73,17 @@ export const History_column: ColumnDef<HistoryResponse>[] = [
   },
 
   {
-    accessorKey: 'checkoutInfo.modeifedAt',
-    header: 'Modified at',
+    accessorKey: 'checkoutInfo.checkoutId',
+    header: '',
     cell: ({ row }) => {
       const data = row.original
-      return <p>{data.checkoutInfo.modified ? formatDate(data.checkoutInfo.modeifedAt) : null}</p>
+      return (
+        <div>
+          <Icons.DotMenu className="icon" />
+
+          {/* <p>{formatDate(data.checkoutInfo.checkoutId)}</p> */}
+        </div>
+      )
     }
   }
 ]

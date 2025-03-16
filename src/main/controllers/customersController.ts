@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import db from '..'
 
-// get all customer
+// save customer
 export const createCustomer = async (req: Request, res: Response) => {
   try {
     const { customerName, amountToPay, amountPaid, typeOfPayment }: createNewCustomerBody = req.body
@@ -17,15 +17,25 @@ export const createCustomer = async (req: Request, res: Response) => {
     const newCustomer = {
       name: customerName,
       id: uuidv4(),
+      lastPaymentDate: new Date(),
       debt:
         typeOfPayment === 'credit'
           ? amountToPay
           : typeOfPayment === 'half'
             ? Number(amountToPay) - Number(amountPaid)
-            : 0
+            : 0,
+      paymentHistory:
+        typeOfPayment === 'half'
+          ? [
+              {
+                date: new Date(),
+                amountPaid: amountPaid
+              }
+            ]
+          : []
     }
 
-    const UpdatedcustomerList = { newCustomer, ...customers }
+    const UpdatedcustomerList = [newCustomer, ...customers]
 
     return await db.update({}, { $set: { customers: UpdatedcustomerList } }, {}, (updateErr, _) => {
       if (updateErr) {
@@ -33,7 +43,7 @@ export const createCustomer = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Failed to create customer' })
       }
 
-      return res.status(200).json({ message: 'Customer created' })
+      return res.status(200).json({ message: 'Customer created', data: newCustomer })
     })
   } catch (error) {
     console.log(error)
@@ -45,6 +55,19 @@ export const createCustomer = async (req: Request, res: Response) => {
 export const getCustomers = async (req: Request, res: Response) => {
   try {
     const { customers } = req.doc
+    const { customerId } = req.query
+
+    if (customerId) {
+      const customer = customers.find((i) => i.id === customerId)
+
+      if (!customer) {
+        res.status(404).json({ message: 'Customer does not exist' })
+      }
+
+      res.status(200).json(customer)
+
+      return
+    }
 
     res.status(200).json(customers)
   } catch (error) {

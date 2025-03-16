@@ -1,5 +1,7 @@
 import { useCheckCustomerName } from '@renderer/apis/customer/checkCustomerName'
 import { useGetCustomers } from '@renderer/apis/customer/getCustomers'
+import { useSaveCustomer } from '@renderer/apis/customer/saveCustomer'
+import { useCheckout } from '@renderer/apis/products/checkout'
 import { useReturnAllWarehouses } from '@renderer/apis/warehouses/getAllWarehouses'
 import AlertModal from '@renderer/components/ui/alertModal'
 import Button from '@renderer/components/ui/Button'
@@ -12,9 +14,10 @@ import { checkoutFormSchma } from './schema'
 type CheckoutFormTypes = {
   setFormStep: (value: number) => void
   productData: sellGoodsModelInitailValueType
+  openSuccessMsg: (value: string) => void
 }
 
-const CheckoutForm = ({ setFormStep, productData }: CheckoutFormTypes) => {
+const CheckoutForm = ({ setFormStep, productData, openSuccessMsg }: CheckoutFormTypes) => {
   const [openAlert, setOpenAlert] = useState(false)
 
   // get stores
@@ -29,6 +32,12 @@ const CheckoutForm = ({ setFormStep, productData }: CheckoutFormTypes) => {
 
   // check customer name availablity
   const { isPending: checkingName, mutateAsync: checkName } = useCheckCustomerName()
+
+  // save customer to store
+  const { isPending: isSavingCustomerName, mutateAsync: saveCustomerNameFn } = useSaveCustomer()
+
+  // checkout fn
+  const { isPending: isCheckingOut, mutateAsync: checkoutFn } = useCheckout()
 
   const onSubmit = (values) => {
     if (values.isNewCustomer === true) {
@@ -75,15 +84,52 @@ const CheckoutForm = ({ setFormStep, productData }: CheckoutFormTypes) => {
   // handle checkout
   const handleCheckOut = (saveCustomerName: boolean) => {
     if (saveCustomerName) {
-      // sell product
       // save customer name
-      // display cartoons to be supplied
+      saveCustomerNameFn({
+        customerName: values.customerName,
+        typeOfPayment: values.paymentType,
+        amountPaid: Number(values.amountPaid),
+        amountToPay: Number(values.amountToPay)
+      })
+        .then(() => {
+          checkoutFn({
+            listOfProducts: [productData],
+            checkoutInfo: {
+              ...values
+            }
+          })
+        })
+        .then(() => {
+          openSuccessMsg(values.customerName)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
 
+      // sell product
+      // display cartoons to be supplied
       return
     }
 
     // sell product
+
     // display cartoons to be supplied
+    // when customer is not a new customer: get customer name
+    const customer = customers?.find((i) => i.id === values.customerId)
+
+    checkoutFn({
+      listOfProducts: [productData],
+      checkoutInfo: {
+        ...values,
+        customerId: customer ? customer.id : ''
+      }
+    })
+      .then(() => {
+        openSuccessMsg(customer?.name ?? '')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   // PAYMENT TYPE OPTIONS
@@ -136,7 +182,7 @@ const CheckoutForm = ({ setFormStep, productData }: CheckoutFormTypes) => {
         {values.paymentType === 'credit' && (
           <Input
             label="Enter amount to pay"
-            onChange={handleChange('amountPaid')}
+            onChange={handleChange('amountToPay')}
             value={values.amountToPay}
             errorMsg={errors.amountToPay}
             touched={touched.amountToPay}
@@ -185,12 +231,18 @@ const CheckoutForm = ({ setFormStep, productData }: CheckoutFormTypes) => {
             name="customerId"
             onChange={setFieldValue}
             options={customers?.map((i) => ({ value: i.id, label: i.name })) ?? []}
+            isLoading={isGettingCustomers}
           />
         )}
 
         <div className="btns">
           <Button text="Back" type="button" varient="outline" onClick={() => setFormStep(1)} />
-          <Button text="Checkout" type="submit" isLoading={checkingName} />
+          <Button
+            text="Checkout"
+            type="submit"
+            isLoading={checkingName || isSavingCustomerName || isCheckingOut}
+            onClick={() => console.log(errors)}
+          />
         </div>
       </form>
 
@@ -231,12 +283,14 @@ const AlertSaveCustomer = ({
           varient="outline"
           onClick={() => {
             handleProceed(false)
+            onOpenChange(false)
           }}
         />
         <Button
           text="Save"
           onClick={() => {
             handleProceed(true)
+            onOpenChange(false)
           }}
         />
       </div>

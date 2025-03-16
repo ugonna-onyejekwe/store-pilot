@@ -4,7 +4,7 @@ import db from '..'
 
 export const getAllWarehouses = async (req: Request, res: Response) => {
   try {
-    const allWarehouses = req.doc.warehouses
+    const allWarehouses = req.doc.stores
 
     res.status(200).json(allWarehouses)
   } catch (error) {
@@ -17,7 +17,7 @@ export const addWarehouse = async (req: Request, res: Response) => {
   try {
     const { name } = req.body
 
-    const allwarehouse = req.doc.warehouses
+    const allwarehouse = req.doc.stores
 
     const newWarehouses = [
       {
@@ -27,7 +27,7 @@ export const addWarehouse = async (req: Request, res: Response) => {
       ...allwarehouse
     ]
 
-    await db.update({}, { $set: { warehouses: newWarehouses } }, {}, (updateErr, _) => {
+    await db.update({}, { $set: { stores: newWarehouses } }, {}, (updateErr, _) => {
       if (updateErr) {
         console.error('Error adding store:', updateErr)
         res.status(500).json({ error: 'Failed to Add  store' })
@@ -46,11 +46,11 @@ export const deletewarehouse = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
 
-    const allWarehouse = req.doc.warehouses
+    const allWarehouse = req.doc.stores
 
     const newWarehouses = allWarehouse.filter((i) => i.id !== id)
 
-    await db.update({}, { $set: { warehouses: newWarehouses } }, {}, (updateErr, _) => {
+    await db.update({}, { $set: { stores: newWarehouses } }, {}, (updateErr, _) => {
       if (updateErr) {
         console.error('Error deleting store:', updateErr)
         res.status(500).json({ error: 'Failed to delete store' })

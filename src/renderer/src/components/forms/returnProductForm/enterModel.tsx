@@ -12,30 +12,33 @@ type SelectModelTypes = {
   setFormData: (values: ReturnedProductType) => void
   handleProceed: (values) => void
   prevStep: () => void
-  isLoading: boolean
 }
 
 export const SelectModel = ({
   formData,
   setFormData,
   handleProceed,
-  prevStep,
-  isLoading
+  prevStep
 }: SelectModelTypes) => {
   const {
     mutateAsync: getProductData,
     data: productData,
     isPending: isGettingProduct
   } = useReturnAllProducts()
+
   useEffect(() => {
-    getProductData({ categoryId: formData.category })
-      .then(() => {
-        if (productData?.length === 0) toastUI.error('There is no product under this category')
-      })
-      .catch((error) => {
+    getProductData({ categoryId: formData.category, subCategoryName: formData.subcategory }).catch(
+      (error) => {
         console.log(error)
-      })
+      }
+    )
   }, [])
+
+  useEffect(() => {
+    if (productData) {
+      if (productData?.length === 0) toastUI.error('There is no product under this category')
+    }
+  }, [productData])
 
   const initialValues = {
     productId: formData.productId
@@ -72,7 +75,7 @@ export const SelectModel = ({
         <div className="btn btn_multi">
           <Button text={'Back'} varient="outline" onClick={prevStep} />
 
-          <Button text={'Proceed'} type="submit" isLoading={isLoading} />
+          <Button text={'Proceed'} type="submit" />
         </div>
       </form>
     </motion.div>

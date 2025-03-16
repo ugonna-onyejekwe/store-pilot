@@ -72,46 +72,69 @@
   .col_2 {
     background: variables.$bg_color;
     border-radius: 5px;
-    height: 400px;
+    height: fit-content;
+    max-height: 400px;
     overflow-y: scroll;
     overflow-x: hidden;
 
-    p {
+    .search_result {
+      p {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 10px;
+        font-size: 15px;
+        transition: 0.4s ease;
+        cursor: pointer;
+        color: variables.$light_text_color2;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid rgba(128, 128, 128, 0.259);
+        }
+
+        span {
+          width: 30px;
+          overflow: hidden;
+          display: flex;
+          justify-content: right;
+
+          .icon {
+            height: 15px;
+            width: 15px;
+            transform: translateX(15px);
+            transition: 0.4s ease;
+          }
+        }
+
+        &:hover {
+          background: variables.$primary_color_alpha;
+          color: variables.$dark_text_color;
+
+          span .icon {
+            transform: translateX(0);
+            color: variables.$primary_color;
+          }
+        }
+      }
+    }
+
+    .no_result {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 15px 10px;
-      font-size: 15px;
-      transition: 0.4s ease;
-      cursor: pointer;
-      color: variables.$light_text_color2;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
 
-      &:not(:last-child) {
-        border-bottom: 1px solid rgba(128, 128, 128, 0.259);
+      .icon {
+        color: variables.$light_text_color2;
+        opacity: 0.4;
       }
 
-      span {
-        width: 30px;
-        overflow: hidden;
-        display: flex;
-        justify-content: right;
-
-        .icon {
-          height: 15px;
-          width: 15px;
-          transform: translateX(15px);
-          transition: 0.4s ease;
-        }
-      }
-
-      &:hover {
-        background: variables.$primary_color_alpha;
-        color: variables.$dark_text_color;
-
-        span .icon {
-          transform: translateX(0);
-          color: variables.$primary_color;
-        }
+      p {
+        font-size: 15px;
+        color: variables.$light_text_color2;
+        padding-top: 10px;
+        opacity: 0.8;
       }
     }
   }

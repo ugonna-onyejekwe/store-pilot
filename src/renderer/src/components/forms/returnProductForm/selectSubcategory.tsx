@@ -3,8 +3,9 @@ import { SelecInput } from '@renderer/components/ui/inputs'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
+import { selectSubCategorySchema } from './schema'
 
-type SelectColorTypes = {
+type SelectSubCategoryTypes = {
   formData: ReturnedProductType
   setFormData: (values: ReturnedProductType) => void
   nextStep: () => void
@@ -12,25 +13,25 @@ type SelectColorTypes = {
   categoryData: SingleCategoryResponse
 }
 
-export const SelectColor = ({
+export const SelectSubCategory = ({
   formData,
   setFormData,
   nextStep,
   prevStep,
   categoryData
-}: SelectColorTypes) => {
+}: SelectSubCategoryTypes) => {
   const initialValues = {
-    color: formData.color
+    subcategory: formData.subcategory
   }
 
   const onSubmit = (values) => {
-    setFormData({ ...formData, color: values.color })
+    setFormData({ ...formData, subcategory: values.subcategory })
     nextStep()
   }
 
   const { touched, errors, handleSubmit, setFieldValue } = useFormik({
     initialValues,
-    // validationSchema: addPro_selectCategorySchema,
+    validationSchema: selectSubCategorySchema,
     onSubmit
   })
 
@@ -40,14 +41,14 @@ export const SelectColor = ({
         <form onSubmit={handleSubmit} className="form">
           <div className="form_container">
             <SelecInput
-              placeholder="Select product colour"
+              placeholder="Select sub-category"
               onChange={setFieldValue}
-              options={categoryData.colors.map((i) => ({ label: i, value: i }))}
-              name="color"
-              id="color"
-              label="Select product colour"
-              touched={touched.color}
-              errorMsg={errors.color}
+              options={categoryData?.subcategories?.map((i) => ({ label: i.name, value: i.name }))}
+              name="subcategory"
+              id="subcategory"
+              label="Select product sub-category"
+              touched={touched.subcategory}
+              errorMsg={errors.subcategory}
             />
           </div>
 

@@ -34,7 +34,7 @@ const Summary = ({
           Has sub-categories: <span>{defaultValues.hasSubcategories ? 'True' : 'False'}</span>
         </p>
         <p>
-          Has sub-products: <span>{defaultValues.subProducts ? 'True' : 'False'}</span>
+          Has sub-products: <span>{defaultValues.hasSubProducts ? 'True' : 'False'}</span>
         </p>
         <p>
           Has colours: <span>{defaultValues.hasColor ? 'True' : 'False'}</span>
@@ -76,7 +76,7 @@ const Summary = ({
           <div className="info_con">
             {defaultValues.subProducts.map((category, key) => (
               <div key={key}>
-                <h5>Sub-products for {category.name}</h5>
+                <h5>Sub-products for {category.subCategoryName}</h5>
 
                 <div className="subproducts">
                   {category.subProducts?.map((i, key) => (
@@ -125,7 +125,11 @@ const Summary = ({
       )}
 
       <div className="btn btn_multi">
-        <Button text="Edit" onClick={() => setFormSteps(4)} varient="outline" />
+        <Button
+          text="Edit"
+          onClick={() => (defaultValues.hasModel === false ? setFormSteps(1) : setFormSteps(4))}
+          varient="outline"
+        />
 
         <Button
           text={buttonText}

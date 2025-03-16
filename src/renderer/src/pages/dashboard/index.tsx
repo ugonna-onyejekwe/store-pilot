@@ -1,5 +1,6 @@
 import DashboardLinkBox from '@renderer/components/DashboardLinkBox'
 import Navbar from '@renderer/components/Navbar'
+import OutGoingGoods from '@renderer/components/outGoingGoods'
 import { Icons } from '@renderer/components/ui/icons'
 import { formatDateFromTimestamp } from '@renderer/lib/utils'
 import { useEffect, useState } from 'react'
@@ -7,6 +8,7 @@ import './style.scss'
 
 const Dashboard = () => {
   const [time, setTime] = useState('')
+  const [openOutGoingGoods, setOpenOutGoingGoods] = useState(false)
 
   // Use efffect that sets time
   useEffect(() => {
@@ -26,7 +28,7 @@ const Dashboard = () => {
   return (
     <>
       {/* === NAVBAR SECTION STARTS ==== */}
-      <Navbar currentPage="dashboard" isDashboard />
+      <Navbar currentPage="dashboard" isDashboard isSearchable={false} />
       {/* === NAVBAR SECTION ENDS ==== */}
 
       <div className="dasboard_page container">
@@ -50,15 +52,17 @@ const Dashboard = () => {
             <DashboardLinkBox
               label="Incoming goods"
               icon={<Icons.AddProductIcon className="icon" />}
-              link="/icoming-goods"
+              link="/add-product"
               icon_bg="#f293054c"
             />
+
             <DashboardLinkBox
               label="Out going goods"
               icon={<Icons.RemoveProductIcon className="icon" />}
-              link="/out-going-goods"
+              handleClick={() => setOpenOutGoingGoods(true)}
               icon_bg="#f2de0564"
             />
+
             <DashboardLinkBox
               label="Goods"
               icon={<Icons.GoodsIcons className="icon" />}
@@ -102,6 +106,10 @@ const Dashboard = () => {
           />
         </div>
       </div>
+
+      {openOutGoingGoods && (
+        <OutGoingGoods open={openOutGoingGoods} onOpenChange={setOpenOutGoingGoods} />
+      )}
     </>
   )
 }

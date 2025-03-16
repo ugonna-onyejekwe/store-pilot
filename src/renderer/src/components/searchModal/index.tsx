@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Icons } from '../ui/icons'
 import { Overlay } from '../ui/modal.tsx'
 import './styles.scss'
@@ -8,24 +8,31 @@ interface SearchModalProps {
   open: boolean
   onOpenChange: (value: boolean) => void
   zIndex?: number
+  linkParams1?: string
+  linkParams2?: string
+  link?: string
+  displayTxt: string
+  searchData: any[]
+  handleClick?: (value: any) => void
+  searchValue: string
+  setSearchValue: (value: string) => void
 }
 
-const SearchModal = ({ placeholder, open, onOpenChange, zIndex }: SearchModalProps) => {
-  const [inputValue, setInputValue] = useState('')
-  const searchData = [
-    'ugonna 12',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123',
-    'ugonna 123'
-  ]
+const SearchModal = ({
+  placeholder,
+  open,
+  onOpenChange,
+  zIndex,
+  linkParams1,
+  linkParams2,
+  link,
+  searchData,
+  displayTxt,
+  handleClick,
+  searchValue,
+  setSearchValue
+}: SearchModalProps) => {
+  const navigate = useNavigate()
   return (
     <>
       <div
@@ -37,8 +44,8 @@ const SearchModal = ({ placeholder, open, onOpenChange, zIndex }: SearchModalPro
         <div className="col_1">
           <Icons.SearchIcon className="search_icon" />
           <input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             placeholder={placeholder}
           />
           <span className="close_icon_con" onClick={() => onOpenChange(false)}>
@@ -47,15 +54,36 @@ const SearchModal = ({ placeholder, open, onOpenChange, zIndex }: SearchModalPro
         </div>
 
         <div className="col_2">
-          {searchData.length === 0 ? (
-            <div className="Not_search yet"></div>
-          ) : searchData.length === 0 && inputValue !== '' ? (
-            <div className="no_search_result"></div>
+          {searchData.length === 0 && searchValue === '' ? (
+            <div className="No_search_yet"></div>
+          ) : searchData.length === 0 && searchValue !== '' ? (
+            <div className="no_result">
+              <Icons.NoResult className="icon" />
+
+              <p>
+                No Result for <b> {searchValue}</b>
+              </p>
+            </div>
           ) : (
             <div className="search_result">
               {searchData.map((i, key) => (
-                <p key={key}>
-                  {i}
+                <p
+                  key={key}
+                  onClick={() => {
+                    if (handleClick) {
+                      handleClick(i)
+
+                      return
+                    }
+
+                    linkParams1 && !linkParams2 && navigate(`/${link}/${i[linkParams1]}}`)
+
+                    linkParams1 &&
+                      linkParams2 &&
+                      navigate(`/${link}/${i[linkParams1]}/${i[linkParams2]}`)
+                  }}
+                >
+                  {i[displayTxt]}
 
                   <span className="forward_btn">{<Icons.ForwardArrow className="icon" />}</span>
                 </p>

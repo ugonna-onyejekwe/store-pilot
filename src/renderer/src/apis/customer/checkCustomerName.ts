@@ -5,32 +5,19 @@ import { getError } from '@renderer/lib/utils'
 import { useMutation } from '@tanstack/react-query'
 
 type payload = {
-  name: string
-  hasModel: boolean
-  hasColors: boolean
-  hasSubProducts: boolean
-  subProducts: {
-    subCategoryName?: string
-    name?: string
-    defaultQuantity?: number
-    subProducts?: {
-      name: string
-      defaultQuantity: number
-    }[]
-  }[]
-  hasSubCategory: boolean
+  customerName: string
 }
 
-const createCategory = (payload: payload) => {
+const checkCustomerName = (payload: payload) => {
   return postRequest<null, payload>({
-    url: `${ApiEndPoints.createCategory}`,
+    url: `${ApiEndPoints.checkCustomer}`,
     payload: payload
   })
 }
 
-export const useCreateCategory = () => {
+export const useCheckCustomerName = () => {
   return useMutation({
-    mutationFn: createCategory,
+    mutationFn: checkCustomerName,
     onError: (error) => {
       toastUI.error(getError(error))
     }

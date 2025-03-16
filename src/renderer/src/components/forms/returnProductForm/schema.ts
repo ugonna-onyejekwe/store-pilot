@@ -1,9 +1,11 @@
 import * as yup from 'yup'
 
-// CREATE CATEGORY SUB-FORMS SCHEMA STARTS =====
-export const EnterNameSchema = yup.object().shape({
-  name: yup.string().required('Category is required'),
-  hasModel: yup.boolean()
+export const SelectCategorySchema = yup.object().shape({
+  category: yup.string().required('Category is required')
+})
+
+export const selectSubCategorySchema = yup.object().shape({
+  subcategory: yup.string().required('Category is required')
 })
 
 export const EnterSubCategories = yup.object().shape({

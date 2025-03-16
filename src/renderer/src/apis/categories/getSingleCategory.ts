@@ -12,7 +12,7 @@ export type SingleCategoryResponse = {
   id: string
   name: string
   hasModel: boolean
-  hasColor: boolean
+  hasColors: boolean
   hasSubProducts: boolean
   colors: string[]
   designs: string[]
@@ -29,7 +29,7 @@ export type SingleCategoryResponse = {
     }[]
   }[]
   subcategories: { name: string; id: string }[]
-  hasSubcategories: boolean
+  hasSubCategory: boolean
 }
 
 const getCategory = (payload: payload) => {

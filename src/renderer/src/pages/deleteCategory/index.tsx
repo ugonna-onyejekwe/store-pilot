@@ -5,6 +5,7 @@ import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
 import { SummaryLoader } from '@renderer/components/ui/loader'
 import { toastUI } from '@renderer/components/ui/toast'
+import { getError } from '@renderer/lib/utils'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import './styles.scss'
@@ -21,12 +22,10 @@ export const DeleteCategory = () => {
   } = useReturnSingleCategory()
 
   useEffect(() => {
-    getCategoryData({ id: categoryId! }).catch(() => {
-      toastUI.error('Category not found')
+    getCategoryData({ id: categoryId! }).catch((error) => {
+      toastUI.error(getError(error))
       navigate('/admin')
     })
-
-    console.log(categoryData, 'data')
   }, [categoryId])
 
   return (
@@ -50,70 +49,93 @@ export const DeleteCategory = () => {
                 Here is the summary of the category you want to delete, remember that you can edit
                 certain data if necessary
               </p>
-              <div className="info_con">
-                <div className="general_info">
+              <div className="info_con_wrapper">
+                <div className="general_info_con">
                   <p>
-                    Category name: <span>{categoryData?.name}</span>
+                    Category name: <span> {categoryData?.name}</span>
                   </p>
-
                   <p>
-                    Has model: <span> {categoryData?.hasModel === true ? 'True' : 'False'}</span>
+                    Has model: <span>{categoryData?.hasModel ? 'True' : 'False'}</span>
+                  </p>
+                  <p>
+                    Has sub-categories:{' '}
+                    <span>{categoryData?.hasSubcategories ? 'True' : 'False'}</span>
+                  </p>
+                  <p>
+                    Has sub-products: <span>{categoryData?.hasSubProducts ? 'True' : 'False'}</span>
+                  </p>
+                  <p>
+                    Has colours: <span>{categoryData?.hasColor ? 'True' : 'False'}</span>
                   </p>
                 </div>
 
-                {categoryData?.hasSize && categoryData.formatedListOfSizes !== '' && (
-                  <div className="box_con">
-                    <h3>Size under this category</h3>
-                    <div className="con">
-                      {categoryData?.formatedListOfSizes.split(',').map((i, key) => (
-                        <p key={key}>
-                          <span>{<Icons.BulletPoint2 className="bullet_icon" />}</span>
-                          {i.trim()}
-                        </p>
+                {categoryData?.hasSubcategories && (
+                  <div className="sub_cate_list">
+                    <h5>List of sub-categories</h5>
+                    <p>
+                      {categoryData?.subcategories.map((i, key) => (
+                        <span key={key}>• {i.name}</span>
+                      ))}
+                    </p>
+                  </div>
+                )}
+
+                {categoryData?.hasSubcategories === false && categoryData.hasSubProducts && (
+                  <div className="Single_subproducts">
+                    <h5>List of sub-products</h5>
+                    {categoryData?.subProducts.map((i, key) => (
+                      <p key={key}>
+                        <span>
+                          <Icons.CheckIcon className="checkicon" />
+                        </span>{' '}
+                        {i.name}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
+                {categoryData?.hasSubcategories && categoryData?.hasSubProducts && (
+                  <div className="multiSuproducts">
+                    <h4>Lists of subproduct for each sub-category</h4>
+
+                    <div className="info_con">
+                      {categoryData?.subProducts.map((category, key) => (
+                        <div key={key}>
+                          <h5>Sub-products for {category.name}</h5>
+
+                          <div className="subproducts">
+                            {category.subProducts?.map((i, key) => (
+                              <p key={key}>
+                                <span>
+                                  • Name: <small>{i.name}</small>
+                                </span>
+                                <span>
+                                  Default quantity: <small> {i.defaultQuantity}</small>
+                                </span>
+                              </p>
+                            ))}
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {categoryData?.hasColor && categoryData.formatedListOfColors !== '' && (
-                  <div className="box_con">
-                    <h3>Colours under this category</h3>
-                    <div className="con">
-                      {categoryData?.formatedListOfColors.split(',').map((i, key) => (
-                        <p key={key}>
-                          <span>{<Icons.BulletPoint2 className="bullet_icon" />}</span>
-                          {i.trim()}
-                        </p>
-                      ))}
-                    </div>
+                {categoryData?.hasColor && (
+                  <div className="colors_con">
+                    <h5>List of colors</h5>
+                    <p>
+                      {categoryData?.colors.map((i, key) => <span key={key}>• {i.trim()}</span>)}
+                    </p>
                   </div>
                 )}
 
-                {categoryData?.hasDesign && categoryData.formatedListOfDesigns !== '' && (
-                  <div className="box_con">
-                    <h3>Designs under this category</h3>
-                    <div className="con">
-                      {categoryData?.formatedListOfDesigns.split(',').map((i, key) => (
-                        <p key={key}>
-                          <span>{<Icons.BulletPoint2 className="bullet_icon" />}</span>
-                          {i.trim()}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {categoryData?.hasSubProducts && (
-                  <div className="box_con">
-                    <h3>SubProducts under this category</h3>
-                    <div className="con">
-                      {categoryData?.formatedListOfSubproducts.map((i, key) => (
-                        <p key={key}>
-                          <span>{<Icons.BulletPoint2 className="bullet_icon" />}</span>
-                          {i.name}
-                        </p>
-                      ))}
-                    </div>
+                {categoryData?.hasColor && (
+                  <div className="design_con">
+                    <h5>List of designs</h5>
+                    <p>
+                      {categoryData?.designs.map((i, key) => <span key={key}>• {i.trim()}</span>)}
+                    </p>
                   </div>
                 )}
               </div>
@@ -158,7 +180,6 @@ const DeleteCategoryModel = ({
       })
       .catch((error) => {
         console.log(error)
-        toastUI.error('An error occured while deleting category')
       })
   }
 

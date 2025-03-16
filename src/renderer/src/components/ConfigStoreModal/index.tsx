@@ -35,7 +35,7 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
         name: values.warehouse
       })
         .then(() => {
-          toastUI.success('Warehouse added successfully')
+          toastUI.success('Store added successfully')
           resetForm()
           onOpenChange(false)
         })
@@ -47,7 +47,7 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
         id: values.warehouse
       })
         .then(() => {
-          toastUI.success('Warehouse deleted successfully')
+          toastUI.success('Store deleted successfully')
           resetForm()
           onOpenChange(false)
         })
@@ -120,9 +120,9 @@ export const ConfigStoreModal = ({ open, onOpenChange }: ConfigStoreProps) => {
         <Button
           text={
             values.actionType === 'add'
-              ? 'Add warehouse'
+              ? 'Add store'
               : values.actionType === 'delete'
-                ? 'Delete warehouse'
+                ? 'Delete store'
                 : 'Select'
           }
           disable={values.actionType === ''}

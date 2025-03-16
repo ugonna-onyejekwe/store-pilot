@@ -12,7 +12,7 @@ import EnterSubproducts from './EnterSubproducts'
 import { SelectCategory } from './selectCategory'
 import SelectSubcategory from './SelectSubcategory'
 import './styles.scss'
-import Summary from './Summary'
+import Summary from './summary'
 
 type AddProductFormProps = {
   gettingSingleProduct: boolean
@@ -72,23 +72,21 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
     }
 
     if (formSteps === 3) {
-      return categoryData?.hasSubProducts
-        ? setFormSteps(4)
-        : categoryData?.hasColor
-          ? setFormSteps(5)
-          : setFormSteps(7)
+      return setFormSteps(4)
     }
 
     if (formSteps === 4) {
       return defaultValues.categoryData?.hasModel === false
         ? setFormSteps(8)
-        : categoryData?.hasColor
+        : categoryData?.hasSubProducts
           ? setFormSteps(5)
-          : setFormSteps(7)
+          : categoryData?.hasColor
+            ? setFormSteps(6)
+            : setFormSteps(8)
     }
 
     if (formSteps === 5) {
-      return setFormSteps(6)
+      return categoryData?.hasColor ? setFormSteps(6) : setFormSteps(8)
     }
 
     if (formSteps === 6) {
@@ -124,11 +122,11 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
     }
 
     if (formSteps === 6) {
-      return hasColor ? setFormSteps(5) : setFormSteps(4)
+      return hasSubProducts ? setFormSteps(5) : setFormSteps(4)
     }
 
     if (formSteps === 7) {
-      return hasColor ? setFormSteps(6) : hasSubProducts ? setFormSteps(5) : setFormSteps(4)
+      return setFormSteps(6)
     }
 
     if (formSteps === 8) {

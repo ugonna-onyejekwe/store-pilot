@@ -72,15 +72,17 @@ export const EnterSubProductForm = ({
 
   // Intailizing input fields if has subcategories
   useEffect(() => {
-    if (defaultValues.hasSubcategories === true) {
-      const subcategories = defaultValues.subcategories.split(',').filter(boolean)
+    if (defaultValues.subProducts.length === 0) {
+      if (defaultValues.hasSubcategories === true) {
+        const subcategories = defaultValues.subcategories.split(',').filter(boolean)
 
-      const subproductList = subcategories.map((i) => ({
-        subCategoryName: i.trim(),
-        subProducts: [{ name: '', defaultQuantity: 1 }]
-      }))
+        const subproductList = subcategories.map((i) => ({
+          subCategoryName: i.trim(),
+          subProducts: [{ name: '', defaultQuantity: 1 }]
+        }))
 
-      setFieldValue('subProducts', subproductList)
+        setFieldValue('subProducts', subproductList)
+      }
     }
   }, [])
 
@@ -130,10 +132,59 @@ export const EnterSubProductForm = ({
 
   // This runs and add a default field when their is no field.
   useEffect(() => {
-    if (values.subProducts.length === 0 && values.hasSubProducts) {
+    if (
+      values.subProducts.length === 0 &&
+      values.hasSubProducts &&
+      defaultValues.hasSubcategories === false
+    ) {
       addField()
     }
-  }, [values])
+
+    // when has subcategories is changed to no sub categories
+    if (
+      defaultValues.hasSubcategories === false &&
+      Array.isArray(values.subProducts) &&
+      values.subProducts.every(
+        (subCategory) =>
+          typeof subCategory.subCategoryName === 'string' &&
+          Array.isArray(subCategory.subProducts) &&
+          subCategory.subProducts.every(
+            (product) =>
+              typeof product.name === 'string' && typeof product.defaultQuantity === 'number'
+          )
+      )
+    ) {
+      setFieldValue('subProducts', [])
+
+      return
+    }
+
+    // when has subcategories is changed to has subcategory
+    if (
+      defaultValues.hasSubcategories === true &&
+      Array.isArray(values.subProducts) &&
+      !values.subProducts.every(
+        (subCategory) =>
+          typeof subCategory.subCategoryName === 'string' &&
+          Array.isArray(subCategory.subProducts) &&
+          subCategory.subProducts.every(
+            (product) =>
+              typeof product.name === 'string' && typeof product.defaultQuantity === 'number'
+          )
+      )
+    ) {
+      const subcategories = defaultValues.subcategories.split(',').filter(boolean)
+
+      const subproductList = subcategories.map((i) => ({
+        subCategoryName: i.trim(),
+        subProducts: [{ name: '', defaultQuantity: 1 }]
+      }))
+
+      setFieldValue('subProducts', subproductList)
+
+      return
+    }
+  }, [])
 
   // Function to set custum field values
   const onFieldChange = (value: any, key: number, name: string, subCateName?: string) => {

@@ -1,23 +1,34 @@
 import { useGetCategories } from '@renderer/apis/categories/getCategories'
+import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import Button from '@renderer/components/ui/Button'
 import { SelecInput } from '@renderer/components/ui/inputs'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
+import { SelectCategorySchema } from './schema'
 
 type SelectCategoryType = {
   formData: ReturnedProductType
   setFormData: (values: ReturnedProductType) => void
-  handleProceed: (values) => void
-  isLoading: boolean
+  handleProceed: () => void
+  // setCategoryData: (values: SingleCategoryResponse) => void
+  // categoryData: SingleCategoryResponse
 }
 
 export const SelectCategory = ({
   formData,
   setFormData,
-  handleProceed,
-  isLoading
+  handleProceed
+  // setCategoryData,
+  // categoryData: defaultCategoryData
 }: SelectCategoryType) => {
+  const {
+    isPending: isgettingCategory,
+    data: categoryData,
+    mutateAsync: getCategory
+  } = useReturnSingleCategory()
+
   const { CategoriesData, isPending: gettingCategories } = useGetCategories()
 
   const initialValues = {
@@ -25,15 +36,28 @@ export const SelectCategory = ({
   }
 
   const onSubmit = (values) => {
-    setFormData({ ...formData, category: values.category })
-    handleProceed(values)
+    getCategory({ id: values.category })
   }
 
-  const { touched, errors, handleSubmit, setFieldValue } = useFormik({
+  const { values, touched, errors, handleSubmit, setFieldValue } = useFormik({
     initialValues,
-    // validationSchema: addPro_selectCategorySchema,
+    validationSchema: SelectCategorySchema,
     onSubmit
   })
+
+  useEffect(() => {
+    const init = async () => {
+      if (categoryData) {
+        formData.categoryData = categoryData
+        formData.category = values.category
+        setFormData({ ...formData })
+
+        handleProceed()
+      }
+    }
+
+    init()
+  }, [categoryData])
 
   return (
     <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
@@ -53,7 +77,7 @@ export const SelectCategory = ({
         </div>
 
         <div className="btn btn_single">
-          <Button text={'Proceed'} type="submit" isLoading={isLoading} />
+          <Button text={'Proceed'} type="submit" isLoading={isgettingCategory} />
         </div>
       </form>
     </motion.div>

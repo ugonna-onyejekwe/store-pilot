@@ -11,44 +11,35 @@ type payload = {
 }
 
 type ProductResponse = {
-  category: {
-    name: string
-    id: string
-  }
-  lastPrice: number
-  totalQuantity: number
-  cartoonsPerProduct: number
+  categoryName: string
+  categoryId: string
+  subCategory: string
   model: string
-  sizes: { name: string; id: string; quantity: number }[]
+  actionType: string
+  hasModel: boolean
+  hasSubProducts: boolean
+  hasSubCategory: boolean
+  hasColors: boolean
+  totalQuantity: number
+  cartoonsPerSet: number
   subProducts: {
-    name: string
-    id: string
-    quantity: number
-    available: boolean
     defaultQuantity: number
-    left: number
+    id: string
+    name: string
+    available: boolean
   }[]
-  colors: { name: string; id: string; quantity: number }[]
-  designs: { name: string; id: string; quantity: number }[]
-  productId: string
-  leftOver?: {
-    category: {
+  colors: {
+    name: string
+    availableQuantity: number
+  }[]
+  designs: {
+    colorName: string
+    designs: {
       name: string
-      id: string
-    }
-    productId: string
-    size: string
-    color: string
-    design: string
-    leftOverId: string
-    model: string
-    subproducts: {
-      name: string
-      id: string
-      left: number
-      defaultQuantity: number
+      availableQuantity: number
     }[]
   }[]
+  productId?: string
 }[]
 
 const getAllProducts = (payload: payload) => {

@@ -13,10 +13,11 @@ export const ApiEndPoints = {
   editProduct: '/products/edit',
   deleteProduct: '/products/delete',
   checkout: '/products/checkout',
+  returnProduct: '/products/return-product',
 
   // history
   getAllHistory: '/history',
-  editSupplyStatus: '/history/edit-supply-status',
+  customerHistory: '/history/customer-history',
   editPayment: '/history/edit-payment',
 
   // auth
@@ -28,7 +29,12 @@ export const ApiEndPoints = {
   // warehouse
   getAllWarehouse: '/warehouses',
   addWarehouse: '/warehouses/add',
-  deleteWarehouse: '/warehouses'
+  deleteWarehouse: '/warehouses',
+
+  // customerName
+  checkCustomer: '/customers/check',
+  getCustomers: '/customers/get',
+  saveCustomers: '/customers/create'
 }
 
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL

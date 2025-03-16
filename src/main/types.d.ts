@@ -22,35 +22,53 @@ type CreateCategoryRequestBody = {
   colors: string
 }
 
-type Checkout__ProductList = {
-  category: {
-    id: string
-    name: string
-  }
+type returnProductRequestBody = {
+  categoryId: string
   productId: string
-  color: string
-  size: string
+  subcategory: string
   design: string
+  color: string
   subproducts: {
     name: string
-    id: string
     defaultQuantity: number
-    left: number
-    sellQuantity: number
+    id: string
+    inputedQuantity: number
   }[]
-  typeOfSale: 'sell part' | 'sell all' | 'sell leftOver'
+  returnDisposition: 'restock' | 'discard'
+}
+
+type Checkout__ProductList = {
+  categoryId: string
+  subcategory: string
+  model: string
+  productId: string
+  subproducts: {
+    name: string
+    defaultQuantity: number
+    id: string
+    sellQuantity: number
+    left: number
+  }[]
+  color: string
+  design: string
   quantity: number
+  hasSubCategory: boolean
+  hasModel: boolean
+  hasColor: boolean
+  hasSubProducts: boolean
+  cartoonQuantity: number
+  sellType: 'part' | 'all' | 'leftOver'
   leftOverId: string
 }[]
 
 declare interface CheckoutInfo {
-  locationSold: string
-  customerName: string
-  customerPhoneNumber: string
-  supplyStatus: 'supplied | not supplied'
-  paymentStatus: 'full payment' | 'half payment' | 'credit'
-  sellingPrice: number
+  paymentType: 'full' | 'half' | 'credit'
   amountPaid: number
+  amountToPay: number
+  customerName: string
+  customerId: string
+  locationSold: string
+  isNewCustomer: boolean
 }
 
 type CreateProductRequestBody = {
@@ -83,6 +101,13 @@ type CreateProductRequestBody = {
     }[]
   }[]
   productId?: string
+}
+
+type createNewCustomerBody = {
+  customerName: string
+  amountToPay: number
+  amountPaid: number
+  typeOfPayment: 'half' | 'full' | 'credit'
 }
 
 declare namespace Express {
@@ -119,12 +144,7 @@ declare namespace Express {
         }[]
         productId: string
         leftOver?: {
-          category: {
-            name: string
-            id: string
-          }
           productId: string
-          size: string
           color: string
           design: string
           leftOverId: string
@@ -140,39 +160,38 @@ declare namespace Express {
 
       histories: {
         listOfProducts: {
-          category: {
-            id: string
-            name: string
-          }
+          categoryId: string
+          subcategory: string
           model: string
           productId: string
-          color: string
-          size: string
-          design: string
           subproducts: {
             name: string
-            id: string
             defaultQuantity: number
-            left: number
+            id: string
             sellQuantity: number
+            left: number
           }[]
-          typeOfSale: string
+          color: string
+          design: string
           quantity: number
+          hasSubCategory: boolean
+          hasModel: boolean
+          hasColor: boolean
+          hasSubProducts: boolean
+          cartoonQuantity: number
+          sellType: 'part' | 'all' | 'leftOver'
           leftOverId: string
         }[]
         checkoutInfo: {
-          locationSold: string
-          customerName: string
-          customerPhoneNumber: string
-          supplyStatus: string
-          paymentStatus: string
-          sellingPrice: number
+          paymentType: 'full' | 'half' | 'credit'
           amountPaid: number
-          createdAt: number
-          modified: boolean
-          modeifedAt: number
-          supplyLocation: string
+          amountToPay: number
+          customerName: string
+          customerId: string
+          locationSold: string
+          isNewCustomer: boolean
           checkoutId: string
+          createdAt: string
         }
       }[]
 
@@ -203,6 +222,16 @@ declare namespace Express {
       stores: {
         name: string
         id: string
+      }[]
+
+      customers: {
+        name: string
+        id: string
+        debt: number
+        paymentHistory: {
+          date: string
+          amountPaid: number
+        }[]
       }[]
 
       authCredentials: {

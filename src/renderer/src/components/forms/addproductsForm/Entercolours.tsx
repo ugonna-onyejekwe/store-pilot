@@ -6,6 +6,7 @@ import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import AddfieldModal from './AddfieldModal'
 
 type EntercoloursProps = {
@@ -37,11 +38,13 @@ const Entercolours = ({ defaultValues, handleProceed, previousFormFn }: Entercol
     onSubmit
   })
 
+  // Initiate input fields
   useEffect(() => {
     if (defaultValues.colours.length === 0) {
       const colors = defaultValues.categoryData?.colors.map((i) => ({
-        name: i,
-        availableQuantity: 0
+        name: i.name,
+        availableQuantity: 0,
+        id: i.id
       }))
 
       setFieldValue('colours', colors)
@@ -103,7 +106,7 @@ const Entercolours = ({ defaultValues, handleProceed, previousFormFn }: Entercol
         onOpenChange={setAddField}
         label="Enter new colour name"
         handleProceed={(formData) => {
-          values.colours.push({ name: formData.fieldName, availableQuantity: 1 })
+          values.colours.push({ name: formData.fieldName, availableQuantity: 1, id: uuidv4() })
 
           setFieldValue('colours', values.colours)
         }}

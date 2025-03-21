@@ -65,7 +65,7 @@ const SingleCustomer = () => {
               <span className={`status status__${paymentStatus}`}>{paymentStatus}</span>
 
               <h3>
-                Outsanding amount: <span>{convertAmount(customer?.debt ?? 0)}</span>
+                Outsanding amount: <span>{convertAmount(Number(customer?.debt) ?? 0)}</span>
               </h3>
             </div>
 

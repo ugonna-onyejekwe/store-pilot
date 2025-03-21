@@ -50,9 +50,8 @@ export type HistoryResponse = {
 type Response = HistoryResponse[]
 
 const getcustomerHistory = (payload: payload) => {
-  return getRequest<payload, Response>({
-    url: ApiEndPoints.customerHistory,
-    payload
+  return getRequest<null, Response>({
+    url: `${ApiEndPoints.customerHistory}/${payload.customerId}`
   })
 }
 

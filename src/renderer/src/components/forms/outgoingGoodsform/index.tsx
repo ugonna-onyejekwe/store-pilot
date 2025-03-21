@@ -25,6 +25,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     colorQuantity: null,
     designQuantity: null
   })
+
   const [successMsgData, setSuccessMsgData] = useState({
     customerName: '',
     cartoonNumber: 0
@@ -90,20 +91,20 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     }
 
     // quantity check
-    if (categoryData?.hasColors && Number(values.quantity) > Number(productData?.totalQuantity)) {
+    if (categoryData?.hasColor && Number(values.quantity) > Number(productData?.totalQuantity)) {
       toastUI.error(`There is only ${productData?.totalQuantity} of this product left`)
       return
     }
 
     // colour  quantity check
-    if (categoryData?.hasColors && Number(values.quantity) > Number(data.colorQuantity)) {
+    if (categoryData?.hasColor && Number(values.quantity) > Number(data.colorQuantity)) {
       toastUI.error(`There is only ${data?.colorQuantity} of this colour left`)
 
       return
     }
 
     // design  quantity check
-    if (categoryData?.hasColors && Number(values.quantity) > Number(data.designQuantity)) {
+    if (categoryData?.hasColor && Number(values.quantity) > Number(data.designQuantity)) {
       toastUI.error(`There is only ${data?.designQuantity} of this design left`)
 
       return
@@ -114,8 +115,6 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
         (quamtity, product) => Number(product.sellQuantity) + quamtity,
         0
       )
-
-      console.log(cummulative)
 
       if (cummulative === 0) {
         toastUI.error('No sub product was selected')
@@ -141,20 +140,9 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
   // useEffect to fetch categoryData
   useEffect(() => {
-    const init = async () => {
-      if (values.categoryId) {
-        getSingleCategory({ id: values.categoryId })
-      }
-
-      if (categoryData) {
-        await setFieldValue('hasSubCategory', categoryData.hasSubCategory ? true : false)
-        await setFieldValue('hasModel', categoryData.hasModel ? true : false)
-        await setFieldValue('hasColor', categoryData.hasColors ? true : false)
-        await setFieldValue('hasSubProducts', categoryData.hasSubProducts ? true : false)
-      }
+    if (values.categoryId) {
+      getSingleCategory({ id: values.categoryId })
     }
-
-    init()
   }, [values.categoryId])
 
   // use effect to fetch product details if product does not have model
@@ -162,6 +150,17 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     if (categoryData && categoryData?.hasModel === false) {
       setFieldValue('productId', values.categoryId)
     }
+
+    const init = async () => {
+      if (categoryData) {
+        await setFieldValue('hasSubCategory', categoryData?.hasSubcategories)
+        await setFieldValue('hasModel', categoryData?.hasModel)
+        await setFieldValue('hasColor', categoryData?.hasColor)
+        await setFieldValue('hasSubProducts', categoryData?.hasSubProducts)
+      }
+    }
+
+    init()
   }, [categoryData])
 
   // useEffect to get all products

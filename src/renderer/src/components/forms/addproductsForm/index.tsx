@@ -169,7 +169,7 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
       productId: defaultValues.model
     })
       .then(() => {
-        toastUI.success('Product add successfully')
+        toastUI.success('Product added successfully')
         navigate('/admin')
         setFormSteps(1)
         setDefaultValues({ ...initialValues })

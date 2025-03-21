@@ -6,6 +6,7 @@ import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import AddfieldModal from './AddfieldModal'
 
 type EnterDesignProps = {
@@ -54,11 +55,13 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
 
   useEffect(() => {
     if (defaultValues.designs.length === 0) {
-      const designs = defaultValues.colours.map((i) => ({
-        colorName: i.name,
-        designs: defaultValues.categoryData?.designs.map((i) => ({
-          name: i,
-          availableQuantity: 0
+      const designs = defaultValues.colours.map((color) => ({
+        colorName: color.name,
+        colorId: color.id,
+        designs: defaultValues.categoryData?.designs.map((design) => ({
+          name: design.name,
+          availableQuantity: 0,
+          id: design.id
         }))
       }))
 
@@ -70,9 +73,11 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
         if (!existedDesign) {
           return {
             colorName: color.name,
-            designs: defaultValues.categoryData?.designs.map((i) => ({
-              name: i,
-              availableQuantity: 0
+            colourId: color.id,
+            designs: defaultValues.categoryData?.designs.map((design) => ({
+              name: design,
+              availableQuantity: 0,
+              id: design.id
             }))
           }
         }
@@ -174,7 +179,8 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
               // @ts-expect-error:undefined
               i.design = i.designs.push({
                 name: formData.fieldName,
-                availableQuantity: 1
+                availableQuantity: 1,
+                id: uuidv4()
               })
 
               return i

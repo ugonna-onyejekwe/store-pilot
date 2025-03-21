@@ -1,5 +1,4 @@
 import { useCreateProduct } from '@renderer/apis/products/createProduct'
-import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
 import Addproduct__ActionModal from '@renderer/components/forms/addproductsForm/Addproduct__ActionModal'
 import { toastUI } from '@renderer/components/ui/toast'
 import { useEffect, useState } from 'react'
@@ -14,12 +13,7 @@ import SelectSubcategory from './SelectSubcategory'
 import './styles.scss'
 import Summary from './summary'
 
-type AddProductFormProps = {
-  gettingSingleProduct: boolean
-  productData: ProductResponse
-}
-
-const AddProductForm = ({ productData }: AddProductFormProps) => {
+const AddProductForm = () => {
   const [formSteps, setFormSteps] = useState(1)
   const [openActionTypeModal, setOpenActionTypeModal] = useState(true)
   const navigate = useNavigate()
@@ -201,7 +195,8 @@ const AddProductForm = ({ productData }: AddProductFormProps) => {
               setDefaultValues({ ...defaultValues })
               fnSetFormStep()
             }}
-            categoryData={defaultValues.categoryData!}
+            // @ts-ignore:undefined
+            categoryData={defaultValues.categoryData}
             previousFormFn={goToPrevForm}
           />
         )}

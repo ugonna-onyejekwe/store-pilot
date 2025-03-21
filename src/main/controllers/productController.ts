@@ -128,7 +128,7 @@ export const createProduct = async (req: Request, res: Response) => {
         // updating colors available
         const UpdatedColors = colors.map((i) => {
           return product.colors.map((color) => {
-            if (color.name.toLowerCase() === i.name.toLowerCase()) {
+            if (color.id === i.id) {
               return {
                 ...color,
                 availableQuantity: Number(i.availableQuantity) + Number(color.availableQuantity)
@@ -142,10 +142,10 @@ export const createProduct = async (req: Request, res: Response) => {
         // updating designs availables
         const updatedDesigns = designs.map((i) => {
           return product.designs.find((design) => {
-            if (design.colorName.toLowerCase() === i.colorName.toLowerCase()) {
+            if (design.colorId === i.colorId) {
               i.designs.map((secondLvlDesign) => {
                 design.designs = design.designs.map((thirdLvlDesign) => {
-                  if (secondLvlDesign.name.toLowerCase() === thirdLvlDesign.name.toLowerCase()) {
+                  if (secondLvlDesign.id === thirdLvlDesign.id) {
                     return {
                       ...thirdLvlDesign,
                       availableQuantity:

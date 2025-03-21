@@ -92,12 +92,15 @@ type CreateProductRequestBody = {
   colors: {
     name: string
     availableQuantity: number
+    id: string
   }[]
   designs: {
     colorName: string
+    colorId: string
     designs: {
       name: string
       availableQuantity: number
+      id: string
     }[]
   }[]
   productId?: string
@@ -134,12 +137,15 @@ declare namespace Express {
         colors: {
           name: string
           availableQuantity: number
+          id: string
         }[]
         designs: {
           colorName: string
+          colorId: string
           designs: {
             name: string
             availableQuantity: number
+            id: string
           }[]
         }[]
         productId: string
@@ -247,8 +253,8 @@ declare namespace Express {
       hasModel: boolean
       hasColor: boolean
       hasSubProducts: boolean
-      colors: string[]
-      designs: string[]
+      colors: { name: string; id: string }[]
+      designs: { name: string; id: string }[]
       subProducts: {
         subCategoryName?: string
         subCategoryId?: string
@@ -263,17 +269,6 @@ declare namespace Express {
       }[]
       subcategories: { name: string; id: string }[]
       hasSubcategories: boolean
-    }
-
-    productInfo: {
-      totalQuantity: number
-      cartoonsPerProduct: number
-      model: string
-      lastPrice: number
-      sizes: { name: string; quantity: number; id: string }[]
-      subProducts: { name: string; available: boolean; defaultQuantity: number; id: string }[]
-      colors: { name: string; quantity: number; id: string }[]
-      designs: { name: string; quantity: number; id: string }[]
     }
   }
 }

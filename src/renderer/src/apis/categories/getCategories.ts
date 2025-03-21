@@ -11,8 +11,8 @@ export type CategoryResponse = {
   hasModel: boolean
   hasColor: boolean
   hasSubProducts: boolean
-  colors: string[]
-  designs: string[]
+  colors: { name: string; id: string }[]
+  designs: { name: string; id: string }[]
   subProducts: {
     subCategoryName?: string
     subCategoryId?: string

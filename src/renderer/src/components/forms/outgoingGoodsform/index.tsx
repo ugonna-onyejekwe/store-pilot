@@ -208,13 +208,13 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     const init = async () => {
       let listOfSubProducts
 
-      if (categoryData && categoryData.hasSubCategory && values.subcategory) {
+      if (categoryData && categoryData.hasSubcategories && values.subcategory) {
         listOfSubProducts = categoryData.subProducts
           .find((i) => i.subCategoryName === values.subcategory)
           ?.subProducts?.map((i) => ({ ...i, sellQuantity: i.defaultQuantity }))
       }
 
-      if (categoryData && categoryData.hasSubCategory === false) {
+      if (categoryData && categoryData.hasSubcategories === false) {
         listOfSubProducts = categoryData.subProducts.map((i) => ({
           ...i,
           sellQuantity: i.defaultQuantity
@@ -229,7 +229,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
   // useEffect to get color quantity
   useEffect(() => {
-    if (categoryData?.hasColors && values.color) {
+    if (categoryData?.hasColor && values.color) {
       const color = productData?.colors.find((i) => i.name === values.color)
 
       data.colorQuantity = color?.availableQuantity ?? 0
@@ -237,7 +237,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
       setData({ ...data })
     }
 
-    if (categoryData?.hasColors && values.design) {
+    if (categoryData?.hasColor && values.design) {
       const designArr = productData?.designs.find((i) => i.colorName === values.color)
 
       const design = designArr?.designs?.find((i) => i.name === values.design)

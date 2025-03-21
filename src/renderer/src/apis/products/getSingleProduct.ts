@@ -39,6 +39,7 @@ export type ProductResponse = {
     }[]
   }[]
   productId?: string
+  isParentProduct: boolean
 }
 
 const getSingleProducts = (payload: payload) => {

@@ -6,17 +6,27 @@ import { useMutation } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
 export type CategoryResponse = {
-  formatedListOfColors: { name: string; id: string }[]
-  formatedListOfDesigns: { name: string; id: string }[]
-  formatedListOfSizes: { name: string; id: string }[]
-  formatedListOfSubproducts: { name: string; defaultQuantity: number; id: string }[]
-  hasColor: boolean
-  hasDesign: boolean
-  hasSize: boolean
-  hasSubProducts: boolean
+  id: string
   name: string
   hasModel: boolean
-  id: string
+  hasColor: boolean
+  hasSubProducts: boolean
+  colors: string[]
+  designs: string[]
+  subProducts: {
+    subCategoryName?: string
+    subCategoryId?: string
+    name?: string
+    defaultQuantity?: number
+    id?: string
+    subProducts?: {
+      name: string
+      defaultQuantity: number
+      id: string
+    }[]
+  }[]
+  subcategories: { name: string; id: string }[]
+  hasSubcategories: boolean
 }[]
 
 const getCategories = () => {

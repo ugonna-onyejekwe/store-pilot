@@ -18,8 +18,8 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
     }: CreateCategoryRequestBody = req.body
 
     let formatedListOfSubCategories: { name: string; id: string }[] = []
-    let formatedListOfColours: string[] = []
-    let formatedListOfDesigns: string[] = []
+    let formatedListOfColours: { name: string; id: string }[] = []
+    let formatedListOfDesigns: { name: string; id: string }[] = []
 
     let formatedListOfSubproducts: {
       subCategoryName?: string
@@ -46,14 +46,14 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
       ? colors
           .split(',')
           .filter(Boolean)
-          .map((i) => i.trim())
+          .map((i) => ({ name: i.trim(), id: uuidv4() }))
       : []
 
     formatedListOfDesigns = hasColor
       ? designs
           .split(',')
           .filter(Boolean)
-          .map((i) => i.trim())
+          .map((i) => ({ name: i.trim(), id: uuidv4() }))
       : []
 
     // Formating values to return id with each value
@@ -79,6 +79,7 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
       hasModel,
       hasColor,
       hasSubProducts,
+      // @ts-ignore:incompactible
       subProducts: formatedListOfSubproducts,
       subcategories: formatedListOfSubCategories,
       hasSubcategories,

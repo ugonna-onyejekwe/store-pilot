@@ -30,15 +30,19 @@ export type ProductResponse = {
   colors: {
     name: string
     availableQuantity: number
+    id: string
   }[]
   designs: {
     colorName: string
+    colorId: string
     designs: {
       name: string
       availableQuantity: number
+      id: string
     }[]
   }[]
   productId?: string
+  isParentProduct: boolean
 }
 
 const getSingleProducts = (payload: payload) => {

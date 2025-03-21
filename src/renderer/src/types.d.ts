@@ -73,8 +73,8 @@ type SingleCategoryResponse = {
   hasModel: boolean
   hasColor: boolean
   hasSubProducts: boolean
-  colors: string[]
-  designs: string[]
+  colors: { name: string; id: string }[]
+  designs: { name: string; id: string }[]
   subProducts: {
     subCategoryName?: string
     subCategoryId?: string
@@ -108,12 +108,15 @@ type AddProductDefaultValueTypes = {
   colours: {
     name: string
     availableQuantity: number
+    id: string
   }[]
   designs: {
     colorName: string
+    colorId: string
     designs: {
       name: string
       availableQuantity: number
+      id: string
     }[]
   }[]
 }

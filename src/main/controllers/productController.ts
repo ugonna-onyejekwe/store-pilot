@@ -93,6 +93,7 @@ export const createProduct = async (req: Request, res: Response) => {
     //if product has model
     if (actionType === 'new') {
       const newProduct = {
+        categoryName,
         productId: uuidv4(),
         categoryId,
         subCategory,

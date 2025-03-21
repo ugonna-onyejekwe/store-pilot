@@ -1,27 +1,35 @@
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct'
 
 // Get color options
-export const GetColorsOptions = (productData: ProductResponse) => {
+export const getColorsOptions = (productData: ProductResponse) => {
   const colorsData = productData.colors
 
-  return colorsData.map((color) => {
-    return {
-      label: color.name,
-      value: color.id
-    }
-  })
+  return (
+    colorsData
+      .filter((i) => i.available === true)
+      .map((color) => {
+        return {
+          label: color.name,
+          value: color.id
+        }
+      }) ?? []
+  )
 }
 
 // Get Design options
 export const getDesignOptions = (productData: ProductResponse, selectedColorId: string) => {
   const designData = productData.designs.find((design) => design.colorId === selectedColorId)
 
-  return designData?.designs.map((design) => {
-    return {
-      label: design.name,
-      value: design.id
-    }
-  })
+  return (
+    designData?.designs
+      .filter((i) => i.available === true)
+      .map((design) => {
+        return {
+          label: design.name,
+          value: design.id
+        }
+      }) ?? []
+  )
 }
 
 // Get selected color name

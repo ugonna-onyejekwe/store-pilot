@@ -58,10 +58,12 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
       const designs = defaultValues.colours.map((color) => ({
         colorName: color.name,
         colorId: color.id,
+        available: true,
         designs: defaultValues.categoryData?.designs.map((design) => ({
           name: design.name,
           availableQuantity: 0,
-          id: design.id
+          id: design.id,
+          available: true
         }))
       }))
 
@@ -180,7 +182,8 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
               i.design = i.designs.push({
                 name: formData.fieldName,
                 availableQuantity: 1,
-                id: uuidv4()
+                id: uuidv4(),
+                available: true
               })
 
               return i

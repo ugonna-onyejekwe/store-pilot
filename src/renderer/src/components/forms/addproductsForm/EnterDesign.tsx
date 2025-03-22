@@ -59,6 +59,7 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
         colorName: color.name,
         colorId: color.id,
         available: true,
+        colorQuanty: color.availableQuantity,
         designs: defaultValues.categoryData?.designs.map((design) => ({
           name: design.name,
           availableQuantity: 0,
@@ -68,14 +69,18 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
       }))
 
       setFieldValue('designs', designs)
-    } else {
+
+      return
+    } else if (defaultValues.actionType !== 'update' && defaultValues.designs.length !== 0) {
       const designs = defaultValues.colours.map((color) => {
-        const existedDesign = defaultValues.designs.find((i) => i.colorName === color.name)
+        const existedDesign = defaultValues.designs.find((i) => i.colorId === color.id)
 
         if (!existedDesign) {
           return {
             colorName: color.name,
             colourId: color.id,
+            colorQuanty: color.availableQuantity,
+
             designs: defaultValues.categoryData?.designs.map((design) => ({
               name: design,
               availableQuantity: 0,
@@ -85,6 +90,35 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
         }
 
         return existedDesign
+      })
+
+      setFieldValue('designs', designs)
+
+      return
+    }
+
+    if (defaultValues.actionType === 'update') {
+      const designs = defaultValues.colours.map((i) => {
+        const colorDesign = defaultValues.designs.find((j) => i.id === j.colorId)
+
+        if (!colorDesign && i.availableQuantity > 0) {
+          const newDesign = {
+            colorName: i.name,
+            colourId: i.id,
+            available: true,
+            colorQuanty: i.availableQuantity,
+            designs: defaultValues.categoryData?.designs.map((design) => ({
+              name: design.name,
+              availableQuantity: 0,
+              id: design.id,
+              available: true
+            }))
+          }
+
+          return newDesign
+        }
+
+        return { ...colorDesign, colorQuanty: i.availableQuantity }
       })
 
       setFieldValue('designs', designs)
@@ -116,7 +150,9 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
             <div className="box_wrapper">
               {values.designs.map((colour, key) => (
                 <div key={key} className="box_con">
-                  <h4>{colour.colorName}</h4>
+                  <h4>
+                    {colour.colorName}: {colour.colorQuanty}
+                  </h4>
 
                   <div className="input_boxes">
                     {colour.designs.map((design, index) => (

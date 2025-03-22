@@ -1,4 +1,5 @@
 import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
+import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
 import Button from '@renderer/components/ui/Button'
 import { Input, SelecInput } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
@@ -11,15 +12,21 @@ import { EnterModelSchema } from './schema'
 interface EnterModelProps {
   defaultValues: AddProductDefaultValueTypes
   handleProceed: (values: AddProductDefaultValueTypes) => void
+  setDefaultValues: (values: AddProductDefaultValueTypes) => void
   previousFormFn: () => void
 }
 
-const EnterModel = ({ defaultValues, handleProceed, previousFormFn }: EnterModelProps) => {
+const EnterModel = ({
+  defaultValues,
+  handleProceed,
+  previousFormFn,
+  setDefaultValues
+}: EnterModelProps) => {
   const { isPending: isLoadingProducts, mutateAsync: getProducts, data } = useReturnAllProducts()
 
-  useEffect(() => {
-    console.log(defaultValues.actionType, 'In model')
+  const { mutateAsync: getSelectedProduct } = useReturnSingleProduct()
 
+  useEffect(() => {
     if (defaultValues.actionType === 'update') {
       getProducts({
         categoryId: defaultValues.category,
@@ -33,6 +40,25 @@ const EnterModel = ({ defaultValues, handleProceed, previousFormFn }: EnterModel
   }, [data])
 
   const onSubmit = (values) => {
+    if (defaultValues.actionType === 'update') {
+      getSelectedProduct({
+        productId: values.model
+      }).then((res) => {
+        defaultValues.colours = res?.colors.map((i) => ({ ...i, availableQuantity: 0 }))
+
+        // @ts-ignore:undefined
+        defaultValues.designs = res?.designs.map((i) => ({
+          ...i,
+          designs: i.designs.map((j) => ({ ...j, availableQuantity: 0, available: true }))
+        }))
+
+        setDefaultValues({ ...defaultValues })
+        handleProceed(values)
+      })
+
+      return
+    }
+
     handleProceed(values)
   }
 
@@ -60,6 +86,7 @@ const EnterModel = ({ defaultValues, handleProceed, previousFormFn }: EnterModel
               placeholder="Select product model"
               defaultValue={defaultValues.model}
               onChange={setFieldValue}
+              // @ts-ignore:undefined
               options={data?.map((i) => ({ label: i.model, value: i.productId })) ?? []}
               name="model"
               id="model"

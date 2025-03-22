@@ -40,6 +40,8 @@ const Entercolours = ({ defaultValues, handleProceed, previousFormFn }: Entercol
 
   // Initiate input fields
   useEffect(() => {
+    setFieldValue('colours', defaultValues.colours)
+
     if (defaultValues.colours.length === 0) {
       const colors = defaultValues.categoryData?.colors.map((i) => ({
         name: i.name,

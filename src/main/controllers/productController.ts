@@ -395,7 +395,7 @@ export const checkout = async (req: Request, res: Response) => {
               ? {
                   ...i,
                   availableQuantity: Number(i.availableQuantity) - Number(product.quantity),
-                  available: Number(i.availableQuantity) - Number(product.quantity) > 1
+                  available: Number(i.availableQuantity) - Number(product.quantity) > 0
                 }
               : i
           )
@@ -408,7 +408,7 @@ export const checkout = async (req: Request, res: Response) => {
                   ? {
                       ...des,
                       availableQuantity: Number(des.availableQuantity) - Number(product.quantity),
-                      available: Number(des.availableQuantity) - Number(product.quantity) > 1
+                      available: Number(des.availableQuantity) - Number(product.quantity) > 0
                     }
                   : des
               )

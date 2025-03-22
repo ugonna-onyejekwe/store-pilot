@@ -62,7 +62,7 @@ const EnterSubproducts = ({
     <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
       <form onSubmit={handleSubmit} className="form">
         <div className="form_container subproduct_form_con">
-          <h3>Check available of all sub-products under this category</h3>
+          <h3>Check availability of all sub-products under this category</h3>
           <div className="box_con">
             {values.subProducts.map((i, key) => {
               return (

@@ -7,6 +7,13 @@ import Button from '@renderer/components/ui/Button'
 import { Icons } from '@renderer/components/ui/icons'
 import { Input, SelecInput } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
+import {
+  getColorsOptions,
+  getDesignOptions,
+  getQuantityLeftInColours,
+  getQuantityLeftInDesigns,
+  getQuantityLeftInModels
+} from '@renderer/lib/hooks'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import CheckoutForm from './checkoutForm'
@@ -15,15 +22,19 @@ import './styles.scss'
 
 type DataType = {
   listOfDesigns: { label: string; value: string }[]
-  colorQuantity: number | null
-  designQuantity: number | null
+  listOfColours: { label: string; value: string }[]
+  colorQuantityMsg: string
+  designQuantityMsg: string
+  modelQuantityMsg: string
 }
 
 const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void }) => {
   const [data, setData] = useState<DataType>({
     listOfDesigns: [],
-    colorQuantity: null,
-    designQuantity: null
+    listOfColours: [],
+    colorQuantityMsg: '',
+    designQuantityMsg: '',
+    modelQuantityMsg: ''
   })
 
   const [successMsgData, setSuccessMsgData] = useState({
@@ -77,35 +88,40 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
   } = useReturnSingleProduct()
 
   // Onsubmit fn
-  const onSubmit = () => {
+  const onSubmit = (values) => {
+    console.log(values)
+
     if (values.hasSubProducts === false) setFieldValue('sellType', 'all')
 
     // Quantity check for product without model
-    if (
-      categoryData?.hasModel === false &&
-      Number(values.quantity) > Number(productData?.totalQuantity)
-    ) {
+    if (Number(values.quantity) > Number(productData?.totalQuantity)) {
       toastUI.error(`There is only ${productData?.totalQuantity} of this product left`)
 
-      return
-    }
-
-    // quantity check
-    if (categoryData?.hasColor && Number(values.quantity) > Number(productData?.totalQuantity)) {
-      toastUI.error(`There is only ${productData?.totalQuantity} of this product left`)
       return
     }
 
     // colour  quantity check
-    if (categoryData?.hasColor && Number(values.quantity) > Number(data.colorQuantity)) {
-      toastUI.error(`There is only ${data?.colorQuantity} of this colour left`)
+    if (
+      categoryData?.hasColor &&
+      Number(values.quantity) >
+        Number(getQuantityLeftInColours(productData!, values.color).quantityLeft)
+    ) {
+      toastUI.error(
+        `There is only ${getQuantityLeftInColours(productData!, values.color).quantityLeft} of this colour left`
+      )
 
       return
     }
 
     // design  quantity check
-    if (categoryData?.hasColor && Number(values.quantity) > Number(data.designQuantity)) {
-      toastUI.error(`There is only ${data?.designQuantity} of this design left`)
+    if (
+      categoryData?.hasColor &&
+      Number(values.quantity) >
+        Number(getQuantityLeftInDesigns(productData!, values.color, values.design).quantityLeft)
+    ) {
+      toastUI.error(
+        `There is only ${getQuantityLeftInDesigns(productData!, values.color, values.design).quantityLeft} of this design left`
+      )
 
       return
     }
@@ -188,21 +204,6 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     }
   }, [values.productId])
 
-  // useEffect to set list of designs
-  useEffect(() => {
-    if (values.color) {
-      const designsCon = productData?.designs.find((i) => i.colorName === values.color)
-
-      console.log(designsCon)
-
-      const formatedList = designsCon?.designs.map((i) => ({ label: i.name, value: i.name }))
-
-      data.listOfDesigns = formatedList!
-
-      setData({ ...data })
-    }
-  }, [values.color])
-
   // useEffect to get sub category
   useEffect(() => {
     const init = async () => {
@@ -227,33 +228,41 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     init()
   }, [values.subcategory, values.categoryId, categoryData])
 
-  // useEffect to get color quantity
-  useEffect(() => {
-    if (categoryData?.hasColor && values.color) {
-      const color = productData?.colors.find((i) => i.name === values.color)
-
-      data.colorQuantity = color?.availableQuantity ?? 0
-
-      setData({ ...data })
-    }
-
-    if (categoryData?.hasColor && values.design) {
-      const designArr = productData?.designs.find((i) => i.colorName === values.color)
-
-      const design = designArr?.designs?.find((i) => i.name === values.design)
-
-      data.designQuantity = design?.availableQuantity ?? 0
-
-      setData({ ...data })
-    }
-  }, [productData, values.color, values.design])
-
   // reset quantity to sell
   useEffect(() => {
     if (values.sellType === 'sell part') {
       setFieldValue('quantity', 1)
     }
   }, [values.sellType])
+
+  // anytime there is a chnage in colour:Automatically set design to null to the user to select the proper design
+  useEffect(() => {
+    setFieldValue('design', '')
+  }, [values.color])
+
+  useEffect(() => {
+    if (!productData) {
+      setData({
+        ...data,
+        listOfDesigns: [],
+        listOfColours: [],
+        colorQuantityMsg: '',
+        designQuantityMsg: '',
+        modelQuantityMsg: ''
+      })
+    }
+
+    if (productData) {
+      setData({
+        ...data,
+        listOfDesigns: getDesignOptions(productData!, values.color),
+        listOfColours: getColorsOptions(productData!),
+        colorQuantityMsg: getQuantityLeftInColours(productData, values.color).msg,
+        designQuantityMsg: getQuantityLeftInDesigns(productData, values.color, values.design).msg,
+        modelQuantityMsg: getQuantityLeftInModels(productData).msg
+      })
+    }
+  }, [productData, values.model, values.design, values.color])
 
   return (
     <div className="out_going_goods_form">
@@ -306,7 +315,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                   />
                   {values.productId && (
                     <small className="input_info_txt">
-                      This model has {productData?.totalQuantity ?? '__'} left
+                      {data.modelQuantityMsg}
+                      left
                     </small>
                   )}
                 </div>
@@ -323,9 +333,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                       label="Select  colour "
                       placeholder="Select ..."
                       isLoading={isGettingProduct}
-                      options={
-                        productData?.colors.map((i) => ({ label: i.name, value: i.name })) ?? []
-                      }
+                      options={data.listOfColours}
                       id="color"
                       name="color"
                       onChange={setFieldValue}
@@ -336,7 +344,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
                     {values.color && (
                       <small className="input_info_txt">
-                        This colour has {data.colorQuantity ?? '__'} left
+                        {data.colorQuantityMsg}
+                        {/* This colour has {data.colorQuantity ?? '__'} left */}
                       </small>
                     )}
                   </div>
@@ -362,7 +371,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
                     {values.design && (
                       <small className="input_info_txt">
-                        This design has {data.designQuantity ?? '__'} left
+                        {data.designQuantityMsg}
+                        {/* This design has {data.designQuantity ?? '__'} left */}
                       </small>
                     )}
                   </div>

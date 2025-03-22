@@ -1,42 +1,18 @@
-import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
 import Bot from '@renderer/components/bot'
 import AddProductForm from '@renderer/components/forms/addproductsForm'
+import Addproduct__ActionModal from '@renderer/components/forms/addproductsForm/Addproduct__ActionModal'
 import { Icons } from '@renderer/components/ui/icons'
-import { FormLoader } from '@renderer/components/ui/loader'
-import { toastUI } from '@renderer/components/ui/toast'
-import { useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import './styles.scss'
 
 const AddProduct = () => {
-  const { actionType, productId, categoryId } = useParams()
-  const editing = actionType && actionType === 'edit' ? true : false
-
-  const {
-    mutateAsync: getSingleProduct,
-    data: productData,
-    isPending: gettingSingleProduct
-  } = useReturnSingleProduct()
-
-  const navigate = useNavigate()
+  const [openActionTypeModal, setOpenActionTypeModal] = useState(true)
+  const [actionType, setActionType] = useState('')
 
   useEffect(() => {
-    const initData = async () => {
-      try {
-        await getSingleProduct({
-          productId: productId!,
-          categoryId: categoryId!
-        })
-      } catch (error) {
-        toastUI.error('Product not found')
-        navigate('/admin')
-      }
-    }
-
-    if (editing) initData()
-  }, [editing, productId, categoryId])
-
-  console.log(productData, 'here')
+    if (actionType === '') setOpenActionTypeModal(true)
+  }, [actionType])
 
   return (
     <>
@@ -54,23 +30,26 @@ const AddProduct = () => {
               <div className="bot">
                 <Bot />
               </div>
-              <h2>{editing ? 'Edit product details' : 'Add new product '}</h2>
-              <p className="subheader txt">
-                {editing ? 'Edit' : 'Enter'} product details to get your store ready!
-              </p>
+              <h2>{actionType === 'update' ? 'Update' : 'Create new'} product </h2>
+              <p className="subheader txt">Enter product details to get your store ready!</p>
             </div>
 
-            {editing && gettingSingleProduct ? (
-              <FormLoader />
-            ) : (
-              <AddProductForm
-                gettingSingleProduct={gettingSingleProduct}
-                productData={productData!}
-              />
-            )}
+            {<AddProductForm actionType={actionType} setOpenActionType={setOpenActionTypeModal} />}
           </div>
         </div>
       </div>
+
+      {/* Modal for action type */}
+      {openActionTypeModal && (
+        <Addproduct__ActionModal
+          open={openActionTypeModal}
+          onOpenChange={setOpenActionTypeModal}
+          handleSubmit={(formData) => {
+            setActionType(formData.actionType)
+            setOpenActionTypeModal(false)
+          }}
+        />
+      )}
     </>
   )
 }

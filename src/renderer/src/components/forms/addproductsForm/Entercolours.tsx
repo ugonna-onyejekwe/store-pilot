@@ -40,11 +40,14 @@ const Entercolours = ({ defaultValues, handleProceed, previousFormFn }: Entercol
 
   // Initiate input fields
   useEffect(() => {
+    setFieldValue('colours', defaultValues.colours)
+
     if (defaultValues.colours.length === 0) {
       const colors = defaultValues.categoryData?.colors.map((i) => ({
         name: i.name,
         availableQuantity: 0,
-        id: i.id
+        id: i.id,
+        available: true
       }))
 
       setFieldValue('colours', colors)
@@ -106,7 +109,12 @@ const Entercolours = ({ defaultValues, handleProceed, previousFormFn }: Entercol
         onOpenChange={setAddField}
         label="Enter new colour name"
         handleProceed={(formData) => {
-          values.colours.push({ name: formData.fieldName, availableQuantity: 1, id: uuidv4() })
+          values.colours.push({
+            name: formData.fieldName,
+            availableQuantity: 1,
+            id: uuidv4(),
+            available: true
+          })
 
           setFieldValue('colours', values.colours)
         }}

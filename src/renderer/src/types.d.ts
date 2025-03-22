@@ -109,14 +109,18 @@ type AddProductDefaultValueTypes = {
     name: string
     availableQuantity: number
     id: string
+    available: boolean
   }[]
   designs: {
     colorName: string
     colorId: string
+    available: boolean
+    colorQuanty: number
     designs: {
       name: string
       availableQuantity: number
       id: string
+      available: boolean
     }[]
   }[]
 }

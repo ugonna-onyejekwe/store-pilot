@@ -126,47 +126,45 @@ export const createProduct = async (req: Request, res: Response) => {
 
       if (product.hasColors) {
         // updating colors available
-        const UpdatedColors = colors.map((i) => {
-          return product.colors.map((color) => {
-            if (color.id === i.id) {
-              return {
-                ...color,
-                availableQuantity: Number(i.availableQuantity) + Number(color.availableQuantity)
-              }
-            } else {
-              return i
+        product.colors = colors
+          .map((i) => {
+            const color = product.colors.find((color) => i.id === color.id)
+
+            if (!color) {
+              return [...product.colors, i]
             }
-          })[0]
-        })
+
+            return {
+              ...color,
+              availableQuantity: Number(i.availableQuantity) + Number(color?.availableQuantity)
+            }
+          })
+          .flat()
 
         // updating designs availables
-        const updatedDesigns = designs.map((i) => {
-          return product.designs.find((design) => {
+        designs.map((i) => {
+          product.designs = designs.map((design) => {
             if (design.colorId === i.colorId) {
-              i.designs.map((secondLvlDesign) => {
-                design.designs = design.designs.map((thirdLvlDesign) => {
-                  if (secondLvlDesign.id === thirdLvlDesign.id) {
+              // mapping inner designs
+              i.designs.map((j) => {
+                design.designs = design.designs.map((k) => {
+                  if (k.id === j.id) {
                     return {
-                      ...thirdLvlDesign,
-                      availableQuantity:
-                        Number(secondLvlDesign.availableQuantity) +
-                        Number(thirdLvlDesign.availableQuantity)
+                      ...k,
+                      availableQuantity: Number(j.availableQuantity) + Number(k.availableQuantity)
                     }
                   }
 
-                  return secondLvlDesign
+                  return j
                 })
               })
+
+              return design
             }
 
-            return design
+            return i
           })
         })
-
-        // assigning values
-        product.colors = UpdatedColors
-        // @ts-expect-error:undefined value
-        product.designs = updatedDesigns
       }
 
       const updatedProductList = allProducts.map((i) =>
@@ -245,35 +243,27 @@ export const getSingleProduct = async (req: Request, res: Response) => {
 // EDIT PRODUCT
 export const editProduct = async (req: Request, res: Response) => {
   try {
-    const { productId } = req.body
-
-    const { productInfo } = req
-
-    const productList = req.doc.products
-
-    let product = productList.find((i) => i.productId === productId)
-
-    // @ts-ignore: Gives error of incompactible
-    product = {
-      ...product,
-      ...productInfo
-    }
-
-    const updatedProductsList = productList.map((i) => {
-      if (i.productId === productId) return product
-
-      return i
-    })
-
-    await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error updating product list', updateErr)
-        res.status(500).json({ error: 'Failed to update product' })
-        return
-      }
-
-      res.status(200).json({ message: 'Product updated successfly', data: product })
-    })
+    // const { productId } = req.body
+    // const { productInfo } = req
+    // const productList = req.doc.products
+    // let product = productList.find((i) => i.productId === productId)
+    // // @ts-ignore: Gives error of incompactible
+    // product = {
+    //   ...product,
+    //   ...productInfo
+    // }
+    // const updatedProductsList = productList.map((i) => {
+    //   if (i.productId === productId) return product
+    //   return i
+    // })
+    // await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
+    //   if (updateErr) {
+    //     console.error('Error updating product list', updateErr)
+    //     res.status(500).json({ error: 'Failed to update product' })
+    //     return
+    //   }
+    //   res.status(200).json({ message: 'Product updated successfly', data: product })
+    // })
   } catch (error) {
     console.log(error)
     res.status(500).json(error)
@@ -398,20 +388,25 @@ export const checkout = async (req: Request, res: Response) => {
 
         if (product.hasColor) {
           // reduce color quantity
-          productData.colors.map((i) =>
-            i.name === product.color
-              ? { ...i, availableQuantity: Number(i.availableQuantity) - Number(product.quantity) }
+          productData.colors = productData.colors.map((i) =>
+            i.id === product.color
+              ? {
+                  ...i,
+                  availableQuantity: Number(i.availableQuantity) - Number(product.quantity),
+                  available: Number(i.availableQuantity) - Number(product.quantity) > 0
+                }
               : i
           )
 
           // reduce design quantity
-          productData.designs.map((i) => {
-            if (i.colorName === product.color) {
+          productData.designs = productData.designs.map((i) => {
+            if (i.colorId === product.color) {
               i.designs = i.designs.map((des) =>
-                des.name === product.design
+                des.id === product.design
                   ? {
                       ...des,
-                      availableQuantity: Number(des.availableQuantity) - Number(product.quantity)
+                      availableQuantity: Number(des.availableQuantity) - Number(product.quantity),
+                      available: Number(des.availableQuantity) - Number(product.quantity) > 0
                     }
                   : des
               )
@@ -422,10 +417,6 @@ export const checkout = async (req: Request, res: Response) => {
             return i
           })
         }
-
-        const updatedProductList = products.map((i) =>
-          i.productId === product.productId ? productData : i
-        )
 
         if (product.sellType === 'part') {
           const subproductLeft = product.subproducts.filter(
@@ -455,7 +446,12 @@ export const checkout = async (req: Request, res: Response) => {
           }
         }
 
-        return updateProductFn(updatedProductList)
+        const updatedProductList = products.map((i) =>
+          i.productId === product.productId ? productData : i
+        )
+
+        updateProductFn(updatedProductList)
+        return
       }
 
       // when selling leftOvers
@@ -480,7 +476,8 @@ export const checkout = async (req: Request, res: Response) => {
             i.productId === product.productId ? updatedProduct : i
           )
 
-          return updateProductFn(updatedProductList)
+          updateProductFn(updatedProductList)
+          return
         } else {
           // remove leftover
           const updatedProduct = productData?.leftOver?.filter(
@@ -491,7 +488,8 @@ export const checkout = async (req: Request, res: Response) => {
             i.productId === product.productId ? updatedProduct : i
           )
 
-          return updateProductFn(updatedProductList)
+          updateProductFn(updatedProductList)
+          return
         }
       }
     })

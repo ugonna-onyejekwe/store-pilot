@@ -1,5 +1,4 @@
 import { useCreateProduct } from '@renderer/apis/products/createProduct'
-import Addproduct__ActionModal from '@renderer/components/forms/addproductsForm/Addproduct__ActionModal'
 import { toastUI } from '@renderer/components/ui/toast'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -13,9 +12,14 @@ import SelectSubcategory from './SelectSubcategory'
 import './styles.scss'
 import Summary from './summary'
 
-const AddProductForm = () => {
+const AddProductForm = ({
+  actionType,
+  setOpenActionType
+}: {
+  actionType: string
+  setOpenActionType: (value: boolean) => void
+}) => {
   const [formSteps, setFormSteps] = useState(1)
-  const [openActionTypeModal, setOpenActionTypeModal] = useState(true)
   const navigate = useNavigate()
 
   const initialValues = {
@@ -35,11 +39,18 @@ const AddProductForm = () => {
     ...initialValues
   })
 
-  const { isPending: creatingProduct, mutateAsync: createProduct } = useCreateProduct()
-
   useEffect(() => {
-    if (defaultValues.actionType === '') setOpenActionTypeModal(true)
-  }, [defaultValues.actionType])
+    if (actionType === '') {
+      setOpenActionType(true)
+    }
+
+    defaultValues.actionType =
+      actionType === 'new' ? 'new' : actionType === 'update' ? 'update' : ''
+
+    setDefaultValues({ ...defaultValues })
+  }, [actionType])
+
+  const { isPending: creatingProduct, mutateAsync: createProduct } = useCreateProduct()
 
   // fn:Go to next form
   const fnSetFormStep = async () => {
@@ -49,20 +60,10 @@ const AddProductForm = () => {
         ? setFormSteps(2)
         : categoryData?.hasModel
           ? setFormSteps(3)
-          : categoryData?.hasSubProducts
-            ? setFormSteps(4)
-            : categoryData?.hasColor
-              ? setFormSteps(5)
-              : setFormSteps(7)
+          : setFormSteps(4)
 
     if (formSteps === 2) {
-      return categoryData?.hasModel
-        ? setFormSteps(3)
-        : categoryData?.hasSubProducts
-          ? setFormSteps(4)
-          : categoryData?.hasColor
-            ? setFormSteps(5)
-            : setFormSteps(7)
+      return categoryData?.hasModel ? setFormSteps(3) : setFormSteps(4)
     }
 
     if (formSteps === 3) {
@@ -72,7 +73,7 @@ const AddProductForm = () => {
     if (formSteps === 4) {
       return defaultValues.categoryData?.hasModel === false
         ? setFormSteps(8)
-        : categoryData?.hasSubProducts
+        : categoryData?.hasSubProducts && actionType === 'new'
           ? setFormSteps(5)
           : categoryData?.hasColor
             ? setFormSteps(6)
@@ -116,7 +117,7 @@ const AddProductForm = () => {
     }
 
     if (formSteps === 6) {
-      return hasSubProducts ? setFormSteps(5) : setFormSteps(4)
+      return hasSubProducts && actionType === 'new' ? setFormSteps(5) : setFormSteps(4)
     }
 
     if (formSteps === 7) {
@@ -163,7 +164,9 @@ const AddProductForm = () => {
       productId: defaultValues.model
     })
       .then(() => {
-        toastUI.success('Product added successfully')
+        toastUI.success(
+          actionType === 'new' ? 'Product added successfully' : 'Product updated successfully'
+        )
         navigate('/admin')
         setFormSteps(1)
         setDefaultValues({ ...initialValues })
@@ -211,6 +214,7 @@ const AddProductForm = () => {
               fnSetFormStep()
             }}
             previousFormFn={goToPrevForm}
+            setDefaultValues={setDefaultValues}
           />
         )}
 
@@ -246,7 +250,9 @@ const AddProductForm = () => {
           <Entercolours
             defaultValues={defaultValues}
             handleProceed={(formData) => {
-              defaultValues.colours = formData.colours.filter((i) => i.availableQuantity > 1)
+              console.log(defaultValues.designs)
+              defaultValues.colours = formData.colours.filter((i) => i.availableQuantity > 0)
+
               setDefaultValues({ ...defaultValues })
 
               fnSetFormStep()
@@ -261,7 +267,7 @@ const AddProductForm = () => {
             defaultValues={defaultValues}
             handleProceed={(formData) => {
               defaultValues.designs = formData.designs.map((i) => {
-                i.designs = i.designs.filter((design) => Number(design.availableQuantity) > 1)
+                i.designs = i.designs.filter((design) => Number(design.availableQuantity) > 0)
 
                 return i
               })
@@ -284,19 +290,6 @@ const AddProductForm = () => {
           />
         )}
       </div>
-
-      {/* Modal for action type */}
-      {openActionTypeModal && (
-        <Addproduct__ActionModal
-          open={openActionTypeModal}
-          onOpenChange={setOpenActionTypeModal}
-          handleSubmit={(formData) => {
-            defaultValues.actionType = formData.actionType
-            setDefaultValues({ ...defaultValues })
-            setOpenActionTypeModal(false)
-          }}
-        />
-      )}
     </>
   )
 }

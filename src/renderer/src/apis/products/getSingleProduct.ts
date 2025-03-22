@@ -31,14 +31,17 @@ export type ProductResponse = {
     name: string
     availableQuantity: number
     id: string
+    available: true
   }[]
   designs: {
     colorName: string
     colorId: string
+    available: true
     designs: {
       name: string
       availableQuantity: number
       id: string
+      available: true
     }[]
   }[]
   productId?: string

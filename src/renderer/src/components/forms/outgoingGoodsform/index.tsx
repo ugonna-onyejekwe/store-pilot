@@ -88,7 +88,9 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
   } = useReturnSingleProduct()
 
   // Onsubmit fn
-  const onSubmit = () => {
+  const onSubmit = (values) => {
+    console.log(values)
+
     if (values.hasSubProducts === false) setFieldValue('sellType', 'all')
 
     // Quantity check for product without model
@@ -202,21 +204,6 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     }
   }, [values.productId])
 
-  // useEffect to set list of designs
-  useEffect(() => {
-    if (values.color) {
-      const designsCon = productData?.designs.find((i) => i.colorName === values.color)
-
-      console.log(designsCon)
-
-      const formatedList = designsCon?.designs.map((i) => ({ label: i.name, value: i.name }))
-
-      data.listOfDesigns = formatedList!
-
-      setData({ ...data })
-    }
-  }, [values.color])
-
   // useEffect to get sub category
   useEffect(() => {
     const init = async () => {
@@ -241,33 +228,17 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     init()
   }, [values.subcategory, values.categoryId, categoryData])
 
-  // useEffect to get color quantity
-  useEffect(() => {
-    if (categoryData?.hasColor && values.color) {
-      const color = productData?.colors.find((i) => i.name === values.color)
-
-      data.colorQuantity = color?.availableQuantity ?? 0
-
-      setData({ ...data })
-    }
-
-    if (categoryData?.hasColor && values.design) {
-      const designArr = productData?.designs.find((i) => i.colorName === values.color)
-
-      const design = designArr?.designs?.find((i) => i.name === values.design)
-
-      data.designQuantity = design?.availableQuantity ?? 0
-
-      setData({ ...data })
-    }
-  }, [productData, values.color, values.design])
-
   // reset quantity to sell
   useEffect(() => {
     if (values.sellType === 'sell part') {
       setFieldValue('quantity', 1)
     }
   }, [values.sellType])
+
+  // anytime there is a chnage in colour:Automatically set design to null to the user to select the proper design
+  useEffect(() => {
+    setFieldValue('design', '')
+  }, [values.color])
 
   useEffect(() => {
     if (!productData) {

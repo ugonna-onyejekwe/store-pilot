@@ -1,5 +1,4 @@
 import { useCreateProduct } from '@renderer/apis/products/createProduct'
-import Addproduct__ActionModal from '@renderer/components/forms/addproductsForm/Addproduct__ActionModal'
 import { toastUI } from '@renderer/components/ui/toast'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -13,9 +12,14 @@ import SelectSubcategory from './SelectSubcategory'
 import './styles.scss'
 import Summary from './summary'
 
-const AddProductForm = () => {
+const AddProductForm = ({
+  actionType,
+  setOpenActionType
+}: {
+  actionType: string
+  setOpenActionType: (value: boolean) => void
+}) => {
   const [formSteps, setFormSteps] = useState(1)
-  const [openActionTypeModal, setOpenActionTypeModal] = useState(true)
   const navigate = useNavigate()
 
   const initialValues = {
@@ -35,11 +39,18 @@ const AddProductForm = () => {
     ...initialValues
   })
 
-  const { isPending: creatingProduct, mutateAsync: createProduct } = useCreateProduct()
+  useEffect(() => {
+    defaultValues.actionType = actionType === 'new' ? 'new' : 'update'
+    setDefaultValues({ ...defaultValues })
+  }, [])
 
   useEffect(() => {
-    if (defaultValues.actionType === '') setOpenActionTypeModal(true)
-  }, [defaultValues.actionType])
+    if (defaultValues.actionType === '') {
+      setOpenActionType(true)
+    }
+  }, [defaultValues.actionType === ''])
+
+  const { isPending: creatingProduct, mutateAsync: createProduct } = useCreateProduct()
 
   // fn:Go to next form
   const fnSetFormStep = async () => {
@@ -284,19 +295,6 @@ const AddProductForm = () => {
           />
         )}
       </div>
-
-      {/* Modal for action type */}
-      {openActionTypeModal && (
-        <Addproduct__ActionModal
-          open={openActionTypeModal}
-          onOpenChange={setOpenActionTypeModal}
-          handleSubmit={(formData) => {
-            defaultValues.actionType = formData.actionType
-            setDefaultValues({ ...defaultValues })
-            setOpenActionTypeModal(false)
-          }}
-        />
-      )}
     </>
   )
 }

@@ -23,7 +23,7 @@
   }
 
   .info_con {
-    margin-top: 20px;
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -31,7 +31,7 @@
     .general_info_con {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 15px;
 
       p {
         font-weight: 600;

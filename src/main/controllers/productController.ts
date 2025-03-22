@@ -245,35 +245,27 @@ export const getSingleProduct = async (req: Request, res: Response) => {
 // EDIT PRODUCT
 export const editProduct = async (req: Request, res: Response) => {
   try {
-    const { productId } = req.body
-
-    const { productInfo } = req
-
-    const productList = req.doc.products
-
-    let product = productList.find((i) => i.productId === productId)
-
-    // @ts-ignore: Gives error of incompactible
-    product = {
-      ...product,
-      ...productInfo
-    }
-
-    const updatedProductsList = productList.map((i) => {
-      if (i.productId === productId) return product
-
-      return i
-    })
-
-    await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
-      if (updateErr) {
-        console.error('Error updating product list', updateErr)
-        res.status(500).json({ error: 'Failed to update product' })
-        return
-      }
-
-      res.status(200).json({ message: 'Product updated successfly', data: product })
-    })
+    // const { productId } = req.body
+    // const { productInfo } = req
+    // const productList = req.doc.products
+    // let product = productList.find((i) => i.productId === productId)
+    // // @ts-ignore: Gives error of incompactible
+    // product = {
+    //   ...product,
+    //   ...productInfo
+    // }
+    // const updatedProductsList = productList.map((i) => {
+    //   if (i.productId === productId) return product
+    //   return i
+    // })
+    // await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
+    //   if (updateErr) {
+    //     console.error('Error updating product list', updateErr)
+    //     res.status(500).json({ error: 'Failed to update product' })
+    //     return
+    //   }
+    //   res.status(200).json({ message: 'Product updated successfly', data: product })
+    // })
   } catch (error) {
     console.log(error)
     res.status(500).json(error)
@@ -398,20 +390,25 @@ export const checkout = async (req: Request, res: Response) => {
 
         if (product.hasColor) {
           // reduce color quantity
-          productData.colors.map((i) =>
-            i.name === product.color
-              ? { ...i, availableQuantity: Number(i.availableQuantity) - Number(product.quantity) }
+          productData.colors = productData.colors.map((i) =>
+            i.id === product.color
+              ? {
+                  ...i,
+                  availableQuantity: Number(i.availableQuantity) - Number(product.quantity),
+                  available: Number(i.availableQuantity) - Number(product.quantity) > 1
+                }
               : i
           )
 
           // reduce design quantity
-          productData.designs.map((i) => {
-            if (i.colorName === product.color) {
+          productData.designs = productData.designs.map((i) => {
+            if (i.colorId === product.color) {
               i.designs = i.designs.map((des) =>
-                des.name === product.design
+                des.id === product.design
                   ? {
                       ...des,
-                      availableQuantity: Number(des.availableQuantity) - Number(product.quantity)
+                      availableQuantity: Number(des.availableQuantity) - Number(product.quantity),
+                      available: Number(des.availableQuantity) - Number(product.quantity) > 1
                     }
                   : des
               )
@@ -422,10 +419,6 @@ export const checkout = async (req: Request, res: Response) => {
             return i
           })
         }
-
-        const updatedProductList = products.map((i) =>
-          i.productId === product.productId ? productData : i
-        )
 
         if (product.sellType === 'part') {
           const subproductLeft = product.subproducts.filter(
@@ -455,7 +448,12 @@ export const checkout = async (req: Request, res: Response) => {
           }
         }
 
-        return updateProductFn(updatedProductList)
+        const updatedProductList = products.map((i) =>
+          i.productId === product.productId ? productData : i
+        )
+
+        updateProductFn(updatedProductList)
+        return
       }
 
       // when selling leftOvers
@@ -480,7 +478,8 @@ export const checkout = async (req: Request, res: Response) => {
             i.productId === product.productId ? updatedProduct : i
           )
 
-          return updateProductFn(updatedProductList)
+          updateProductFn(updatedProductList)
+          return
         } else {
           // remove leftover
           const updatedProduct = productData?.leftOver?.filter(
@@ -491,7 +490,8 @@ export const checkout = async (req: Request, res: Response) => {
             i.productId === product.productId ? updatedProduct : i
           )
 
-          return updateProductFn(updatedProductList)
+          updateProductFn(updatedProductList)
+          return
         }
       }
     })

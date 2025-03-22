@@ -19,7 +19,7 @@ const Addproduct__ActionModal = ({
   const selectOption = [
     {
       value: 'new',
-      label: 'Add a New Product '
+      label: 'Create a New Product '
     },
     {
       value: 'update',

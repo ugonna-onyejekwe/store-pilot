@@ -17,9 +17,9 @@ interface EnterModelProps {
 const EnterModel = ({ defaultValues, handleProceed, previousFormFn }: EnterModelProps) => {
   const { isPending: isLoadingProducts, mutateAsync: getProducts, data } = useReturnAllProducts()
 
-  console.log(defaultValues.category)
-
   useEffect(() => {
+    console.log(defaultValues.actionType, 'In model')
+
     if (defaultValues.actionType === 'update') {
       getProducts({
         categoryId: defaultValues.category,

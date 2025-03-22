@@ -83,6 +83,7 @@ const CheckoutForm = ({ setFormStep, productData, openSuccessMsg }: CheckoutForm
 
   // handle checkout
   const handleCheckOut = (saveCustomerName: boolean) => {
+    console.log(productData)
     if (saveCustomerName) {
       // save customer name
       saveCustomerNameFn({

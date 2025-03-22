@@ -126,47 +126,45 @@ export const createProduct = async (req: Request, res: Response) => {
 
       if (product.hasColors) {
         // updating colors available
-        const UpdatedColors = colors.map((i) => {
-          return product.colors.map((color) => {
-            if (color.id === i.id) {
-              return {
-                ...color,
-                availableQuantity: Number(i.availableQuantity) + Number(color.availableQuantity)
-              }
-            } else {
-              return i
+        product.colors = colors
+          .map((i) => {
+            const color = product.colors.find((color) => i.id === color.id)
+
+            if (!color) {
+              return [...product.colors, i]
             }
-          })[0]
-        })
+
+            return {
+              ...color,
+              availableQuantity: Number(i.availableQuantity) + Number(color?.availableQuantity)
+            }
+          })
+          .flat()
 
         // updating designs availables
-        const updatedDesigns = designs.map((i) => {
-          return product.designs.find((design) => {
+        designs.map((i) => {
+          product.designs = designs.map((design) => {
             if (design.colorId === i.colorId) {
-              i.designs.map((secondLvlDesign) => {
-                design.designs = design.designs.map((thirdLvlDesign) => {
-                  if (secondLvlDesign.id === thirdLvlDesign.id) {
+              // mapping inner designs
+              i.designs.map((j) => {
+                design.designs = design.designs.map((k) => {
+                  if (k.id === j.id) {
                     return {
-                      ...thirdLvlDesign,
-                      availableQuantity:
-                        Number(secondLvlDesign.availableQuantity) +
-                        Number(thirdLvlDesign.availableQuantity)
+                      ...k,
+                      availableQuantity: Number(j.availableQuantity) + Number(k.availableQuantity)
                     }
                   }
 
-                  return secondLvlDesign
+                  return j
                 })
               })
+
+              return design
             }
 
-            return design
+            return i
           })
         })
-
-        // assigning values
-        product.colors = UpdatedColors
-        // @ts-expect-error:undefined value
-        product.designs = updatedDesigns
       }
 
       const updatedProductList = allProducts.map((i) =>

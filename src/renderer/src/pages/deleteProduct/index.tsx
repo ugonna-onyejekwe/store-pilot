@@ -42,19 +42,6 @@ const DeleteProduct = () => {
     })
   }, [productId, categoryId])
 
-  const availableSizes = categoryData?.hasSize
-    ? productData?.sizes.filter((i) => i.quantity > 0)
-    : []
-  const availableColors = categoryData?.hasColor
-    ? productData?.colors.filter((i) => i.quantity > 0)
-    : []
-  const availableSubproducts = categoryData?.hasSubProducts
-    ? productData?.subProducts.filter((i) => i.available === true)
-    : []
-  const availableDesigns = categoryData?.hasDesign
-    ? productData?.designs.filter((i) => i.quantity > 0)
-    : []
-
   return (
     <>
       <div className="container">
@@ -79,106 +66,32 @@ const DeleteProduct = () => {
               <div className="info_con">
                 <div className="general_info_con">
                   <p>
-                    Product category: <span>{productData?.category.name}</span>
+                    Product category: <span>{productData?.categoryName}</span>
                   </p>
                   {categoryData?.hasModel && (
                     <p>
                       Product model: <span>{productData?.model}</span>
                     </p>
                   )}
+
                   <p>
-                    Total available quantity: <span>{productData?.totalQuantity}</span>
+                    Has model: <span>{categoryData?.hasModel === false ? 'False' : 'True'}</span>
                   </p>
-                  {categoryData?.hasModel && (
-                    <p>
-                      cartoons per product: <span>{productData?.cartoonsPerProduct}</span>
-                    </p>
-                  )}
+
+                  <p>
+                    cartoons per product: <span>{productData?.cartoonsPerSet}</span>
+                  </p>
+                  <p>
+                    Has sub-category:{' '}
+                    <span>{categoryData?.hasSubcategories === true ? 'True' : 'False'}</span>
+                  </p>
+                  <p>
+                    Has colours: <span>{categoryData?.hasColor === true ? 'True' : 'False'}</span>
+                  </p>
+                  <p>
+                    Has designs: <span>{categoryData?.hasColor === true ? 'True' : 'False'}</span>
+                  </p>
                 </div>
-
-                {categoryData?.hasSize && (
-                  <div className="sizes_con">
-                    <h3>Available sizes & their quantity</h3>
-
-                    <div className="con">
-                      {availableSizes?.length === 0 ? (
-                        <p style={{ color: '#e86310' }}>No size is avaliable</p>
-                      ) : (
-                        availableSizes?.map(
-                          (i, key) =>
-                            i.quantity !== 0 && (
-                              <p key={key}>
-                                {i.name}: <span>{i.quantity}</span>
-                              </p>
-                            )
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {categoryData?.hasSubProducts && (
-                  <div className="subproduct_con">
-                    <h3>Available subproducts for this modal</h3>
-
-                    <div className="con">
-                      {availableSubproducts?.length === 0 ? (
-                        <p style={{ color: '#e86310' }}>No subproduct is avaliable</p>
-                      ) : (
-                        availableSubproducts?.map((i, key) => (
-                          <p key={key}>
-                            <span>
-                              <Icons.CheckIcon className="check_icon" />
-                            </span>{' '}
-                            {i.name}
-                          </p>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {categoryData?.hasColor && (
-                  <div className="subproduct_con">
-                    <h3>Available colours & their quantity</h3>
-
-                    <div className="con">
-                      {availableColors?.length === 0 ? (
-                        <p style={{ color: '#e86310' }}>No color is avaliable</p>
-                      ) : (
-                        availableColors?.map(
-                          (i, key) =>
-                            i.quantity !== 0 && (
-                              <p key={key}>
-                                {i.name}:<span>{i.quantity}</span>{' '}
-                              </p>
-                            )
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {categoryData?.hasDesign && (
-                  <div className="subproduct_con">
-                    <h3>Available designs & their quantity</h3>
-
-                    <div className="con">
-                      {availableDesigns?.length === 0 ? (
-                        <p style={{ color: '#e86310' }}>No Design is avaliable</p>
-                      ) : (
-                        availableDesigns?.map(
-                          (i, key) =>
-                            i.quantity !== 0 && (
-                              <p key={key}>
-                                {i.name}:<span>{i.quantity}</span>
-                              </p>
-                            )
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
               <div className="btn">
                 <Link to={`/add-product/edit/${categoryId}/${productId}`}>
@@ -215,16 +128,11 @@ const DeleteModel = ({
   const { isPending, mutateAsync } = useDeleteProduct()
 
   const deleteProduct = () => {
-    mutateAsync({ productId: productId! })
-      .then(() => {
-        toastUI.success('Product deleted Successfully')
-        onOpenChange(false)
-        navigate('/admin')
-      })
-      .catch((error) => {
-        console.log(error)
-        toastUI.error('An error occured while deleting product')
-      })
+    mutateAsync({ productId: productId! }).then(() => {
+      toastUI.success('Product deleted Successfully')
+      onOpenChange(false)
+      navigate('/admin')
+    })
   }
 
   return (

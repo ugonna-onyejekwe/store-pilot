@@ -1,4 +1,5 @@
 import { useGetCategories } from '@renderer/apis/categories/getCategories'
+import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
@@ -27,6 +28,12 @@ export const EditModal = ({
     data: productData,
     isPending: isGettingProduct
   } = useReturnAllProducts()
+
+  const {
+    mutate: getSingleCategory,
+    data: singleCate,
+    isPending: isgettingCategory
+  } = useReturnSingleCategory()
 
   // Initial values
   const initialValues = { whatToEdit: '', categoryId: '', productCategory: '', product: '' }
@@ -76,10 +83,22 @@ export const EditModal = ({
   })
 
   useEffect(() => {
+    if (values.productCategory) {
+      getSingleCategory({
+        id: values.productCategory
+      })
+    }
+  }, [values.productCategory])
+
+  useEffect(() => {
+    setFieldValue('product', singleCate?.id)
+  }, [singleCate])
+
+  useEffect(() => {
     const fetchData = () => {
       getProductData({ categoryId: values.productCategory })
-        .then(() => {
-          if (productData?.length === 0) toastUI.error('There is no product under this category')
+        .then((data) => {
+          if (data?.length === 0) toastUI.error('There is no product under this category')
         })
         .catch((error) => {
           console.log(error)
@@ -133,9 +152,10 @@ export const EditModal = ({
           />
         )}
 
-        {values.whatToEdit.toLowerCase() === 'product' && (
+        {singleCate?.hasModel === true && values.whatToEdit.toLowerCase() === 'product' && (
           <SelecInput
             label={`Select product  you want to ${actionType}`}
+            // @ts-ignore:undefined
             options={productData?.map((i) => ({ label: i.model, value: i.productId })) ?? []}
             name="product"
             id="product"
@@ -147,7 +167,7 @@ export const EditModal = ({
           />
         )}
         <div className="btn">
-          <Button text="Proceed" type="submit" />
+          <Button text="Proceed" type="submit" isLoading={isgettingCategory} />
         </div>
       </form>
     </AlertModal>

@@ -78,7 +78,7 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
         if (!existedDesign) {
           return {
             colorName: color.name,
-            colourId: color.id,
+            colorId: color.id,
             colorQuanty: color.availableQuantity,
 
             designs: defaultValues.categoryData?.designs.map((design) => ({
@@ -104,7 +104,7 @@ const EnterDesign = ({ defaultValues, handleProceed, previousFormFn }: EnterDesi
         if (!colorDesign && i.availableQuantity > 0) {
           const newDesign = {
             colorName: i.name,
-            colourId: i.id,
+            colorId: i.id,
             available: true,
             colorQuanty: i.availableQuantity,
             designs: defaultValues.categoryData?.designs.map((design) => ({

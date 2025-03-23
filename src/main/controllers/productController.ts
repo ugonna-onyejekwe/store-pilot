@@ -98,7 +98,6 @@ export const createProduct = async (req: Request, res: Response) => {
         categoryId,
         subCategory,
         model,
-        actionType,
         hasModel,
         hasSubProducts,
         hasSubCategory,
@@ -126,46 +125,72 @@ export const createProduct = async (req: Request, res: Response) => {
 
       if (product.hasColors) {
         // updating colors available
-        product.colors = colors
-          .map((i) => {
-            const color = product.colors.find((color) => i.id === color.id)
+        colors.map((i) => {
+          const exist = product.colors.find((j) => j.id === i.id)
 
-            if (!color) {
-              return [...product.colors, i]
-            }
+          if (!exist) {
+            product.colors = [i, ...product.colors]
+            return
+          }
 
-            return {
-              ...color,
-              availableQuantity: Number(i.availableQuantity) + Number(color?.availableQuantity)
+          product.colors = product.colors.map((color) => {
+            if (i.id === color.id) {
+              return {
+                ...color,
+                availableQuantity: Number(i.availableQuantity) + Number(color?.availableQuantity),
+                available: true
+              }
             }
+            return color
           })
-          .flat()
+        })
+
+        product.colors = product.colors.filter(Boolean)
+
+        console.log(product.colors)
 
         // updating designs availables
         designs.map((i) => {
-          product.designs = designs.map((design) => {
+          const exist = product.designs.find((j) => j.colorId === i.colorId)
+
+          if (!exist) {
+            product.designs = [i, ...product.designs]
+            return
+          }
+
+          product.designs = product.designs.map((design) => {
             if (design.colorId === i.colorId) {
               // mapping inner designs
               i.designs.map((j) => {
+                const designexist = design.designs.find((k) => k.id === j.id)
+
+                if (!designexist) {
+                  design.designs = [j, ...design.designs]
+                  return
+                }
+
                 design.designs = design.designs.map((k) => {
                   if (k.id === j.id) {
                     return {
                       ...k,
-                      availableQuantity: Number(j.availableQuantity) + Number(k.availableQuantity)
+                      availableQuantity: Number(j.availableQuantity) + Number(k.availableQuantity),
+                      available: true
                     }
                   }
 
-                  return j
+                  return k
                 })
               })
 
               return design
             }
 
-            return i
+            return design
           })
         })
       }
+
+      console.log(product.designs)
 
       const updatedProductList = allProducts.map((i) =>
         i.productId === product.productId ? product : i

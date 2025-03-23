@@ -14,7 +14,6 @@ export type ProductResponse = {
   categoryId: string
   subCategory: string
   model: string
-  actionType: string
   hasModel: boolean
   hasSubProducts: boolean
   hasSubCategory: boolean

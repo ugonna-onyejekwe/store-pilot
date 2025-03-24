@@ -62,6 +62,7 @@ export const SelectModel = ({
           <SelecInput
             placeholder="Select model"
             onChange={setFieldValue}
+            // @ts-ignore:undefined
             options={productData?.map((i) => ({ label: i.model, value: i.productId })) ?? []}
             isLoading={isGettingProduct}
             name="productId"

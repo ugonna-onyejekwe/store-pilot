@@ -18,7 +18,8 @@ const SellProductModal = ({
   const { data: categoryData, isPending, mutateAsync } = useReturnSingleCategory()
 
   useEffect(() => {
-    mutateAsync({ id: data.category.id })
+    // mutateAsync({ id: data.category.id })
+    mutateAsync({ id: 'yeyey' })
   }, [data])
 
   return (

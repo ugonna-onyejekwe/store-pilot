@@ -98,7 +98,6 @@ export const createProduct = async (req: Request, res: Response) => {
         categoryId,
         subCategory,
         model,
-        actionType,
         hasModel,
         hasSubProducts,
         hasSubCategory,
@@ -126,46 +125,72 @@ export const createProduct = async (req: Request, res: Response) => {
 
       if (product.hasColors) {
         // updating colors available
-        product.colors = colors
-          .map((i) => {
-            const color = product.colors.find((color) => i.id === color.id)
+        colors.map((i) => {
+          const exist = product.colors.find((j) => j.id === i.id)
 
-            if (!color) {
-              return [...product.colors, i]
-            }
+          if (!exist) {
+            product.colors = [i, ...product.colors]
+            return
+          }
 
-            return {
-              ...color,
-              availableQuantity: Number(i.availableQuantity) + Number(color?.availableQuantity)
+          product.colors = product.colors.map((color) => {
+            if (i.id === color.id) {
+              return {
+                ...color,
+                availableQuantity: Number(i.availableQuantity) + Number(color?.availableQuantity),
+                available: true
+              }
             }
+            return color
           })
-          .flat()
+        })
+
+        product.colors = product.colors.filter(Boolean)
+
+        console.log(product.colors)
 
         // updating designs availables
         designs.map((i) => {
-          product.designs = designs.map((design) => {
+          const exist = product.designs.find((j) => j.colorId === i.colorId)
+
+          if (!exist) {
+            product.designs = [i, ...product.designs]
+            return
+          }
+
+          product.designs = product.designs.map((design) => {
             if (design.colorId === i.colorId) {
               // mapping inner designs
               i.designs.map((j) => {
+                const designexist = design.designs.find((k) => k.id === j.id)
+
+                if (!designexist) {
+                  design.designs = [j, ...design.designs]
+                  return
+                }
+
                 design.designs = design.designs.map((k) => {
                   if (k.id === j.id) {
                     return {
                       ...k,
-                      availableQuantity: Number(j.availableQuantity) + Number(k.availableQuantity)
+                      availableQuantity: Number(j.availableQuantity) + Number(k.availableQuantity),
+                      available: true
                     }
                   }
 
-                  return j
+                  return k
                 })
               })
 
               return design
             }
 
-            return i
+            return design
           })
         })
       }
+
+      console.log(product.designs)
 
       const updatedProductList = allProducts.map((i) =>
         i.productId === product.productId ? product : i
@@ -241,34 +266,34 @@ export const getSingleProduct = async (req: Request, res: Response) => {
 }
 
 // EDIT PRODUCT
-export const editProduct = async (req: Request, res: Response) => {
-  try {
-    // const { productId } = req.body
-    // const { productInfo } = req
-    // const productList = req.doc.products
-    // let product = productList.find((i) => i.productId === productId)
-    // // @ts-ignore: Gives error of incompactible
-    // product = {
-    //   ...product,
-    //   ...productInfo
-    // }
-    // const updatedProductsList = productList.map((i) => {
-    //   if (i.productId === productId) return product
-    //   return i
-    // })
-    // await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
-    //   if (updateErr) {
-    //     console.error('Error updating product list', updateErr)
-    //     res.status(500).json({ error: 'Failed to update product' })
-    //     return
-    //   }
-    //   res.status(200).json({ message: 'Product updated successfly', data: product })
-    // })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json(error)
-  }
-}
+// export const editProduct = async (req: Request, res: Response) => {
+//   try {
+//     // const { productId } = req.body
+//     // const { productInfo } = req
+//     // const productList = req.doc.products
+//     // let product = productList.find((i) => i.productId === productId)
+//     // // @ts-ignore: Gives error of incompactible
+//     // product = {
+//     //   ...product,
+//     //   ...productInfo
+//     // }
+//     // const updatedProductsList = productList.map((i) => {
+//     //   if (i.productId === productId) return product
+//     //   return i
+//     // })
+//     // await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
+//     //   if (updateErr) {
+//     //     console.error('Error updating product list', updateErr)
+//     //     res.status(500).json({ error: 'Failed to update product' })
+//     //     return
+//     //   }
+//     //   res.status(200).json({ message: 'Product updated successfly', data: product })
+//     // })
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json(error)
+//   }
+// }
 
 // DELETE PRODUCT
 export const deleteProduct = async (req: Request, res: Response) => {
@@ -522,66 +547,66 @@ export const checkout = async (req: Request, res: Response) => {
 }
 
 // RETURNED PRODUCT
-export const returnProduct = async (req: Request, res: Response) => {
-  try {
-    const {
-      categoryId,
-      productId,
-      subcategory,
-      design,
-      color,
-      subproducts,
-      returnDisposition
-    }: returnProductRequestBody = req.body
+// export const returnProduct = async (req: Request, res: Response) => {
+//   try {
+//     const {
+//       categoryId,
+//       productId,
+//       subcategory,
+//       design,
+//       color,
+//       subproducts,
+//       returnDisposition
+//     }: returnProductRequestBody = req.body
 
-    const allProducts = req.doc.products
-    const allCategories = req.doc.categories
+//     const allProducts = req.doc.products
+//     const allCategories = req.doc.categories
 
-    const category = allCategories.find((i) => i.id === categoryId)
+//     const category = allCategories.find((i) => i.id === categoryId)
 
-    const product = allProducts.find((i) => i.productId === productId)
+//     const product = allProducts.find((i) => i.productId === productId)
 
-    if (!product) {
-      res.status(404).json({ message: 'Product does not exist' })
+//     if (!product) {
+//       res.status(404).json({ message: 'Product does not exist' })
 
-      return
-    }
+//       return
+//     }
 
-    product.totalQuantity = Number(product.totalQuantity) + 1
+//     product.totalQuantity = Number(product.totalQuantity) + 1
 
-    if (category?.hasColor) {
-      product.colors = product.colors.map((i) =>
-        i.name === color ? { ...i, availableQuantity: Number(i.availableQuantity) + 1 } : i
-      )
-    }
+//     if (category?.hasColor) {
+//       product.colors = product.colors.map((i) =>
+//         i.name === color ? { ...i, availableQuantity: Number(i.availableQuantity) + 1 } : i
+//       )
+//     }
 
-    if (category?.hasColor) {
-      product.designs = product.designs.map((i) => {
-        if (i.colorName === color) {
-          i.designs = i.designs.map((item) =>
-            item.name === design
-              ? { ...item, availableQuantity: Number(item.availableQuantity) + 1 }
-              : item
-          )
+//     if (category?.hasColor) {
+//       product.designs = product.designs.map((i) => {
+//         if (i.colorName === color) {
+//           i.designs = i.designs.map((item) =>
+//             item.name === design
+//               ? { ...item, availableQuantity: Number(item.availableQuantity) + 1 }
+//               : item
+//           )
 
-          return i
-        } else {
-          return i
-        }
-      })
-    }
+//           return i
+//         } else {
+//           return i
+//         }
+//       })
+//     }
 
-    if (category?.hasSubProducts && category.hasSubcategories === false) {
-      // product.subProducts = subproducts.map(i=>{
-      //   return product.subProducts.find(sub=>{
-      //     if(sub.id ==== i.id){
-      //       sub.
-      //     }
-      //   })
-      // })
-    }
-  } catch (error) {
-    console.log(error)
-    res.status(500).json(error)
-  }
-}
+//     if (category?.hasSubProducts && category.hasSubcategories === false) {
+//       // product.subProducts = subproducts.map(i=>{
+//       //   return product.subProducts.find(sub=>{
+//       //     if(sub.id ==== i.id){
+//       //       sub.
+//       //     }
+//       //   })
+//       // })
+//     }
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json(error)
+//   }
+// }

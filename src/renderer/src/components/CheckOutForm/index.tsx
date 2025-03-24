@@ -1,6 +1,5 @@
 import { useCheckout } from '@renderer/apis/products/checkout'
 import { useReturnAllWarehouses } from '@renderer/apis/warehouses/getAllWarehouses'
-import { getError } from '@renderer/lib/utils'
 import { RootState } from '@renderer/store'
 import { clearCart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
@@ -11,7 +10,6 @@ import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
 import { Icons } from '../ui/icons'
 import { Input, SelecInput } from '../ui/inputs'
-import { toastUI } from '../ui/toast'
 import './styles.scss'
 
 const CheckOutForm = () => {
@@ -36,24 +34,25 @@ const CheckOutForm = () => {
   }
 
   const onSubmit = (values) => {
-    mutateAsync({
-      listOfProducts: [...cartItems],
-      checkoutInfo: {
-        locationSold: values.sellLocation,
-        customerName: values.customerName,
-        customerPhoneNumber: values.phoneNumber,
-        supplyStatus: values.supplyStatus,
-        paymentStatus: values.paymentType,
-        sellingPrice: values.sellingPrice,
-        amountPaid: values.amountPaid,
-        supplyLocation: values.supplyLocation
-      }
-    })
-      .then(() => setOpenSuccessModel(true))
-      .catch((error) => {
-        console.log(error)
-        toastUI.error(getError(error))
-      })
+    console.log(values, mutateAsync)
+    // mutateAsync({
+    //   listOfProducts: [...cartItems],
+    //   checkoutInfo: {
+    //     locationSold: values.sellLocation,
+    //     customerName: values.customerName,
+    //     customerPhoneNumber: values.phoneNumber,
+    //     supplyStatus: values.supplyStatus,
+    //     paymentStatus: values.paymentType,
+    //     sellingPrice: values.sellingPrice,
+    //     amountPaid: values.amountPaid,
+    //     supplyLocation: values.supplyLocation
+    //   }
+    // })
+    //   .then(() => setOpenSuccessModel(true))
+    //   .catch((error) => {
+    //     console.log(error)
+    //     toastUI.error(getError(error))
+    //   })
   }
 
   const { values, errors, touched, handleChange, handleSubmit, setFieldValue } = useFormik({

@@ -11,7 +11,7 @@ type payload = {
 
 const editSupplyStatus = (payload: payload) => {
   return patchRequest<null, payload>({
-    url: `${ApiEndPoints.editSupplyStatus}/${payload.checkoutId}`,
+    url: `${ApiEndPoints.editPayment}/${payload.checkoutId}`,
     payload: payload
   })
 }

@@ -43,7 +43,8 @@ const Dashboard = () => {
 
             <p className="sub_txt">
               Welcome back online!
-              <br /> Let's make today another successful sales day.
+              <br />
+              {"Let's make today another successful sales day."}
             </p>
           </div>
 

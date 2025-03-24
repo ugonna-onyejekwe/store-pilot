@@ -1,5 +1,6 @@
 import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
 import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
+import { useVerifyModelName } from '@renderer/apis/products/verifyModel'
 import Button from '@renderer/components/ui/Button'
 import { Input, SelecInput } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
@@ -24,7 +25,9 @@ const EnterModel = ({
 }: EnterModelProps) => {
   const { isPending: isLoadingProducts, mutateAsync: getProducts, data } = useReturnAllProducts()
 
-  const { mutateAsync: getSelectedProduct } = useReturnSingleProduct()
+  const { mutateAsync: getSelectedProduct, isPending: gettingSelected } = useReturnSingleProduct()
+
+  const { mutateAsync: verifyModel, isPending: verifyingModel } = useVerifyModelName()
 
   useEffect(() => {
     if (defaultValues.actionType === 'update') {
@@ -59,7 +62,14 @@ const EnterModel = ({
       return
     }
 
-    handleProceed(values)
+    if (defaultValues.actionType === 'new') {
+      verifyModel({
+        model: values.model,
+        categoryId: defaultValues.category
+      }).then(() => {
+        handleProceed(values)
+      })
+    }
   }
 
   const { values, handleChange, setFieldValue, errors, touched, handleSubmit } = useFormik({
@@ -101,7 +111,7 @@ const EnterModel = ({
         <div className="btn btn_multi">
           <Button text="Back" varient="outline" onClick={previousFormFn} />
 
-          <Button text={'Proceed'} type="submit" />
+          <Button text={'Proceed'} type="submit" isLoading={verifyingModel || gettingSelected} />
         </div>
       </form>
     </motion.div>

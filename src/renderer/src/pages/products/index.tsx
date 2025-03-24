@@ -14,6 +14,14 @@ const Goods = () => {
   const [category, setCategory] = useState('')
   const [openCategories, setOpenCategories] = useState(false)
 
+  const {
+    mutate: getProducts,
+    data: allProducts,
+    isPending: isGettingProducts
+  } = useReturnAllProducts()
+
+  console.log(productData, isPending, isGettingProducts)
+
   useEffect(() => {
     const searchValue = params.get('seacrhValue')
 
@@ -28,64 +36,9 @@ const Goods = () => {
     }
   }, [subcatId, params])
 
-  const productdata = [
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    },
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    },
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    },
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    },
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    },
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    },
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    },
-    {
-      subcategory: 'chair',
-      totalQuantity: 100,
-      model: '3838',
-      colors: ['Red', 'Green', 'Brown', 'Gold'],
-      designs: ['S7', 'S2', 'S9']
-    }
-  ]
+  useEffect(() => {
+    getProducts({})
+  }, [])
 
   return (
     <>
@@ -115,9 +68,7 @@ const Goods = () => {
 
           {/* main goods page */}
           <div className="products_con">
-            {productdata.map((product, key) => (
-              <ProductBox key={key} data={product} />
-            ))}
+            {allProducts?.map((product, key) => <ProductBox key={key} data={product} />)}
           </div>
         </div>
       </div>

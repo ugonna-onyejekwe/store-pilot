@@ -18,7 +18,8 @@ const Customers = () => {
   const { data: customers, mutate: getcustomers, isPending: isGettingCustomers } = useGetCustomers()
 
   useEffect(() => {
-    getcustomers({})
+    // getcustomers({})
+    console.log(getcustomers)
   }, [])
 
   return (

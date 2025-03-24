@@ -1,6 +1,6 @@
 import { useEditPayment } from '@renderer/apis/history/editpayment'
 import { HistoryResponse } from '@renderer/apis/history/getHistory'
-import { convertAmount, formatDate } from '@renderer/lib/utils'
+import { convertAmount } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import AlertModal from '../ui/alertModal'
@@ -55,12 +55,13 @@ const EditPaymentModel = ({
   })
 
   useEffect(() => {
-    const value =
-      Number(data.checkoutInfo.sellingPrice) -
-      Number(data.checkoutInfo.amountPaid) -
-      Number(values.amountPaid)
+    // const value =
+    //   Number(data.checkoutInfo.sellingPrice) -
+    //   Number(data.checkoutInfo.amountPaid) -
+    //   Number(values.amountPaid)
 
-    setAmountLeft(value < 0 ? 0 : value)
+    // setAmountLeft(value < 0 ? 0 : value)
+    setAmountLeft(0)
   }, [values.amountPaid])
 
   return (
@@ -72,11 +73,11 @@ const EditPaymentModel = ({
     >
       <form onSubmit={onSubmit}>
         <h3>Edit payment</h3>
-        <p className="subHeader">
+        {/* <p className="subHeader">
           <b>{data.checkoutInfo.customerName}</b> bought goods worth{' '}
           <b>{convertAmount(data.checkoutInfo.sellingPrice)}</b> on{' '}
           <b>{formatDate(data.checkoutInfo.createdAt)}</b>
-        </p>
+        </p> */}
 
         <div className="box_con">
           <Input

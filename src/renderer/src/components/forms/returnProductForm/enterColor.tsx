@@ -42,6 +42,7 @@ export const SelectColor = ({
             <SelecInput
               placeholder="Select product colour"
               onChange={setFieldValue}
+              // @ts-ignore:undefined
               options={categoryData.colors.map((i) => ({ label: i, value: i }))}
               name="color"
               id="color"

@@ -43,7 +43,7 @@ const Summary = ({ defaultValues, handleProceed, isLoading, previousFormFn }: Su
         )}
       </div>
 
-      {defaultValues.categoryData?.hasSubProducts && (
+      {defaultValues.actionType === 'new' && defaultValues.categoryData?.hasSubProducts && (
         <div className="subproducts">
           <h3>Available subproducts </h3>
           <div className="box_con">

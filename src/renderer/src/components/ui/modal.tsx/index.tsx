@@ -13,6 +13,7 @@ export const Modal = ({ children, onOpenChange, open, zIndex }: ModalProps) => {
   const innerWrapper = useRef(null)
 
   const handleClick = (e) => {
+    // @ts-expect-error:undefined
     if (innerWrapper.current?.contains(e.target) === false) {
       onOpenChange(false)
     }

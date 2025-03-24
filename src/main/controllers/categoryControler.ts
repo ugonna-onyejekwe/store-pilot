@@ -9,6 +9,7 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
       name,
       hasModel,
       hasColor,
+      hasDesign,
       hasSubProducts,
       subProducts,
       subcategories,
@@ -23,14 +24,11 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
 
     let formatedListOfSubproducts: {
       subCategoryName?: string
-      // subCategoryId?: string
       name?: string
       defaultQuantity?: number
-      // id?: string
       subProducts?: {
         name: string
         defaultQuantity: number
-        // id: string
       }[]
     }[] = []
 
@@ -49,7 +47,7 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
           .map((i) => ({ name: i.trim(), id: uuidv4() }))
       : []
 
-    formatedListOfDesigns = hasColor
+    formatedListOfDesigns = hasDesign
       ? designs
           .split(',')
           .filter(Boolean)

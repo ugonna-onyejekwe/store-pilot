@@ -8,6 +8,7 @@ type payload = {
   name: string
   hasModel: boolean
   hasColors: boolean
+  hasDesign: boolean
   hasSubProducts: boolean
   subProducts: {
     subCategoryName?: string

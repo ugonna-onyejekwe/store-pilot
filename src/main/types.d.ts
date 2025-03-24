@@ -2,6 +2,7 @@
 type CreateCategoryRequestBody = {
   name: string
   hasModel: boolean
+  hasDesign: boolean
   hasColor: boolean
   hasSubProducts: boolean
   subProducts: {

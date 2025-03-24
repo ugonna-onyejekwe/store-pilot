@@ -77,15 +77,21 @@ const AddProductForm = ({
           ? setFormSteps(5)
           : categoryData?.hasColor
             ? setFormSteps(6)
-            : setFormSteps(8)
+            : categoryData?.hasDesign
+              ? setFormSteps(7)
+              : setFormSteps(8)
     }
 
     if (formSteps === 5) {
-      return categoryData?.hasColor ? setFormSteps(6) : setFormSteps(8)
+      return categoryData?.hasColor
+        ? setFormSteps(6)
+        : categoryData?.hasDesign
+          ? setFormSteps(7)
+          : setFormSteps(8)
     }
 
     if (formSteps === 6) {
-      return setFormSteps(7)
+      return categoryData?.hasDesign ? setFormSteps(7) : setFormSteps(8)
     }
 
     if (formSteps === 7) {
@@ -97,7 +103,7 @@ const AddProductForm = ({
   const goToPrevForm = () => {
     const { categoryData } = defaultValues
 
-    const { hasSubcategories, hasModel, hasSubProducts, hasColor } = categoryData!
+    const { hasSubcategories, hasModel, hasSubProducts, hasColor, hasDesign } = categoryData!
 
     if (formSteps === 2) return setFormSteps(1)
 
@@ -121,17 +127,19 @@ const AddProductForm = ({
     }
 
     if (formSteps === 7) {
-      return setFormSteps(6)
+      return hasColor ? setFormSteps(6) : hasSubProducts ? setFormSteps(5) : setFormSteps(4)
     }
 
     if (formSteps === 8) {
       return defaultValues.categoryData?.hasModel === false
         ? setFormSteps(4)
-        : hasColor
+        : hasDesign
           ? setFormSteps(7)
-          : hasSubProducts
-            ? setFormSteps(5)
-            : setFormSteps(4)
+          : hasColor
+            ? setFormSteps(6)
+            : hasSubProducts
+              ? setFormSteps(5)
+              : setFormSteps(4)
     }
   }
 

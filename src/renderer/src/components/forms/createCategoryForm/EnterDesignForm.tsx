@@ -3,7 +3,7 @@ import { BooleanInput, Input } from '@renderer/components/ui/inputs'
 import { animateY } from '@renderer/lib/utils'
 import { useFormik } from 'formik'
 import { motion } from 'framer-motion'
-import { EnterColorsSchema } from './schema'
+import { EnterDesignsSchema } from './schema'
 
 type EnterColourFormProps = {
   defaultValues: CreateCategoryFormInitialvalues
@@ -11,23 +11,23 @@ type EnterColourFormProps = {
   setFormSteps: (value: number) => void
 }
 
-export const EnterColourForm = ({
+export const EnterDesignForm = ({
   defaultValues,
   handleChange: setValues,
   setFormSteps
 }: EnterColourFormProps) => {
   const initialValues = {
-    hasColor: defaultValues.hasColor,
-    colors: defaultValues.colors
+    hasDesign: defaultValues.hasDesign,
+    designs: defaultValues.designs
   }
 
   const onSubmit = (values) => {
     setValues(values)
-    setFormSteps(5)
+    setFormSteps(6)
   }
   const { values, touched, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues,
-    validationSchema: EnterColorsSchema,
+    validationSchema: EnterDesignsSchema,
     onSubmit
   })
 
@@ -36,26 +36,26 @@ export const EnterColourForm = ({
       <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
           <BooleanInput
-            label="Does this category have colours?"
-            value={values.hasColor}
+            label="Does this category have designs?"
+            value={values.hasDesign}
             onChange={setFieldValue}
-            name="hasColor"
+            name="hasDesign"
           />
 
-          {values.hasColor && (
+          {values.hasDesign && (
             <Input
-              label="Enter category colours separating each with a comma(',')."
-              placeholder="Color 1, Color 2, Color 3,...."
-              value={values.colors}
-              onChange={handleChange('colors')}
-              touched={touched.colors}
-              errorMsg={errors.colors}
+              label="Enter category designs separating each with a comma(',')."
+              placeholder="Design 1, Design 2, Design 3,...."
+              value={values.designs}
+              onChange={handleChange('designs')}
+              touched={touched.designs}
+              errorMsg={errors.designs}
             />
           )}
         </div>
 
         <div className="btn btn_multi">
-          <Button text="Back" onClick={() => setFormSteps(3)} varient="outline" />
+          <Button text="Back" onClick={() => setFormSteps(4)} varient="outline" />
 
           <Button text={'Proceed'} type="submit" />
         </div>

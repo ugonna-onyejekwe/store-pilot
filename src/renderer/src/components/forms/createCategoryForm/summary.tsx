@@ -39,6 +39,9 @@ const Summary = ({
         <p>
           Has colours: <span>{defaultValues.hasColor ? 'True' : 'False'}</span>
         </p>
+        <p>
+          Has designs: <span>{defaultValues.hasDesign ? 'True' : 'False'}</span>
+        </p>
       </div>
 
       {defaultValues.hasSubcategories && (
@@ -127,7 +130,7 @@ const Summary = ({
       <div className="btn btn_multi">
         <Button
           text="Edit"
-          onClick={() => (defaultValues.hasModel === false ? setFormSteps(1) : setFormSteps(4))}
+          onClick={() => (defaultValues.hasModel === false ? setFormSteps(1) : setFormSteps(5))}
           varient="outline"
         />
 

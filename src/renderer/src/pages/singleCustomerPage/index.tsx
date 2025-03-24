@@ -24,6 +24,8 @@ const SingleCustomer = () => {
 
   const [paymentStatus, setPaymentStatus] = useState('')
 
+  console.log(date, openDropDown)
+
   // get customer details
   const {
     data: customer,

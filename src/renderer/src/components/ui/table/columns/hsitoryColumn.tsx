@@ -75,8 +75,7 @@ export const History_column: ColumnDef<HistoryResponse>[] = [
   {
     accessorKey: 'checkoutInfo.checkoutId',
     header: '',
-    cell: ({ row }) => {
-      const data = row.original
+    cell: () => {
       return (
         <div>
           <Icons.DotMenu className="icon" />

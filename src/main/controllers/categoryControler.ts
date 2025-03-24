@@ -148,29 +148,29 @@ export const getSingleCategory = async (req: Request, res: Response) => {
 }
 
 // Edit category
-export const editCategory = async (req: Request, res: Response) => {
-  //   try {
-  //     const { id } = req.params
-  //     delete req.body.id
-  //     const allCategory = req.doc.category
-  //     const updatedCategories = allCategory.map((i) =>
-  //       i.id === id
-  //         ? {
-  //             ...i,
-  //             ...req.formatedData
-  //           }
-  //         : i
-  //     )
-  //     return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
-  //       if (err) {
-  //         return res.status(500).json({ error: 'Failed to update category' })
-  //       }
-  //       return res.status(200).json({ message: 'Category updated' })
-  //     })
-  //   } catch (error) {
-  //     res.status(500).send(error)
-  //   }
-}
+// export const editCategory = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params
+//     delete req.body.id
+//     const allCategory = req.doc.category
+//     const updatedCategories = allCategory.map((i) =>
+//       i.id === id
+//         ? {
+//             ...i,
+//             ...req.formatedData
+//           }
+//         : i
+//     )
+//     return await db.update({}, { $set: { category: updatedCategories } }, {}, (err, _) => {
+//       if (err) {
+//         return res.status(500).json({ error: 'Failed to update category' })
+//       }
+//       return res.status(200).json({ message: 'Category updated' })
+//     })
+//   } catch (error) {
+//     res.status(500).send(error)
+//   }
+// }
 
 // VERIFY IF CATEGORY NAME ALREADY EXIST
 export const verifyCategoryName = async (req: Request, res: Response) => {

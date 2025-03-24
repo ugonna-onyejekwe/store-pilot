@@ -20,6 +20,8 @@ const Goods = () => {
     isPending: isGettingProducts
   } = useReturnAllProducts()
 
+  console.log(productData, isPending, isGettingProducts)
+
   useEffect(() => {
     const searchValue = params.get('seacrhValue')
 

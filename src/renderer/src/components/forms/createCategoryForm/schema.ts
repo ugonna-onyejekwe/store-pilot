@@ -28,12 +28,14 @@ export const EnterColorsSchema = yup.object().shape({
     .test('is-required-if-has-colors', 'List of colours is required', function (value) {
       const { hasColor } = this.parent
       return !hasColor || (hasColor && value)
-    }),
-
-  designs: yup
-    .string()
-    .test('is-required-if-has-colors', 'List of designs is required', function (value) {
-      const { hasColor } = this.parent
-      return !hasColor || (hasColor && value)
     })
+})
+
+export const EnterDesignsSchema = yup.object().shape({
+  hasDesigns: yup.boolean(),
+
+  designs: yup.string().test('', 'List of designs is required', function (value) {
+    const { hasColor } = this.parent
+    return !hasColor || (hasColor && value)
+  })
 })

@@ -5,6 +5,7 @@ import { useFormik } from 'formik'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { EnterColourForm } from './enterColours'
+import { EnterDesignForm } from './EnterDesignForm'
 import { EnterCategorynameForm } from './enterName'
 import { EnterSubCategoriesForm } from './enterSubcategories'
 import { EnterSubProductForm } from './enterSubProducts'
@@ -20,6 +21,7 @@ export const CreateCategoryForm = () => {
     name: '',
     hasModel: false,
     hasColor: false,
+    hasDesign: false,
     hasSubProducts: false,
     subProducts: [],
     subcategories: '',
@@ -88,6 +90,7 @@ export const CreateCategoryForm = () => {
         />
       )}
 
+      {/* has colour */}
       {formSteps === 4 && (
         <EnterColourForm
           defaultValues={values}
@@ -100,8 +103,20 @@ export const CreateCategoryForm = () => {
         />
       )}
 
-      {/* summary */}
+      {/* has design */}
       {formSteps === 5 && (
+        <EnterDesignForm
+          defaultValues={values}
+          setFormSteps={setFormSteps}
+          handleChange={(formData) => {
+            setFieldValue('hasDesign', formData.hasDesign)
+            setFieldValue('designs', formData.designs)
+          }}
+        />
+      )}
+
+      {/* summary */}
+      {formSteps === 6 && (
         <Summary
           defaultValues={values}
           setFormSteps={setFormSteps}

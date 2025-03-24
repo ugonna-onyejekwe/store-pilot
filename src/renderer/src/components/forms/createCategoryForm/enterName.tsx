@@ -34,7 +34,7 @@ export const EnterCategorynameForm = ({
       }
 
       verifyCategoryName({ categoryName: values.name }).then(() => {
-        values.hasModel === false ? setFormSteps(5) : setFormSteps(2)
+        values.hasModel === false ? setFormSteps(6) : setFormSteps(2)
         setValues(values)
       })
     } catch (error) {

@@ -82,6 +82,7 @@ type CreateProductRequestBody = {
   hasSubProducts: boolean
   hasSubCategory: boolean
   hasColors: boolean
+  hasDesigns: boolean
   totalQuantity: number
   cartoonsPerSet: number
   subProducts: {
@@ -129,6 +130,7 @@ declare namespace Express {
         hasSubProducts: boolean
         hasSubCategory: boolean
         hasColors: boolean
+        hasDesigns: boolean
         totalQuantity: number
         cartoonsPerSet: number
         isParentProduct: boolean

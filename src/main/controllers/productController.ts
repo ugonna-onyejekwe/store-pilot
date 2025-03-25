@@ -15,6 +15,7 @@ export const createProduct = async (req: Request, res: Response) => {
       hasSubProducts,
       hasSubCategory,
       hasColors,
+      hasDesigns,
       totalQuantity,
       cartoonsPerSet,
       subProducts,
@@ -106,7 +107,8 @@ export const createProduct = async (req: Request, res: Response) => {
         cartoonsPerSet,
         subProducts,
         colors,
-        designs
+        designs,
+        hasDesigns
       }
 
       const updatedProductsList = [...allProducts, newProduct]
@@ -123,8 +125,8 @@ export const createProduct = async (req: Request, res: Response) => {
       // updating total quantity available
       product.totalQuantity = Number(product.totalQuantity) + Number(totalQuantity)
 
+      // updating colors available
       if (product.hasColors) {
-        // updating colors available
         colors.map((i) => {
           const exist = product.colors.find((j) => j.id === i.id)
 
@@ -146,10 +148,10 @@ export const createProduct = async (req: Request, res: Response) => {
         })
 
         product.colors = product.colors.filter(Boolean)
+      }
 
-        console.log(product.colors)
-
-        // updating designs availables
+      // updating designs availables
+      if (product.hasDesigns) {
         designs.map((i) => {
           const exist = product.designs.find((j) => j.colorId === i.colorId)
 
@@ -189,8 +191,6 @@ export const createProduct = async (req: Request, res: Response) => {
           })
         })
       }
-
-      console.log(product.designs)
 
       const updatedProductList = allProducts.map((i) =>
         i.productId === product.productId ? product : i

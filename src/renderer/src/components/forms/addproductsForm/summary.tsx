@@ -60,7 +60,20 @@ const Summary = ({ defaultValues, handleProceed, isLoading, previousFormFn }: Su
         </div>
       )}
 
-      {defaultValues.categoryData?.hasColor && (
+      {defaultValues.categoryData?.hasColor && !defaultValues.categoryData?.hasDesign && (
+        <div className="color_con">
+          <h3>Available colors</h3>
+          <div className="color_list_con">
+            {defaultValues.colours.map((i, key) => (
+              <p key={key}>
+                {i.name}: <span>{i.availableQuantity}</span>
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {defaultValues.categoryData?.hasDesign && (
         <div className="colors_design_con">
           {defaultValues.designs.map((i, key) => (
             <div key={key}>

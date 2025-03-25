@@ -34,8 +34,8 @@ export const CreateCategoryForm = () => {
     try {
       createCategory({
         ...values,
-        hasColors: values.hasColor,
-        hasSubCategory: values.hasSubcategories
+        hasColor: values.hasColor,
+        hasSubcategories: values.hasSubcategories
       })
         .then(() => {
           resetForm()

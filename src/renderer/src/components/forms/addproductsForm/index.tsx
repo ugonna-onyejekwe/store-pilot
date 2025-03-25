@@ -150,7 +150,8 @@ const AddProductForm = ({
       hasModel,
       hasColor,
       hasSubProducts,
-      hasSubcategories
+      hasSubcategories,
+      hasDesign
     } = defaultValues.categoryData!
 
     // if creating new product
@@ -159,6 +160,7 @@ const AddProductForm = ({
       categoryName: categoryName,
       hasModel: hasModel,
       hasColors: hasColor,
+      hasDesigns: hasDesign,
       hasSubProducts: hasSubProducts,
       hasSubCategory: hasSubcategories,
       totalQuantity: defaultValues.totalAvailableProduct,

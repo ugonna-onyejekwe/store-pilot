@@ -55,28 +55,32 @@ export const formateCategory = async (req: Request, res: Response, next: NextFun
       : []
 
     // Formating values to return id with each value
-    formatedListOfSubproducts = hasSubcategories
-      ? subProducts.map((subproduct) => {
-          const subCate = formatedListOfSubCategories.find(
-            (i) => subproduct.subCategoryName?.toLowerCase() === i.name.toLowerCase()
-          )
+    formatedListOfSubproducts =
+      hasSubcategories && subProducts.length > 0
+        ? subProducts.map((subproduct) => {
+            const subCate = formatedListOfSubCategories.find(
+              (i) => subproduct.subCategoryName?.toLowerCase() === i.name.toLowerCase()
+            )
 
-          subproduct.subProducts = subproduct.subProducts?.map((i) =>
-            i.id ? i : { ...i, id: uuidv4() }
-          )
+            subproduct.subProducts = subproduct.subProducts?.map((i) =>
+              i.id ? i : { ...i, id: uuidv4() }
+            )
 
-          return {
-            ...subproduct,
-            subCategoryId: subCate?.id
-          }
-        })
-      : subProducts.map((i) => ({ ...i, id: uuidv4() }))
+            return {
+              ...subproduct,
+              subCategoryId: subCate?.id
+            }
+          })
+        : !hasSubcategories && subProducts.length > 0
+          ? subProducts.map((i) => ({ ...i, id: uuidv4() }))
+          : []
 
     req.formatedData = {
       name,
       hasModel,
       hasColor,
       hasSubProducts,
+      hasDesign,
       // @ts-ignore:incompactible
       subProducts: formatedListOfSubproducts,
       subcategories: formatedListOfSubCategories,

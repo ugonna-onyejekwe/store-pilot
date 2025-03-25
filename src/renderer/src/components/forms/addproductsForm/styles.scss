@@ -285,6 +285,33 @@
       }
     }
 
+    .color_con {
+      margin-top: -5px;
+
+      h3 {
+        font-size: 15px;
+      }
+
+      .color_list_con {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 5px;
+
+        p {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-weight: 500;
+          color: variables.$light_text_color2;
+
+          span {
+            color: variables.$secondary_color;
+          }
+        }
+      }
+    }
+
     .colors_design_con {
       display: flex;
       flex-direction: column;

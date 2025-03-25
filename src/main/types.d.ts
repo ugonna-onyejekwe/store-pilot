@@ -53,10 +53,6 @@ type Checkout__ProductList = {
   color: string
   design: string
   quantity: number
-  hasSubCategory: boolean
-  hasModel: boolean
-  hasColor: boolean
-  hasSubProducts: boolean
   cartoonQuantity: number
   sellType: 'part' | 'all' | 'leftOver'
   leftOverId: string
@@ -82,6 +78,7 @@ type CreateProductRequestBody = {
   hasSubProducts: boolean
   hasSubCategory: boolean
   hasColors: boolean
+  hasDesigns: boolean
   totalQuantity: number
   cartoonsPerSet: number
   subProducts: {
@@ -129,6 +126,7 @@ declare namespace Express {
         hasSubProducts: boolean
         hasSubCategory: boolean
         hasColors: boolean
+        hasDesigns: boolean
         totalQuantity: number
         cartoonsPerSet: number
         isParentProduct: boolean
@@ -260,6 +258,7 @@ declare namespace Express {
       name: string
       hasModel: boolean
       hasColor: boolean
+      hasDesign: boolean
       hasSubProducts: boolean
       colors: { name: string; id: string }[]
       designs: { name: string; id: string }[]

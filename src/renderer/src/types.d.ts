@@ -215,6 +215,7 @@ interface sellGoodsModelInitailValueType {
   hasSubCategory: boolean
   hasModel: boolean
   hasColor: boolean
+  hasDesign: boolean
   hasSubProducts: boolean
   cartoonQuantity: number
 }

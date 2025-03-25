@@ -14,6 +14,7 @@ type payload = {
   hasSubProducts: boolean
   hasSubCategory: boolean
   hasColors: boolean
+  hasDesigns: boolean
   totalQuantity: number
   cartoonsPerSet: number
   subProducts: {

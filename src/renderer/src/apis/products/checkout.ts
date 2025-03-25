@@ -19,10 +19,6 @@ type Product = {
   color: string
   design: string
   quantity: number
-  hasSubCategory: boolean
-  hasModel: boolean
-  hasColor: boolean
-  hasSubProducts: boolean
   cartoonQuantity: number
   sellType: string
   leftOverId?: string

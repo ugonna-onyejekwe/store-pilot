@@ -113,7 +113,7 @@ const Summary = ({
         </div>
       )}
 
-      {defaultValues.hasColor && (
+      {defaultValues.hasDesign && (
         <div className="design_con">
           <h5>List of designs</h5>
           <p>

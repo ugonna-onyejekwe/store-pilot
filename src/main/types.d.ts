@@ -260,6 +260,7 @@ declare namespace Express {
       name: string
       hasModel: boolean
       hasColor: boolean
+      hasDesign: boolean
       hasSubProducts: boolean
       colors: { name: string; id: string }[]
       designs: { name: string; id: string }[]

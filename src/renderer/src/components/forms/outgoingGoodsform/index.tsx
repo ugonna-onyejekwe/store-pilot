@@ -60,7 +60,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     hasModel: false,
     hasColor: false,
     hasSubProducts: false,
-    cartoonQuantity: 1
+    cartoonQuantity: 1,
+    hasDesign: false
   }
 
   //   get all categories
@@ -173,6 +174,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
         await setFieldValue('hasModel', categoryData?.hasModel)
         await setFieldValue('hasColor', categoryData?.hasColor)
         await setFieldValue('hasSubProducts', categoryData?.hasSubProducts)
+        await setFieldValue('hasDesign', categoryData?.hasDesign)
       }
     }
 
@@ -351,7 +353,7 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                   </div>
                 )}
 
-                {values?.hasColor && (
+                {values?.hasDesign && (
                   <div
                     style={{
                       flex: 1

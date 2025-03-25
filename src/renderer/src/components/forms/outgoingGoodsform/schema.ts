@@ -12,6 +12,7 @@ export const sellGoodsSchema = yup.object().shape({
   hasSubCategory: yup.boolean(),
   hasModel: yup.boolean(),
   hasColor: yup.boolean(),
+  hasDesign: yup.boolean(),
   hasSubProducts: yup.boolean(),
   categoryId: yup.string().required('Category is required'),
   subcategory: yup.string().test('', 'sub-category is required', function (value) {
@@ -34,8 +35,8 @@ export const sellGoodsSchema = yup.object().shape({
     return !hasColor || (hasColor && value)
   }),
   design: yup.string().test('', 'This field is required', function (value) {
-    const { hasColor } = this.parent
-    return !hasColor || (hasColor && value)
+    const { hasDesign } = this.parent
+    return !hasDesign || (hasDesign && value)
   }),
   quantity: yup.number()
 })

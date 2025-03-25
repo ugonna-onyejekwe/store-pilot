@@ -19,6 +19,7 @@ type ProductResponse = {
   hasSubProducts: boolean
   hasSubCategory: boolean
   hasColors: boolean
+  hasDesigns: boolean
   totalQuantity: number
   cartoonsPerSet: number
   subProducts: {

@@ -53,10 +53,6 @@ type Checkout__ProductList = {
   color: string
   design: string
   quantity: number
-  hasSubCategory: boolean
-  hasModel: boolean
-  hasColor: boolean
-  hasSubProducts: boolean
   cartoonQuantity: number
   sellType: 'part' | 'all' | 'leftOver'
   leftOverId: string

@@ -411,8 +411,8 @@ export const checkout = async (req: Request, res: Response) => {
       if (product.sellType !== 'leftOver') {
         productData.totalQuantity = Number(productData?.totalQuantity) - Number(product.quantity)
 
-        if (product.hasColor) {
-          // reduce color quantity
+        // reduce color quantity
+        if (productData?.hasColors) {
           productData.colors = productData.colors.map((i) =>
             i.id === product.color
               ? {
@@ -422,8 +422,10 @@ export const checkout = async (req: Request, res: Response) => {
                 }
               : i
           )
+        }
 
-          // reduce design quantity
+        // reduce design quantity
+        if (productData.hasDesigns) {
           productData.designs = productData.designs.map((i) => {
             if (i.colorId === product.color) {
               i.designs = i.designs.map((des) =>

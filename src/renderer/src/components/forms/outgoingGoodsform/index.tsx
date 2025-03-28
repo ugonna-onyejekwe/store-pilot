@@ -1,10 +1,8 @@
 import { useGetCategories } from '@renderer/apis/categories/getCategories'
 import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
-import { useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
-import AlertModal from '@renderer/components/ui/alertModal'
+import { ProductResponse, useReturnSingleProduct } from '@renderer/apis/products/getSingleProduct'
 import Button from '@renderer/components/ui/Button'
-import { Icons } from '@renderer/components/ui/icons'
 import { Input, SelecInput } from '@renderer/components/ui/inputs'
 import { toastUI } from '@renderer/components/ui/toast'
 import {
@@ -14,21 +12,21 @@ import {
   getQuantityLeftInDesigns,
   getQuantityLeftInModels
 } from '@renderer/lib/hooks'
+import { RootState } from '@renderer/store'
+import { addTocart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
-import CheckoutForm from './checkoutForm'
+import { useDispatch, useSelector } from 'react-redux'
 import { sellGoodsSchema } from './schema'
 import './styles.scss'
 
-type DataType = {
-  listOfDesigns: { label: string; value: string }[]
-  listOfColours: { label: string; value: string }[]
-  colorQuantityMsg: string
-  designQuantityMsg: string
-  modelQuantityMsg: string
-}
-
-const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void }) => {
+const OutGoingGoodsForm = ({
+  openModel,
+  selectedProductData
+}: {
+  openModel: (value: boolean) => void
+  selectedProductData?: ProductResponse
+}) => {
   const [data, setData] = useState<DataType>({
     listOfDesigns: [],
     listOfColours: [],
@@ -36,32 +34,25 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     designQuantityMsg: '',
     modelQuantityMsg: ''
   })
-
-  const [successMsgData, setSuccessMsgData] = useState({
-    customerName: '',
-    cartoonNumber: 0
-  })
-
-  const [openSuccessCon, setOpenSuccessCon] = useState(false)
-
-  const [formStep, setFormStep] = useState(1)
+  const dispatch = useDispatch()
+  const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
 
   const initialValues: sellGoodsModelInitailValueType = {
-    categoryId: '',
-    subcategory: '',
-    model: '',
-    productId: '',
+    categoryId: selectedProductData?.categoryId ?? '',
+    subcategory: selectedProductData?.subCategory ?? '',
+    model: selectedProductData?.model ?? '',
+    productId: selectedProductData?.productId ?? '',
     sellType: 'all',
     subproducts: [],
     color: '',
     design: '',
     quantity: 1,
-    hasSubCategory: false,
-    hasModel: false,
-    hasColor: false,
-    hasSubProducts: false,
+    hasSubCategory: selectedProductData?.hasSubCategory ?? false,
+    hasModel: selectedProductData?.hasModel ?? false,
+    hasColor: selectedProductData?.hasColors ?? false,
+    hasSubProducts: selectedProductData?.hasSubProducts ?? false,
     cartoonQuantity: 1,
-    hasDesign: false
+    hasDesign: selectedProductData?.hasDesigns ?? false
   }
 
   //   get all categories
@@ -89,14 +80,14 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
   } = useReturnSingleProduct()
 
   // Onsubmit fn
-  const onSubmit = (values) => {
-    console.log(values)
+  const onSubmit = (values: sellGoodsModelInitailValueType) => {
+    const product = selectedProductData ?? productData
 
     if (values.hasSubProducts === false) setFieldValue('sellType', 'all')
 
     // Quantity check for product without model
-    if (Number(values.quantity) > Number(productData?.totalQuantity)) {
-      toastUI.error(`There is only ${productData?.totalQuantity} of this product left`)
+    if (Number(values.quantity) > Number(product?.totalQuantity)) {
+      toastUI.error(`There is only ${product?.totalQuantity} of this product left`)
 
       return
     }
@@ -105,10 +96,10 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     if (
       categoryData?.hasColor &&
       Number(values.quantity) >
-        Number(getQuantityLeftInColours(productData!, values.color).quantityLeft)
+        Number(getQuantityLeftInColours(product!, values.color).quantityLeft)
     ) {
       toastUI.error(
-        `There is only ${getQuantityLeftInColours(productData!, values.color).quantityLeft} of this colour left`
+        `There is only ${getQuantityLeftInColours(product!, values.color).quantityLeft} of this colour left`
       )
 
       return
@@ -118,10 +109,10 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
     if (
       categoryData?.hasColor &&
       Number(values.quantity) >
-        Number(getQuantityLeftInDesigns(productData!, values.color, values.design).quantityLeft)
+        Number(getQuantityLeftInDesigns(product!, values.color, values.design).quantityLeft)
     ) {
       toastUI.error(
-        `There is only ${getQuantityLeftInDesigns(productData!, values.color, values.design).quantityLeft} of this design left`
+        `There is only ${getQuantityLeftInDesigns(product!, values.color, values.design).quantityLeft} of this design left`
       )
 
       return
@@ -139,12 +130,45 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
         return
       }
 
-      setFormStep(2)
+      dispatch(
+        addTocart({
+          categoryId: values.categoryId,
+          subcategory: values.subcategory,
+          model: values.model,
+          productId: values.productId,
+          subproducts: values.subproducts,
+          color: values.color,
+          design: values.design,
+          quantity: values.quantity,
+          cartoonQuantity: values.cartoonQuantity,
+          sellType: values.sellType
+        })
+      )
+
+      toastUI.success('Product added to cart')
+      openModel(false)
 
       return
     }
 
-    setFormStep(2)
+    dispatch(
+      addTocart({
+        categoryId: values.categoryId,
+        subcategory: values.subcategory,
+        model: values.model,
+        productId: values.productId,
+        subproducts: values.subproducts,
+        color: values.color,
+        design: values.design,
+        quantity: values.quantity,
+        cartoonQuantity:
+          values.sellType === 'all' ? (product?.cartoonsPerSet ?? 1) : values.cartoonQuantity,
+        sellType: values.sellType
+      })
+    )
+
+    toastUI.success('Product added to cart')
+    openModel(false)
   }
 
   // initailizing formik
@@ -168,6 +192,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
       setFieldValue('productId', values.categoryId)
     }
 
+    if (selectedProductData) return
+
     const init = async () => {
       if (categoryData) {
         await setFieldValue('hasSubCategory', categoryData?.hasSubcategories)
@@ -183,6 +209,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
   // useEffect to get all products
   useEffect(() => {
+    if (selectedProductData) return
+
     if (values.categoryId || values.subcategory) {
       getProducts({
         subCategoryName: values.subcategory,
@@ -201,6 +229,8 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
 
   // useEffect to get single product
   useEffect(() => {
+    if (selectedProductData) return
+
     if (values.productId) {
       getProduct({ productId: values.productId })
     }
@@ -243,7 +273,9 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
   }, [values.color])
 
   useEffect(() => {
-    if (!productData) {
+    const product = selectedProductData ?? productData
+
+    if (!product) {
       setData({
         ...data,
         listOfDesigns: [],
@@ -254,24 +286,33 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
       })
     }
 
-    if (productData) {
+    if (product) {
       setData({
         ...data,
-        listOfDesigns: getDesignOptions(productData!, values.color),
-        listOfColours: getColorsOptions(productData!),
-        colorQuantityMsg: getQuantityLeftInColours(productData, values.color).msg,
-        designQuantityMsg: getQuantityLeftInDesigns(productData, values.color, values.design).msg,
-        modelQuantityMsg: getQuantityLeftInModels(productData).msg
+        listOfDesigns: getDesignOptions(product!, values.color),
+        listOfColours: getColorsOptions(product!),
+        colorQuantityMsg: getQuantityLeftInColours(product, values.color, cartItems).msg,
+        designQuantityMsg: getQuantityLeftInDesigns(product, values.color, values.design, cartItems)
+          .msg,
+        modelQuantityMsg: getQuantityLeftInModels(product, cartItems).msg
       })
     }
-  }, [productData, values.model, values.design, values.color])
+  }, [productData, values.model, values.design, values.color, selectedProductData])
 
   return (
     <div className="out_going_goods_form">
-      {formStep === 1 && (
-        <form onSubmit={handleSubmit}>
-          <div className="form_con">
-            <>
+      <form onSubmit={handleSubmit}>
+        <div className="form_con">
+          <>
+            {selectedProductData ? (
+              <Input
+                disabled
+                label="Select product category"
+                value={selectedProductData.categoryName}
+                onChange={() => {}}
+                placeholder=""
+              />
+            ) : (
               <SelecInput
                 label="Select product category"
                 placeholder="Select.."
@@ -283,26 +324,49 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                 errorMsg={errors.categoryId}
                 touched={touched.categoryId}
               />
+            )}
 
-              {values?.hasSubCategory && (
-                <SelecInput
-                  label="Select product sub-category"
-                  placeholder="Select..."
-                  id="subcategory"
-                  name="subcategory"
-                  onChange={setFieldValue}
-                  isLoading={isgettingSingleCategory}
-                  options={
-                    categoryData?.subcategories.map((i) => ({ label: i.name, value: i.name })) ?? []
-                  }
-                  errorMsg={errors.subcategory}
-                  touched={touched.subcategory}
-                  defaultValue={values.subcategory}
-                />
-              )}
+            {values?.hasSubCategory && (
+              <>
+                {selectedProductData ? (
+                  <Input
+                    disabled
+                    label="Select product sub-category"
+                    value={selectedProductData.subCategory}
+                    onChange={() => {}}
+                    placeholder=""
+                  />
+                ) : (
+                  <SelecInput
+                    label="Select product sub-category"
+                    placeholder="Select..."
+                    id="subcategory"
+                    name="subcategory"
+                    onChange={setFieldValue}
+                    isLoading={isgettingSingleCategory}
+                    options={
+                      categoryData?.subcategories.map((i) => ({ label: i.name, value: i.name })) ??
+                      []
+                    }
+                    errorMsg={errors.subcategory}
+                    touched={touched.subcategory}
+                    defaultValue={values.subcategory}
+                  />
+                )}
+              </>
+            )}
 
-              {values?.hasModel && (
-                <div>
+            {values?.hasModel && (
+              <div>
+                {selectedProductData ? (
+                  <Input
+                    disabled
+                    label="Select product model"
+                    value={selectedProductData.model}
+                    onChange={() => {}}
+                    placeholder=""
+                  />
+                ) : (
                   <SelecInput
                     label="Select product model"
                     placeholder="Select.."
@@ -315,259 +379,193 @@ const OutGoingGoodsForm = ({ openModel }: { openModel: (value: boolean) => void 
                     errorMsg={errors.productId}
                     touched={touched.productId}
                   />
-                  {values.productId && (
-                    <small className="input_info_txt">
-                      {data.modelQuantityMsg}
-                      left
-                    </small>
-                  )}
-                </div>
-              )}
-
-              <div className="input_row_con">
-                {values?.hasColor && (
-                  <div
-                    style={{
-                      flex: 1
-                    }}
-                  >
-                    <SelecInput
-                      label="Select  colour "
-                      placeholder="Select ..."
-                      isLoading={isGettingProduct}
-                      options={data.listOfColours}
-                      id="color"
-                      name="color"
-                      onChange={setFieldValue}
-                      errorMsg={errors.color}
-                      touched={touched.color}
-                      defaultValue={values.color}
-                    />
-
-                    {values.color && (
-                      <small className="input_info_txt">
-                        {data.colorQuantityMsg}
-                        {/* This colour has {data.colorQuantity ?? '__'} left */}
-                      </small>
-                    )}
-                  </div>
                 )}
 
-                {values?.hasDesign && (
-                  <div
-                    style={{
-                      flex: 1
-                    }}
-                  >
-                    <SelecInput
-                      label="Select  design"
-                      placeholder="Select ..."
-                      options={data.listOfDesigns}
-                      id="design"
-                      name="design"
-                      isLoading={isGettingProduct}
-                      onChange={setFieldValue}
-                      errorMsg={errors.design}
-                      touched={touched.design}
-                    />
-
-                    {values.design && (
-                      <small className="input_info_txt">
-                        {data.designQuantityMsg}
-                        {/* This design has {data.designQuantity ?? '__'} left */}
-                      </small>
-                    )}
-                  </div>
+                {values.productId && (
+                  <small className="input_info_txt">{data.modelQuantityMsg}</small>
                 )}
               </div>
+            )}
 
-              {values.subproducts?.length !== 0 && (
-                <>
-                  {values?.hasModel && values.hasSubProducts && (
-                    <SelecInput
-                      label="Do you want to sell all or part of the sub-product(s)?"
-                      placeholder="Select option"
-                      onChange={setFieldValue}
-                      options={[
-                        { value: 'all', label: 'Sell All' },
-                        { value: 'part', label: 'Sell Part' }
-                      ]}
-                      id="sellType"
-                      name="sellType"
-                      errorMsg={errors.sellType}
-                      touched={touched.sellType}
-                    />
-                  )}
-
-                  {values?.hasSubProducts && values.sellType === 'part' && (
-                    <div className="sub_products_con">
-                      <h3>Enter quantity of sub-products</h3>
-
-                      <div className="box_con">
-                        {values.subproducts.map((i, key) => (
-                          <div className="con" key={key}>
-                            <Input
-                              label={i.name}
-                              onChange={async (e) => {
-                                values.subproducts[key].sellQuantity = e.target.value
-
-                                await setFieldValue('subproducts', values.subproducts)
-                                // setData({ ...data })
-                              }}
-                              placeholder="Enter quantity..."
-                              value={i.sellQuantity}
-                              onBlur={async (e) => {
-                                const value = e.target.value
-
-                                if (value < 0) {
-                                  values.subproducts[key].sellQuantity = 0
-
-                                  await setFieldValue('subproducts', values.subproducts)
-
-                                  toastUI.error("Value can't be less than 0")
-                                }
-                                if (value > i.defaultQuantity) {
-                                  values.subproducts[key].sellQuantity = i.defaultQuantity
-
-                                  await setFieldValue('subproducts', values.subproducts)
-
-                                  toastUI.error(`${i.name} is only ${i.defaultQuantity}`)
-                                }
-                              }}
-                              type="number"
-                            />
-
-                            <small>{i.defaultQuantity}</small>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {values.categoryId !== '' && values.sellType !== 'part' && (
-                <div>
-                  <Input
-                    label="Enter product quantity"
-                    placeholder="Enter quantity..."
-                    value={values.quantity}
-                    onChange={handleChange('quantity')}
-                    type="number"
-                    errorMsg={errors.quantity}
-                    touched={touched.quantity}
-                    onBlur={(e) => {
-                      const value = e.target.value
-                      if (value < 1) {
-                        toastUI.error("Quantity can't be less than 1")
-                        setFieldValue('quantity', 1)
-                      }
-                    }}
+            <div className="input_row_con">
+              {values?.hasColor && (
+                <div
+                  style={{
+                    flex: 1
+                  }}
+                >
+                  <SelecInput
+                    label="Select  colour "
+                    placeholder="Select ..."
+                    isLoading={isGettingProduct}
+                    options={data.listOfColours}
+                    id="color"
+                    name="color"
+                    onChange={setFieldValue}
+                    errorMsg={errors.color}
+                    touched={touched.color}
+                    defaultValue={values.color}
                   />
-                  {values.quantity > 0 && (
-                    <small className="input_info_txt">
-                      {(productData && productData?.cartoonsPerSet * values.quantity) ?? '__'}{' '}
-                      cartoon(s) to be supplied
-                    </small>
+
+                  {values.color && (
+                    <small className="input_info_txt">{data.colorQuantityMsg}</small>
                   )}
                 </div>
               )}
 
-              {values.categoryId !== '' && values.sellType === 'part' && (
+              {values?.hasDesign && (
+                <div
+                  style={{
+                    flex: 1
+                  }}
+                >
+                  <SelecInput
+                    label="Select  design"
+                    placeholder="Select ..."
+                    options={data.listOfDesigns}
+                    id="design"
+                    name="design"
+                    isLoading={isGettingProduct}
+                    onChange={setFieldValue}
+                    errorMsg={errors.design}
+                    touched={touched.design}
+                  />
+
+                  {values.design && (
+                    <small className="input_info_txt">{data.designQuantityMsg}</small>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {values.subproducts?.length !== 0 && (
+              <>
+                {values?.hasModel && values.hasSubProducts && (
+                  <SelecInput
+                    label="Do you want to sell all or part of the sub-product(s)?"
+                    placeholder="Select option"
+                    onChange={setFieldValue}
+                    options={[
+                      { value: 'all', label: 'Sell All' },
+                      { value: 'part', label: 'Sell Part' }
+                    ]}
+                    id="sellType"
+                    name="sellType"
+                    errorMsg={errors.sellType}
+                    touched={touched.sellType}
+                  />
+                )}
+
+                {values?.hasSubProducts && values.sellType === 'part' && (
+                  <div className="sub_products_con">
+                    <h3>Enter quantity of sub-products</h3>
+
+                    <div className="box_con">
+                      {values.subproducts.map((i, key) => (
+                        <div className="con" key={key}>
+                          <Input
+                            label={i.name}
+                            onChange={async (e) => {
+                              values.subproducts[key].sellQuantity = e.target.value
+
+                              await setFieldValue('subproducts', values.subproducts)
+                              // setData({ ...data })
+                            }}
+                            placeholder="Enter quantity..."
+                            value={i.sellQuantity}
+                            onBlur={async (e) => {
+                              const value = e.target.value
+
+                              if (value < 0) {
+                                values.subproducts[key].sellQuantity = 0
+
+                                await setFieldValue('subproducts', values.subproducts)
+
+                                toastUI.error("Value can't be less than 0")
+                              }
+                              if (value > i.defaultQuantity) {
+                                values.subproducts[key].sellQuantity = i.defaultQuantity
+
+                                await setFieldValue('subproducts', values.subproducts)
+
+                                toastUI.error(`${i.name} is only ${i.defaultQuantity}`)
+                              }
+                            }}
+                            type="number"
+                          />
+
+                          <small>{i.defaultQuantity}</small>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {values.categoryId !== '' && values.sellType !== 'part' && (
+              <div>
                 <Input
-                  label="How many cartoons do you think would be left?"
+                  label="Enter product quantity"
                   placeholder="Enter quantity..."
-                  value={values.cartoonQuantity}
+                  value={values.quantity}
                   onChange={handleChange('quantity')}
+                  type="number"
+                  errorMsg={errors.quantity}
+                  touched={touched.quantity}
                   onBlur={(e) => {
-                    if (e.target.value < 1) {
-                      setFieldValue('cartoonQuantity', 1)
+                    const value = e.target.value
+                    if (value < 1) {
+                      toastUI.error("Quantity can't be less than 1")
+                      setFieldValue('quantity', 1)
                     }
                   }}
-                  type="number"
                 />
-              )}
-            </>
-          </div>
+                {values.quantity > 0 && (
+                  <small className="input_info_txt">
+                    {productData
+                      ? productData?.cartoonsPerSet * values.quantity
+                      : selectedProductData
+                        ? selectedProductData?.cartoonsPerSet * values.quantity
+                        : '__'}{' '}
+                    cartoon(s) to be supplied
+                  </small>
+                )}
+              </div>
+            )}
 
-          <div className="btns">
-            <Button
-              text={'Cancel'}
-              onClick={() => {
-                openModel(false)
-                resetForm()
-              }}
-              varient="outline"
-              type="button"
-            />
-            <Button text="Proceed" type="submit" onClick={() => console.log(errors)} />
-          </div>
-        </form>
-      )}
+            {values.categoryId !== '' && values.sellType === 'part' && (
+              <Input
+                label="How many cartoons do you think would be left?"
+                placeholder="Enter quantity..."
+                value={values.cartoonQuantity}
+                onChange={handleChange('quantity')}
+                onBlur={(e) => {
+                  if (e.target.value < 1) {
+                    setFieldValue('cartoonQuantity', 1)
+                  }
+                }}
+                type="number"
+              />
+            )}
+          </>
+        </div>
 
-      {formStep === 2 && (
-        <>
-          <CheckoutForm
-            setFormStep={setFormStep}
-            productData={values}
-            openSuccessMsg={(customerName: string) => {
-              setFormStep(3)
-              setOpenSuccessCon(true)
-              setSuccessMsgData({
-                ...successMsgData,
-                customerName,
-                cartoonNumber: Number(values.quantity) * Number(productData?.cartoonsPerSet)
-              })
+        <div className="btns">
+          <Button
+            text={'Cancel'}
+            onClick={() => {
+              openModel(false)
+              resetForm()
             }}
+            varient="outline"
+            type="button"
           />
-        </>
-      )}
-
-      {formStep === 3 && (
-        <SuccessMsg
-          customerData={successMsgData}
-          isOpen={openSuccessCon}
-          setOpen={setOpenSuccessCon}
-          openParentModal={openModel}
-        />
-      )}
+          <Button text="Add To Cart" type="submit" />
+        </div>
+      </form>
     </div>
   )
 }
 
 export default OutGoingGoodsForm
-
-const SuccessMsg = ({
-  customerData,
-  isOpen,
-  setOpen,
-  openParentModal
-}: {
-  customerData: { customerName: string; cartoonNumber: number }
-  isOpen: boolean
-  setOpen: (value: boolean) => void
-  openParentModal: (value: boolean) => void
-}) => {
-  return (
-    <AlertModal className="successMsg" open={isOpen} onOpenChange={setOpen} isCloseable={false}>
-      <div className="success_icon">
-        <Icons.CheckIcon className="icon" />
-      </div>
-      <h2>Checkout successful</h2>
-
-      <p>Approximately</p>
-
-      <h1>
-        {customerData.cartoonNumber} <span>cartoon(s)</span>
-      </h1>
-
-      <p>
-        Will be supplied to <b>{customerData.customerName}</b>
-      </p>
-
-      <div className="btn">
-        <Button text="Save" onClick={() => openParentModal(false)} />
-      </div>
-    </AlertModal>
-  )
-}

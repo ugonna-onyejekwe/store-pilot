@@ -219,3 +219,11 @@ interface sellGoodsModelInitailValueType {
   hasSubProducts: boolean
   cartoonQuantity: number
 }
+
+type DataType = {
+  listOfDesigns: { label: string; value: string }[]
+  listOfColours: { label: string; value: string }[]
+  colorQuantityMsg: string
+  designQuantityMsg: string
+  modelQuantityMsg: string
+}

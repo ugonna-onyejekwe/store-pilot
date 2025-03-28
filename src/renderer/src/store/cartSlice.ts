@@ -2,26 +2,23 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
 export interface cartItem {
-  category: {
-    id: string
-    name: string
-  }
+  categoryId: string
+  subcategory: string
   model: string
   productId: string
-  color: string
-  size: string
-  design: string
   subproducts: {
     name: string
-    id: string
     defaultQuantity: number
-    left: number
+    id: string
     sellQuantity: number
+    left?: number
   }[]
-  typeOfSale: 'sell part' | 'sell all' | 'sell leftOver'
+  color: string
+  design: string
   quantity: number
-  leftOverId: string
-  cartoonQuantity?: number
+  cartoonQuantity: number
+  sellType: string
+  leftOverId?: string
 }
 
 export interface cartSlice {

@@ -22,7 +22,7 @@ const LoginForm = ({ setLoggingIn, openModel }: LoginFormProps) => {
       .then(() => {
         toastUI.success('Login successful')
         openModel(false)
-        setCookies('auth', 'LOGGED_IN')
+        setCookies('STORE_PILOT_AUTH_KEY', 'LOGGED_IN')
         dispatch(initCookie())
         resetForm()
       })

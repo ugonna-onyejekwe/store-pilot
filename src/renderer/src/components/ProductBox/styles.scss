@@ -6,6 +6,7 @@
   padding: 20px;
   flex: 1;
   position: relative;
+  height: fit-content;
 
   .header {
     display: flex;
@@ -20,10 +21,20 @@
       font-size: 11px;
       text-transform: capitalize;
       border-radius: 30px;
+      margin-bottom: 10px;
     }
 
     .dropdown_con {
-      position: relative;
+      position: absolute;
+      display: flex;
+      justify-content: right;
+      flex: 1;
+      right: 20px;
+      top: 20px;
+
+      .wrapper {
+        position: relative;
+      }
 
       .dot_menu {
         height: 15px;
@@ -69,7 +80,6 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 10px;
 
     span {
       background: variables.$bg_alt_color;
@@ -78,6 +88,8 @@
       font-size: 17px;
       font-weight: 900;
       color: variables.$light_text_color;
+      min-width: 50px;
+      text-align: center;
     }
 
     font-size: 17px;
@@ -111,12 +123,11 @@
     background: rgb(22, 22, 22);
     font-size: 15px;
     color: white;
-    padding: 8px 20px;
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
+    padding: 12px 20px;
     cursor: pointer;
     transition: 0.4s ease;
+    margin-top: 20px;
+    width: 100%;
 
     &:hover {
       background: black !important;

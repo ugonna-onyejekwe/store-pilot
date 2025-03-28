@@ -27,26 +27,38 @@ const EnterQuantity = ({ defaultValues, handleProceed, previousFormFn }: EnterQu
     <motion.div variants={animateY} initial="initial" animate="animate" exit="exit">
       <form onSubmit={handleSubmit} className="form">
         <div className="form_container">
-          <Input
-            label={'Total number of product available'}
-            placeholder="Enter quantity"
-            onChange={handleChange('totalAvailableProduct')}
-            value={values.totalAvailableProduct}
-            errorMsg={errors.totalAvailableProduct}
-            touched={touched.totalAvailableProduct}
-            type="number"
-          />
-
-          {defaultValues.actionType === 'new' && (
+          <div className="with_water_mark">
             <Input
-              label={'How many cartoons makes up one set of this product?'}
+              label={'Total number of product available'}
               placeholder="Enter quantity"
-              onChange={handleChange('cartoonsPerSet')}
-              value={values.cartoonsPerSet}
-              errorMsg={errors.cartoonsPerSet}
-              touched={touched.cartoonsPerSet}
+              onChange={handleChange('totalAvailableProduct')}
+              value={values.totalAvailableProduct}
+              errorMsg={errors.totalAvailableProduct}
+              touched={touched.totalAvailableProduct}
               type="number"
             />
+
+            {values.totalAvailableProduct > 0 && (
+              <p className="water_mark">{values.totalAvailableProduct} sets</p>
+            )}
+          </div>
+
+          {defaultValues.actionType === 'new' && (
+            <div className="with_water_mark">
+              <Input
+                label={'How many cartoons makes up one set of this product?'}
+                placeholder="Enter quantity"
+                onChange={handleChange('cartoonsPerSet')}
+                value={values.cartoonsPerSet}
+                errorMsg={errors.cartoonsPerSet}
+                touched={touched.cartoonsPerSet}
+                type="number"
+              />
+
+              {values.cartoonsPerSet > 0 && (
+                <p className="water_mark">{values.cartoonsPerSet} cartoon(s) per set</p>
+              )}
+            </div>
           )}
         </div>
 

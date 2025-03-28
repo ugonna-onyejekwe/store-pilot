@@ -71,7 +71,7 @@ export const createProduct = async (req: Request, res: Response) => {
           isParentProduct: true
         }
 
-        const updatedProductsList = [...allProducts, newProduct]
+        const updatedProductsList = [newProduct, ...allProducts]
 
         return updateProductListFn(updatedProductsList, newProduct)
       } else {
@@ -111,7 +111,7 @@ export const createProduct = async (req: Request, res: Response) => {
         hasDesigns
       }
 
-      const updatedProductsList = [...allProducts, newProduct]
+      const updatedProductsList = [newProduct, ...allProducts]
 
       return updateProductListFn(updatedProductsList, newProduct)
     } else if (actionType === 'update') {

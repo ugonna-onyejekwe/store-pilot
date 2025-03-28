@@ -62,3 +62,13 @@ export const ScaleLoaderUI = ({
     </div>
   )
 }
+
+export const ProductLoaders = () => {
+  return (
+    <>
+      {[...new Array(8)].map((_, key) => (
+        <div key={key} className="skeleton product_con" />
+      ))}
+    </>
+  )
+}

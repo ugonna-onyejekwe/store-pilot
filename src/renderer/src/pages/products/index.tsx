@@ -1,18 +1,25 @@
+import { useGetCategories } from '@renderer/apis/categories/getCategories'
+import { useReturnSingleCategory } from '@renderer/apis/categories/getSingleCategory'
 import { useReturnAllProducts } from '@renderer/apis/products/getProducts'
 import CategorySideBar from '@renderer/components/CategorySideBar'
 import Navbar from '@renderer/components/Navbar'
 import ProductBox from '@renderer/components/ProductBox'
 import { Icons } from '@renderer/components/ui/icons'
+import { ProductLoaders } from '@renderer/components/ui/loader'
 import { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import './styles.scss'
 
 const Goods = () => {
-  const { data: productData, isPending, mutateAsync } = useReturnAllProducts()
-  const { subcatId } = useParams()
-  const [params] = useSearchParams()
-  const [category, setCategory] = useState('')
   const [openCategories, setOpenCategories] = useState(false)
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const navigate = useNavigate()
+
+  // from params
+  const categoryId = searchParams.get('category')
+  const subCategoryId = searchParams.get('subCategoryId')
+  const searchValue = searchParams.get('seacrhValue')
 
   const {
     mutate: getProducts,
@@ -20,25 +27,35 @@ const Goods = () => {
     isPending: isGettingProducts
   } = useReturnAllProducts()
 
-  console.log(productData, isPending, isGettingProducts)
+  const { CategoriesData } = useGetCategories()
+  const { mutate: getSingleCategory, data: selectedCategoryData } = useReturnSingleCategory()
 
   useEffect(() => {
-    const searchValue = params.get('seacrhValue')
-
-    if (searchValue) {
-      mutateAsync({
-        model: searchValue
-      })
-    } else {
-      mutateAsync({
-        categoryId: subcatId
-      })
-    }
-  }, [subcatId, params])
+    getProducts({
+      categoryId: categoryId ?? '',
+      subCategoryName: subCategoryId ?? ''
+      // model: searchValue ?? ''
+    })
+  }, [categoryId, subCategoryId])
 
   useEffect(() => {
-    getProducts({})
-  }, [])
+    if (!categoryId) return
+    getSingleCategory({
+      id: categoryId!
+    })
+  }, [categoryId])
+
+  const handleSetParameter = (key: 'category' | 'subCategoryId', id: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set(key, id)
+    navigate(`?${params.toString()}`)
+  }
+
+  const deleteParams = (key: 'category' | 'subCategoryId') => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete(key)
+    navigate(`?${params.toString()}`)
+  }
 
   return (
     <>
@@ -46,10 +63,9 @@ const Goods = () => {
       <div className="product_details_container container ">
         {/* sidebar        */}
         <CategorySideBar
-          setCategory={setCategory}
           open={openCategories}
           onOpenChange={setOpenCategories}
-          category={category}
+          category={categoryId ?? ''}
         />
 
         <div className="product_page_wrapper">
@@ -59,17 +75,72 @@ const Goods = () => {
               <Icons.MenuIcon className="meun_icon" />
             </span>
 
-            {['all', 'filter 1', 'filter 2', 'filter 3', 'filter 4'].map((i, key) => (
-              <span key={key} className="filter_item active ">
-                {i}
-              </span>
-            ))}
+            {!categoryId ? (
+              <>
+                <span
+                  className={!categoryId && !subCategoryId ? 'filter_item active' : 'filter_item'}
+                  onClick={() => {
+                    deleteParams('category')
+                  }}
+                >
+                  All
+                </span>
+
+                {CategoriesData?.map((i, key) => (
+                  <span
+                    key={key}
+                    className={categoryId === i.value ? 'filter_item active' : 'filter_item'}
+                    onClick={() => {
+                      handleSetParameter('category', i.value)
+                    }}
+                  >
+                    {i.label}
+                  </span>
+                ))}
+              </>
+            ) : selectedCategoryData?.hasSubcategories ? (
+              <>
+                <span
+                  className={!subCategoryId ? 'filter_item active' : 'filter_item'}
+                  onClick={() => {
+                    deleteParams('subCategoryId')
+                  }}
+                >
+                  All
+                </span>
+
+                {selectedCategoryData.subcategories.map((i, key) => (
+                  <span
+                    key={key}
+                    className={
+                      subCategoryId?.toLowerCase() === i.name.toLowerCase()
+                        ? 'filter_item active'
+                        : 'filter_item'
+                    }
+                    onClick={() => handleSetParameter('subCategoryId', i.name)}
+                  >
+                    {i.name}
+                  </span>
+                ))}
+              </>
+            ) : null}
           </div>
 
           {/* main goods page */}
-          <div className="products_con">
-            {allProducts?.map((product, key) => <ProductBox key={key} data={product} />)}
-          </div>
+          {isGettingProducts ? (
+            <div className="products_con">
+              <ProductLoaders />
+            </div>
+          ) : allProducts?.length === 0 ? (
+            <div className="empty_product">
+              <Icons.EmptyIcon className="icon" />
+              <h2>No product found</h2>
+            </div>
+          ) : (
+            <div className="products_con">
+              {allProducts?.map((product, key) => <ProductBox key={key} data={product} />)}
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -1,18 +1,26 @@
 import { useGetCategories } from '@renderer/apis/categories/getCategories'
+import { useNavigate } from 'react-router-dom'
 import { Icons } from '../ui/icons'
 import { ScaleLoaderUI } from '../ui/loader'
 import SideSheet from '../ui/sideSheet'
 import './styles.scss'
 
 type CategorySideBarProps = {
-  setCategory: (value: string) => void
   open: boolean
   onOpenChange: (value: boolean) => void
   category: string
 }
 
-const CategorySideBar = ({ category, setCategory, open, onOpenChange }: CategorySideBarProps) => {
+const CategorySideBar = ({ category, open, onOpenChange }: CategorySideBarProps) => {
   const { CategoriesData, isPending } = useGetCategories()
+  const navigate = useNavigate()
+
+  const handleSetParameter = (id: string) => {
+    const params = new URLSearchParams()
+    params.set('category', id)
+    navigate(`?${params.toString()}`)
+  }
+
   return (
     <SideSheet className="category_sidebar" onOpen={open} onOpenChange={onOpenChange}>
       {isPending ? (
@@ -26,7 +34,10 @@ const CategorySideBar = ({ category, setCategory, open, onOpenChange }: Category
               {CategoriesData?.map((i, key) => (
                 <p
                   key={key}
-                  onClick={() => setCategory(i.value)}
+                  onClick={() => {
+                    handleSetParameter(i.value)
+                    onOpenChange(false)
+                  }}
                   className={i.value === category ? 'active' : ''}
                 >
                   <span>

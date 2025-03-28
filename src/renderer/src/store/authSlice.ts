@@ -14,7 +14,7 @@ export const auth = createSlice({
   initialState,
   reducers: {
     initCookie: (state) => {
-      state.cookie = getCookies('auth')
+      state.cookie = getCookies('STORE_PILOT_AUTH_KEY')
     },
     removeCookie: (state) => {
       state.cookie = ''

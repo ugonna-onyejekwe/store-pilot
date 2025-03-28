@@ -1,6 +1,7 @@
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct.js'
-import { useRef, useState } from 'react'
-import SellProductModal from '../sellProductModal.tsx'
+import { useEffect, useRef, useState } from 'react'
+import OutGoingGoods from '../outGoingGoods/index.js'
+import Button from '../ui/Button/index.js'
 import { Icons } from '../ui/icons'
 import './styles.scss'
 
@@ -12,70 +13,132 @@ const ProductBox = ({ data }: ProductBoxType) => {
   const [showDropDown, setShowDropDown] = useState(false)
   const [isSellingProduct, setIsSellingProduct] = useState(false)
   const dropdownCon = useRef(null)
+  const [designObject, setDesignObject] = useState<{
+    list: { name: string; quantity: number; id: string }[]
+  }>({
+    list: []
+  })
 
-  // window.addEventListener('click', (e) => {
-  //   if (e.currentTarget === dropdownCon) {
-  //     // setShowDropDown(false)
-  //     console.log
-  //   }
+  useEffect(() => {
+    if (data.hasDesigns === false) {
+      designObject.list = []
+      setDesignObject(designObject)
+      return
+    }
 
-  //   console.log(e.target.currentTarget)
-  // })
+    if (designObject.list.length > 0) return
 
+    data.designs.map((i) => {
+      i.designs.map((d) => {
+        const exist = designObject.list.find((e) => e.id === d.id)
+        if (!exist) {
+          designObject.list = [
+            ...designObject.list,
+            {
+              name: d.name,
+              id: d.id,
+              quantity: d.availableQuantity
+            }
+          ]
+
+          return
+        }
+
+        exist.quantity = Number(exist.quantity) + Number(d.availableQuantity)
+        console.log(exist.quantity)
+
+        designObject.list = designObject.list.map((j) => (j.id === exist.id ? exist : j))
+        setDesignObject(designObject)
+      })
+    })
+  }, [])
+
+  const clickOutside = (e: any) => {
+    // @ts-ignore:undefined
+    if (dropdownCon.current?.contains(e.target)) return
+    setShowDropDown(false)
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', clickOutside)
+    return () => {
+      document.removeEventListener('mousedown', clickOutside)
+    }
+  }, [showDropDown])
   return (
     <>
       <div className="product_box">
         <div className="header">
-          <small>{data.subCategory}</small>
+          {data.hasSubCategory && <small>{data.subCategory}</small>}
 
           <div className="dropdown_con" ref={dropdownCon}>
-            <span onClick={() => setShowDropDown(true)}>
-              <Icons.DotMenu className="dot_menu" />
-            </span>
+            <div className="wrapper">
+              <span onClick={() => setShowDropDown(true)}>
+                <Icons.DotMenu className="dot_menu" />
+              </span>
 
-            <div className={showDropDown ? 'dropDown active' : 'dropDown'}>
-              <li>View details</li>
-              <li>View left over</li>
+              <div className={showDropDown ? 'dropDown active' : 'dropDown'}>
+                <li onClick={() => setShowDropDown(false)}>View details</li>
+                <li onClick={() => setShowDropDown(false)}>View left over</li>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="modal_con">
-          <span>{data.totalQuantity}</span>#{data.model}
+          <span>{data.totalQuantity}</span>
+          {data.hasModel && `#${data.model}`}
         </div>
 
-        <div className="color_con">
-          <h3>Colours:</h3>
+        {data.hasColors && (
+          <div className="color_con">
+            <h3>Colours:</h3>
 
-          <div className="box_con">
-            {data.colors.map((i, key) => (
-              <span key={key}>{i.name}</span>
-            ))}
+            <div className="box_con">
+              {data.colors.map((i, key) => (
+                <span key={key}>
+                  {i.name} {`(${i.availableQuantity})`}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="designs_con">
-          <h3>Designs:</h3>
+        {data.hasDesigns && (
+          <div className="designs_con">
+            <h3>Designs:</h3>
 
-          <div className="box_con">
-            {data.designs.map((i, key) => (
-              <span key={key}>{i.colorName}</span>
-            ))}
+            <div className="box_con">
+              {designObject.list.map((i, key) => (
+                <span key={key}>
+                  {i.name} {`(${i.quantity})`}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* sell btn */}
-        <button className="sell_btn" onClick={() => setIsSellingProduct(true)}>
+        <Button
+          className="sell_btn"
+          onClick={() => setIsSellingProduct(true)}
+          text="
           Sell
-        </button>
+    
+          "
+        />
       </div>
 
-      {isSellingProduct && (
+      {/* {isSellingProduct && (
         <SellProductModal
           onOpen={isSellingProduct}
           onOpenChange={setIsSellingProduct}
           data={data}
         />
+      )} */}
+
+      {isSellingProduct && (
+        <OutGoingGoods open={isSellingProduct} onOpenChange={setIsSellingProduct} data={data} />
       )}
     </>
   )

@@ -46,6 +46,7 @@ export type ProductResponse = {
   }[]
   productId?: string
   isParentProduct: boolean
+  leftOver?: []
 }
 
 const getSingleProducts = (payload: payload) => {

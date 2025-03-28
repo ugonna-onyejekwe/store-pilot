@@ -7,12 +7,6 @@ import { useMutation } from '@tanstack/react-query'
 type ResponseType = {
   name: string
   id: string
-  debt: number
-  lastPaymentDate: string
-  paymentHistory: {
-    date: string
-    amountPaid: string
-  }[]
 }[]
 
 const getCustomers = () => {

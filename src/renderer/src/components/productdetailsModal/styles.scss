@@ -1,65 +1,77 @@
 @use '../../lib/variables';
 
-.product_details_modal {
+.Product_details_con {
   h2 {
     font-size: 25px;
     color: variables.$dark_text_color;
     margin-top: 10px;
   }
-  .txt_con {
+
+  .general_info_con {
+    margin-top: 5px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 10px;
 
-    .txt {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 16px;
-    }
-  }
-
-  .available_designs_con,
-  .available_color_con {
-    margin-top: 20px;
-
-    h3 {
-      font-size: 17px;
-      color: variables.$dark_text_color;
-    }
-    h5 {
-      font-size: 15px;
-      font-weight: 600;
-      color: rgb(249, 71, 71);
-      margin-top: 5px;
-    }
-
-    .con {
-      background: variables.$bg_alt_color;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 13px;
-      margin-top: 5px;
+    p {
+      font-weight: 500;
+      color: variables.$light_text_color;
 
       span {
-        color: variables.$light_text_color2;
-        font-size: 13px;
-
-        b {
-          color: variables.$light_text_color;
-          font-size: 16px;
-
-          &:nth-child(2) {
-            margin-left: 10px;
-          }
-        }
+        color: variables.$secondary_color;
       }
     }
   }
 
-  .btns {
+  .con {
+    margin-top: 20px;
+
+    h3 {
+      font-size: 15px;
+      padding-bottom: 5px;
+    }
+
+    .subProducts_con,
+    .subProducts_con {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+
+      p {
+        font-weight: 500;
+        color: variables.$light_text_color;
+        font-size: 15px;
+
+        span {
+          color: variables.$secondary_color;
+        }
+      }
+    }
+
+    .design_con {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      h4 {
+        font-size: 14px;
+        text-decoration: underline;
+        padding-bottom: 5px;
+
+        span {
+          color: variables.$primary_color;
+        }
+      }
+
+      .design_wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+  }
+
+  .btn {
     margin-top: 30px;
     display: flex;
     align-items: center;

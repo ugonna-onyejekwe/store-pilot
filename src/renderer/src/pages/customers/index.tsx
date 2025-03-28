@@ -3,7 +3,6 @@ import Navbar from '@renderer/components/Navbar'
 import SearchModal from '@renderer/components/searchModal'
 import { Icons } from '@renderer/components/ui/icons'
 import { ScaleLoaderUI } from '@renderer/components/ui/loader'
-import { convertAmount, formatDate } from '@renderer/lib/utils'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import './styles.scss'
@@ -18,8 +17,7 @@ const Customers = () => {
   const { data: customers, mutate: getcustomers, isPending: isGettingCustomers } = useGetCustomers()
 
   useEffect(() => {
-    // getcustomers({})
-    console.log(getcustomers)
+    getcustomers()
   }, [])
 
   return (
@@ -48,24 +46,13 @@ const Customers = () => {
             <>
               <div className="box_con">
                 {customers?.slice(startPage, endPage).map((i, key) => {
-                  const paymentStatus = i.debt > 0 ? 'outstanding' : 'settled'
                   return (
                     <Link to={`/customers/${i.id}/${i.name}`} key={key} className="box">
                       <div className="col_1">
                         <h3>{i.name}</h3>
-
-                        {i.debt > 0 && <p>Last payment was on {formatDate(i.lastPaymentDate)}</p>}
                       </div>
 
                       <div className="col_2">
-                        <div>
-                          <span className={`status status__${paymentStatus}`}>{paymentStatus}</span>
-
-                          {paymentStatus.toLowerCase() === 'outstanding' && (
-                            <h4>{convertAmount(i.debt)}</h4>
-                          )}
-                        </div>
-
                         <div className="arrow_forward">
                           <Icons.ForwardArrow className="icon" />
                         </div>

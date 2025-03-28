@@ -47,6 +47,7 @@ type ProductResponse = {
   }[]
   productId?: string
   isParentProduct: boolean
+  leftOver?: []
 }[]
 
 const getAllProducts = (payload: payload) => {

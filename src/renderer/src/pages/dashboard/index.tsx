@@ -87,12 +87,7 @@ const Dashboard = () => {
             link="/return-goods"
             icon_bg="#f740c65a"
           />
-          <DashboardLinkBox
-            label="Pending payments"
-            icon={<Icons.MoneyIcon className="icon" />}
-            link="/pending-payments"
-            icon_bg="#f40b073a"
-          />
+
           <DashboardLinkBox
             label="History"
             icon={<Icons.HistoryIcon className="icon" />}

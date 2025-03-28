@@ -13,6 +13,27 @@
     align-items: center;
     justify-content: space-between;
 
+    .indicator {
+      height: 8px;
+      width: 8px;
+      background: rgb(5, 193, 5);
+      border-radius: 100%;
+      box-shadow: 0 0 0 7px rgba(2, 150, 2, 0.184);
+      animation: scale 1000ms infinite;
+      position: absolute;
+      top: 20px;
+      right: 50px;
+
+      @keyframes scale {
+        0% {
+          transform: scale(0.5);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    }
+
     small {
       padding: 5px 10px;
       background: #007bff0b;

@@ -1,6 +1,8 @@
 import { ProductResponse } from '@renderer/apis/products/getSingleProduct.js'
 import { useEffect, useRef, useState } from 'react'
+import LeftOverProducts from '../LeftOverProducts/index.js'
 import OutGoingGoods from '../outGoingGoods/index.js'
+import ProductDetailsModal from '../productdetailsModal/index.js'
 import Button from '../ui/Button/index.js'
 import { Icons } from '../ui/icons'
 import './styles.scss'
@@ -18,6 +20,8 @@ const ProductBox = ({ data }: ProductBoxType) => {
   }>({
     list: []
   })
+  const [showProductDetails, setShowProductDetails] = useState(false)
+  const [showLeftOver, setShowLeftOver] = useState(false)
 
   useEffect(() => {
     if (data.hasDesigns === false) {
@@ -26,7 +30,7 @@ const ProductBox = ({ data }: ProductBoxType) => {
       return
     }
 
-    if (designObject.list.length > 0) return
+    if (designObject.list.length !== 0) return
 
     data.designs.map((i) => {
       i.designs.map((d) => {
@@ -69,6 +73,8 @@ const ProductBox = ({ data }: ProductBoxType) => {
     <>
       <div className="product_box">
         <div className="header">
+          {data.leftOver && <div className="indicator" />}
+
           {data.hasSubCategory && <small>{data.subCategory}</small>}
 
           <div className="dropdown_con" ref={dropdownCon}>
@@ -78,8 +84,26 @@ const ProductBox = ({ data }: ProductBoxType) => {
               </span>
 
               <div className={showDropDown ? 'dropDown active' : 'dropDown'}>
-                <li onClick={() => setShowDropDown(false)}>View details</li>
-                <li onClick={() => setShowDropDown(false)}>View left over</li>
+                {
+                  <li
+                    onClick={() => {
+                      setShowDropDown(false)
+                      setShowProductDetails(true)
+                    }}
+                  >
+                    View details
+                  </li>
+                }
+                {data.leftOver && (
+                  <li
+                    onClick={() => {
+                      setShowDropDown(false)
+                      setShowLeftOver(true)
+                    }}
+                  >
+                    View left over
+                  </li>
+                )}
               </div>
             </div>
           </div>
@@ -129,16 +153,20 @@ const ProductBox = ({ data }: ProductBoxType) => {
         />
       </div>
 
-      {/* {isSellingProduct && (
-        <SellProductModal
-          onOpen={isSellingProduct}
-          onOpenChange={setIsSellingProduct}
-          data={data}
-        />
-      )} */}
-
       {isSellingProduct && (
         <OutGoingGoods open={isSellingProduct} onOpenChange={setIsSellingProduct} data={data} />
+      )}
+
+      {showProductDetails && (
+        <ProductDetailsModal
+          open={showProductDetails}
+          onOpenChange={setShowProductDetails}
+          productData={data}
+        />
+      )}
+
+      {showLeftOver && (
+        <LeftOverProducts open={showLeftOver} onOpenChange={setShowLeftOver} productData={data} />
       )}
     </>
   )

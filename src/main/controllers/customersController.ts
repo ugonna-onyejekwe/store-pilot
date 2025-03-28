@@ -5,7 +5,7 @@ import db from '..'
 // save customer
 export const createCustomer = async (req: Request, res: Response) => {
   try {
-    const { customerName, amountToPay, amountPaid, typeOfPayment }: createNewCustomerBody = req.body
+    const { customerName }: createNewCustomerBody = req.body
 
     const { customers } = req.doc
 
@@ -16,23 +16,7 @@ export const createCustomer = async (req: Request, res: Response) => {
 
     const newCustomer = {
       name: customerName,
-      id: uuidv4(),
-      lastPaymentDate: new Date(),
-      debt:
-        typeOfPayment === 'credit'
-          ? amountToPay
-          : typeOfPayment === 'half'
-            ? Number(amountToPay) - Number(amountPaid)
-            : 0,
-      paymentHistory:
-        typeOfPayment === 'half'
-          ? [
-              {
-                date: new Date(),
-                amountPaid: amountPaid
-              }
-            ]
-          : []
+      id: uuidv4()
     }
 
     const UpdatedcustomerList = [newCustomer, ...customers]

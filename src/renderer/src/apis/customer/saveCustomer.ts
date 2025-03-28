@@ -6,9 +6,6 @@ import { useMutation } from '@tanstack/react-query'
 
 type payload = {
   customerName: string
-  amountToPay: number
-  amountPaid: number
-  typeOfPayment: string
 }
 
 const saveCustomer = (payload: payload) => {

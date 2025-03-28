@@ -265,36 +265,6 @@ export const getSingleProduct = async (req: Request, res: Response) => {
   }
 }
 
-// EDIT PRODUCT
-// export const editProduct = async (req: Request, res: Response) => {
-//   try {
-//     // const { productId } = req.body
-//     // const { productInfo } = req
-//     // const productList = req.doc.products
-//     // let product = productList.find((i) => i.productId === productId)
-//     // // @ts-ignore: Gives error of incompactible
-//     // product = {
-//     //   ...product,
-//     //   ...productInfo
-//     // }
-//     // const updatedProductsList = productList.map((i) => {
-//     //   if (i.productId === productId) return product
-//     //   return i
-//     // })
-//     // await db.update({}, { $set: { products: updatedProductsList } }, {}, (updateErr, _) => {
-//     //   if (updateErr) {
-//     //     console.error('Error updating product list', updateErr)
-//     //     res.status(500).json({ error: 'Failed to update product' })
-//     //     return
-//     //   }
-//     //   res.status(200).json({ message: 'Product updated successfly', data: product })
-//     // })
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json(error)
-//   }
-// }
-
 // DELETE PRODUCT
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
@@ -350,7 +320,7 @@ export const checkout = async (req: Request, res: Response) => {
       checkoutInfo: CheckoutInfo
     } = req.body
 
-    const { histories, products, customers } = req.doc
+    const { histories, products } = req.doc
 
     // update product list
     const updateProductFn = async (upDatedProductList) => {
@@ -358,38 +328,6 @@ export const checkout = async (req: Request, res: Response) => {
         if (updateErr) {
           console.error('Error checking out', updateErr)
           res.status(500).json({ error: 'Failed to  checkout' })
-          return
-        }
-
-        return
-      })
-    }
-
-    if (checkoutInfo.customerId) {
-      const customerProfile = customers.find((i) => i.id === checkoutInfo.customerId)
-
-      if (!customerProfile) {
-        res.send(404).json({ message: 'Customer does not exist' })
-
-        return
-      }
-
-      customerProfile.debt =
-        checkoutInfo.paymentType === 'credit'
-          ? Number(customerProfile.debt) + Number(checkoutInfo.amountToPay)
-          : checkoutInfo.paymentType === 'half'
-            ? Number(customerProfile.debt) +
-              (Number(checkoutInfo.amountToPay) - Number(checkoutInfo.amountPaid))
-            : Number(customerProfile.debt)
-
-      const updatedCustomerList = customers.map((i) =>
-        i.id === checkoutInfo.customerId ? customerProfile : i
-      )
-
-      await db.update({}, { $set: { customers: updatedCustomerList } }, {}, (updateErr, _) => {
-        if (updateErr) {
-          console.error('Error updating customer profile', updateErr)
-          res.status(500).json({ error: 'Failed to edit customer profile' })
           return
         }
 

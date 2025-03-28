@@ -59,13 +59,9 @@ type Checkout__ProductList = {
 }[]
 
 declare interface CheckoutInfo {
-  paymentType: 'full' | 'half' | 'credit'
-  amountPaid: number
-  amountToPay: number
   customerName: string
   customerId: string
   locationSold: string
-  isNewCustomer: boolean
 }
 
 type CreateProductRequestBody = {
@@ -109,9 +105,6 @@ type CreateProductRequestBody = {
 
 type createNewCustomerBody = {
   customerName: string
-  amountToPay: number
-  amountPaid: number
-  typeOfPayment: 'half' | 'full' | 'credit'
 }
 
 declare namespace Express {
@@ -171,40 +164,8 @@ declare namespace Express {
       }[]
 
       histories: {
-        listOfProducts: {
-          categoryId: string
-          subcategory: string
-          model: string
-          productId: string
-          subproducts: {
-            name: string
-            defaultQuantity: number
-            id: string
-            sellQuantity: number
-            left: number
-          }[]
-          color: string
-          design: string
-          quantity: number
-          hasSubCategory: boolean
-          hasModel: boolean
-          hasColor: boolean
-          hasSubProducts: boolean
-          cartoonQuantity: number
-          sellType: 'part' | 'all' | 'leftOver'
-          leftOverId: string
-        }[]
-        checkoutInfo: {
-          paymentType: 'full' | 'half' | 'credit'
-          amountPaid: number
-          amountToPay: number
-          customerName: string
-          customerId: string
-          locationSold: string
-          isNewCustomer: boolean
-          checkoutId: string
-          createdAt: string
-        }
+        listOfProducts: Checkout__ProductList[]
+        checkoutInfo: CheckoutInfo
       }[]
 
       returnedGoods: []
@@ -239,11 +200,6 @@ declare namespace Express {
       customers: {
         name: string
         id: string
-        debt: number
-        paymentHistory: {
-          date: string
-          amountPaid: number
-        }[]
       }[]
 
       authCredentials: {

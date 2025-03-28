@@ -111,20 +111,20 @@ export const addPro_totalQuantitySchema = yup.object().shape({
 
 // CHECKOUT FORM SCHEMA
 export const checkoutFormSchma = yup.object().shape({
-  // @ts-expect-error: undefined value
-  amountPaid: yup.number().test('', 'Amount paid is required', function (value) {
-    const { paymentType } = this.parent // Access other field's value
-    return paymentType !== 'half payment' || (paymentType === 'half payment' && value)
-  }),
-  paymentType: yup.string().required('This field is required'),
-  sellingPrice: yup.number().required('How much is customer expected to pay?'),
+  isNewCustomer: yup.boolean().required('This field is required'),
 
-  totalQuantity: yup.number().min(1, "Total quantity can't be less than 1"),
-  supplyStatus: yup.string().required('Supply status is required'),
-  customerName: yup.string().required('Customer name is required'),
-  phoneNumber: yup.string(),
-  supplyLocation: yup.string(),
-  sellLocation: yup.string().required('This field is required')
+  sellLocation: yup.string().required('This field is required'),
+
+  customerName: yup
+    .string()
+    .test('customerNameRequired', 'This field is required', function (value) {
+      const { isNewCustomer } = this.parent
+      return !isNewCustomer || (isNewCustomer && value)
+    }),
+  customerId: yup.string().test('customerIdRequired', 'This field is required', function (value) {
+    const { isNewCustomer } = this.parent
+    return isNewCustomer || (!isNewCustomer && value)
+  })
 })
 
 // ADMIN AUTH VALIDATIONSCHMA

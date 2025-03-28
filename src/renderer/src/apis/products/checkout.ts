@@ -27,13 +27,9 @@ type Product = {
 type payload = {
   listOfProducts: Product[]
   checkoutInfo: {
-    paymentType: string
-    amountPaid: string
-    amountToPay: string
-    customerName: string
     customerId: string
+    customerName: string
     locationSold: string
-    isNewCustomer: boolean
   }
 }
 

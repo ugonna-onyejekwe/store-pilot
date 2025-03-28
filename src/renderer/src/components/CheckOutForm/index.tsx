@@ -1,58 +1,110 @@
+import { useCheckCustomerName } from '@renderer/apis/customer/checkCustomerName'
+import { useGetCustomers } from '@renderer/apis/customer/getCustomers'
+import { useSaveCustomer } from '@renderer/apis/customer/saveCustomer'
 import { useCheckout } from '@renderer/apis/products/checkout'
 import { useReturnAllWarehouses } from '@renderer/apis/warehouses/getAllWarehouses'
+import { getError } from '@renderer/lib/utils'
 import { RootState } from '@renderer/store'
 import { clearCart } from '@renderer/store/cartSlice'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { checkoutFormSchma } from '../forms/schemas'
 import AlertModal from '../ui/alertModal'
 import Button from '../ui/Button'
 import { Icons } from '../ui/icons'
-import { Input, SelecInput } from '../ui/inputs'
+import { BooleanInput, Input, SelecInput } from '../ui/inputs'
+import { toastUI } from '../ui/toast'
 import './styles.scss'
 
 const CheckOutForm = () => {
   const cartItems = useSelector((state: RootState) => state.cartReducer.cartItems)
   const { mutateAsync, isPending } = useCheckout()
   const [openSuccessModel, setOpenSuccessModel] = useState(false)
+  const [openSaveModel, setOpenSaveModel] = useState(false)
   const {
     isPending: isGettingWareHouses,
     data: wareHouses,
     mutateAsync: getwareHouses
   } = useReturnAllWarehouses()
+  const { isPending: isSaving, mutateAsync: saveCustomer } = useSaveCustomer()
+  const { isPending: isSaving2, mutateAsync: checkName } = useCheckCustomerName()
+
+  const { data: customers, isPending: isGettingCustomers, mutate: getCutomers } = useGetCustomers()
 
   const initialValues = {
-    sellingPrice: '',
-    paymentType: '',
-    amountPaid: '',
-    supplyStatus: '',
+    isNewCustomer: false,
     customerName: '',
-    phoneNumber: '',
     sellLocation: '',
-    supplyLocation: ''
+    customerId: ''
   }
 
   const onSubmit = (values) => {
-    console.log(values, mutateAsync)
-    // mutateAsync({
-    //   listOfProducts: [...cartItems],
-    //   checkoutInfo: {
-    //     locationSold: values.sellLocation,
-    //     customerName: values.customerName,
-    //     customerPhoneNumber: values.phoneNumber,
-    //     supplyStatus: values.supplyStatus,
-    //     paymentStatus: values.paymentType,
-    //     sellingPrice: values.sellingPrice,
-    //     amountPaid: values.amountPaid,
-    //     supplyLocation: values.supplyLocation
-    //   }
-    // })
-    //   .then(() => setOpenSuccessModel(true))
-    //   .catch((error) => {
-    //     console.log(error)
-    //     toastUI.error(getError(error))
-    //   })
+    if (!values.isNewCustomer) {
+      mutateAsync({
+        listOfProducts: [...cartItems],
+        checkoutInfo: {
+          locationSold: values.sellLocation,
+          customerId: values.customerId,
+          customerName: values.customerName
+        }
+      })
+        .then(() => setOpenSuccessModel(true))
+        .catch((error) => {
+          console.log(error)
+          toastUI.error(getError(error))
+        })
+
+      return
+    }
+
+    setOpenSaveModel(true)
+  }
+
+  const saveCustomer__sheckout = (save: boolean) => {
+    try {
+      if (save) {
+        checkName({
+          customerName: values.customerName
+        }).then(() => {
+          saveCustomer({ customerName: values.customerName }).then((res) => {
+            mutateAsync({
+              listOfProducts: [...cartItems],
+              checkoutInfo: {
+                locationSold: values.sellLocation,
+                // @ts-ignore:undefined
+                customerId: res?.data?.id,
+                customerName: values.customerName
+              }
+            })
+              .then(() => setOpenSuccessModel(true))
+              .catch((error) => {
+                console.log(error)
+              })
+          })
+        })
+
+        return
+      }
+
+      mutateAsync({
+        listOfProducts: [...cartItems],
+        checkoutInfo: {
+          locationSold: values.sellLocation,
+          // @ts-ignore:undefined
+          customerId: values.customerName,
+          customerName: values.customerName
+        }
+      })
+        .then(() => setOpenSuccessModel(true))
+        .catch((error) => {
+          console.log(error)
+          toastUI.error(getError(error))
+        })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const { values, errors, touched, handleChange, handleSubmit, setFieldValue } = useFormik({
@@ -61,68 +113,20 @@ const CheckOutForm = () => {
     onSubmit
   })
 
-  // PAYMENT TYPE OPTIONS
-  const paymentTypes = [
-    { label: 'Full payment', value: 'Full payment' },
-    { label: 'Half payment', value: 'Half payment' },
-    { label: 'Credit', value: 'Credit' }
-  ]
-
-  // SUPPLY TYPE OPTIONS
-  const supplyStatus = [
-    { label: 'Supplied', value: 'Supplied' },
-    { label: 'Not supplied', value: 'Not supplied' }
-  ]
-
   const totalCartons = cartItems.reduce(
     (cartoons, item) => Number(cartoons) + Number(item.cartoonQuantity),
     0
   )
-  useEffect(() => {
-    values.paymentType.trim() !== 'Half payment' ? setFieldValue('amountPaid', '') : null
-  }, [values.paymentType])
 
   useEffect(() => {
     getwareHouses().catch((error) => console.log(error))
+    getCutomers()
   }, [])
 
   return (
     <>
       <div className="checkout_form">
         <form onSubmit={handleSubmit}>
-          <Input
-            label="Enter selling price"
-            onChange={handleChange('sellingPrice')}
-            value={values.sellingPrice}
-            errorMsg={errors.sellingPrice}
-            touched={touched.sellingPrice}
-            placeholder="Enter selling price..."
-            type="number"
-          />
-
-          <SelecInput
-            label="Select payment type"
-            onChange={setFieldValue}
-            errorMsg={errors.paymentType}
-            touched={touched.paymentType}
-            name="paymentType"
-            id="paymentType"
-            options={paymentTypes}
-            placeholder="Select"
-          />
-
-          {values.paymentType.trim() === 'Half payment' && (
-            <Input
-              label="Enter amount paid"
-              onChange={handleChange('amountPaid')}
-              value={values.amountPaid}
-              errorMsg={errors.amountPaid}
-              touched={touched.amountPaid}
-              placeholder="Enter selling price..."
-              type="number"
-            />
-          )}
-
           <SelecInput
             label="Where was this product sold?"
             onChange={setFieldValue}
@@ -135,50 +139,48 @@ const CheckOutForm = () => {
             isLoading={isGettingWareHouses}
           />
 
-          <SelecInput
-            label="Select supply status"
+          <BooleanInput
+            label="Is this customer a new customer?"
+            value={values.isNewCustomer}
             onChange={setFieldValue}
-            errorMsg={errors.supplyStatus}
-            touched={touched.supplyStatus}
-            name="supplyStatus"
-            id="supplyStatus"
-            options={supplyStatus}
-            placeholder="Select"
+            name="isNewCustomer"
           />
 
-          <Input
-            label="Where will you be supppling the product to? (optional)"
-            onChange={handleChange('supplyLocation')}
-            errorMsg={errors.supplyLocation}
-            touched={touched.supplyLocation}
-            value={values.supplyLocation}
-            placeholder="Location.."
-          />
-
-          <Input
-            label="Customer name"
-            onChange={handleChange('customerName')}
-            value={values.customerName}
-            errorMsg={errors.customerName}
-            touched={touched.customerName}
-            placeholder="Enter customer name..."
-          />
-
-          <Input
-            label="Enter customer phone number (optional)"
-            onChange={handleChange('phoneNumber')}
-            value={values.phoneNumber}
-            errorMsg={errors.phoneNumber}
-            touched={touched.phoneNumber}
-            placeholder="Enter phone number..."
-            type="number"
-          />
+          {values.isNewCustomer ? (
+            <Input
+              label="Customer name"
+              onChange={handleChange('customerName')}
+              value={values.customerName}
+              errorMsg={errors.customerName}
+              touched={touched.customerName}
+              placeholder="Enter customer name..."
+            />
+          ) : (
+            <SelecInput
+              label="Select customer name"
+              onChange={setFieldValue}
+              errorMsg={errors.customerId}
+              touched={touched.customerId}
+              name="customerId"
+              id="customerId"
+              options={customers?.map((i) => ({ label: i.name, value: i.id })) ?? []}
+              placeholder="Select"
+              isLoading={isGettingCustomers}
+            />
+          )}
 
           <div className="btn">
             <Button text="Checkout" type="submit" isLoading={isPending} />
           </div>
         </form>
       </div>
+
+      <SaveCustomerModel
+        open={openSaveModel}
+        onOpenChange={setOpenSaveModel}
+        handleSave={(value) => saveCustomer__sheckout(value)}
+        isLoading={isSaving || isSaving2}
+      />
 
       <Checkout_SuccessModel
         totalCartons={totalCartons}
@@ -191,6 +193,37 @@ const CheckOutForm = () => {
 }
 
 export default CheckOutForm
+
+const SaveCustomerModel = ({
+  open,
+  onOpenChange,
+  handleSave,
+  isLoading
+}: {
+  open: boolean
+  onOpenChange: (value: boolean) => void
+  handleSave: (value: boolean) => void
+  isLoading: boolean
+}) => {
+  return (
+    <AlertModal open={open} onOpenChange={onOpenChange} className="checkout__successModel">
+      <h2>Save customer</h2>
+
+      <p>Would you love to save this new customer to store?</p>
+
+      <div className="btns">
+        <Button varient="outline" text="Don't save" onClick={() => handleSave(false)} />
+        <Button
+          text="Yes, save"
+          onClick={() => {
+            handleSave(true)
+          }}
+          isLoading={isLoading}
+        />
+      </div>
+    </AlertModal>
+  )
+}
 
 type Checkout_SuccessModelProps = {
   open: boolean
@@ -206,6 +239,7 @@ const Checkout_SuccessModel = ({
   totalCartons
 }: Checkout_SuccessModelProps) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   return (
     <AlertModal
@@ -231,14 +265,13 @@ const Checkout_SuccessModel = ({
         is to be supplied to <b>{customerName}</b>
       </p>
 
-      <div className="btns">
-        <Button varient="outline" text="Print doc" />
+      <div className="btns single">
         <Button
-          text="Understood 👍"
+          text="Save"
           onClick={() => {
             onOpenChange(false)
-
             dispatch(clearCart())
+            navigate('/goods')
           }}
         />
       </div>
